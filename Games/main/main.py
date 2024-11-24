@@ -12,9 +12,12 @@ class MainMenu:
         self.running = True
 
     def create_button(self):
-        self.start_button = Button('Start Game', 0, 0, 200, 50, RED, GRAY, self.start_game)
-        self.training_button = 0
-        self.coach_button = 0
+        self.start_button = Button('Start Game', SCREEN_MARGIN, SCREEN_MARGIN,
+                                    314, 400, RED, GRAY, self.start_game)
+        self.training_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
+                                      SCREEN_MARGIN, 314, 250, RED, GRAY, self.start_game)
+        self.coach_button = Button('As A Coach', self.training_button.rect.right + SCREEN_MARGIN,
+                                   SCREEN_MARGIN, 314, 350, GREEN, GRAY, self.start_game)
         self.padwork_button = 0
         self.exit_button = 0
 
@@ -31,6 +34,8 @@ class MainMenu:
             # Rest Code
             
             self.start_button.draw(screen)
+            self.training_button.draw(screen)
+            self.coach_button.draw(screen)
             
 
             pygame.display.flip()
