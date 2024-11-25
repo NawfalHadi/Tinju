@@ -1,10 +1,15 @@
-import pygame
 import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+import pygame
 
 from helper.ui_elements.button import *
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Main Menu Example')
+
 
 class MainMenu:
     def __init__(self):
@@ -28,7 +33,9 @@ class MainMenu:
                                   self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, RED, GRAY, self.start_game)
 
     def start_game(self):
-        pass
+        from gameplay.VersusBot import VersusBot
+        versus_bot = VersusBot()
+        versus_bot.run()
 
     def run(self):
         while self.running:
@@ -37,6 +44,10 @@ class MainMenu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+
+                self.start_button.is_clicked(event)
+
+                
             # Rest Code
             
             self.start_button.draw(screen)
