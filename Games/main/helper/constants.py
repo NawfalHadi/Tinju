@@ -23,8 +23,26 @@ FONT_SIZE = 40
 SERVER_ADDRESS = 'localhost'
 SERVER_PORT = 12345
 
-# ====== CONTROLLER =====
-POSES = ["no_guard", "guard", "jab", "straigth", "left_hook", "right_hook"]
+# ====== GAMES =====
+"""
+Attribtues games are store in here
+- actions : the action that are available in this games
+- coach_ask : the randomize coach ask for padwork
+- model : anything that realated to bot models
+"""
+# ====== ATTRIBUTES =====
+MAX_HP = 100
+MAX_STM = 100
+
+# ====== ACTIONS =====
+# ACTION = ["no_guard", "guard", "jab", "straigth", "left_hook", "right_hook"]
+ACTIONS  = ["Idle","Jab", "Guard"]
 
 # ======= COACHES =====
 C_ASKPOSE = ["Give me a ", "Throw the ", "Show me your ", "I want see your "]
+
+# ======= BOT MODELS =====
+
+ALPHA = 0.1  # Learning rate
+GAMMA = 0.9  # Discount factor
+EPSILON = 0.1  # Exploration factor
