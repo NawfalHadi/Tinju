@@ -88,7 +88,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 elif body_language_class == "no_guard" and not box_form[0]:
                     box_form = [True, False, False, False, False, False]
 
-                    send_data("No Guard")
+                    send_data("Idle")
                 elif body_language_class == "guard" and not box_form[1]:
                     box_form = [False, True, False, False, False, False]
 
