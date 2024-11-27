@@ -6,6 +6,7 @@ import time
 import socket
 import pygame
 import threading
+import subprocess
 import pickle
 
 
@@ -23,6 +24,8 @@ pygame.display.set_caption('Main Menu Example')
 class VersusBot:
     def __init__(self):
         self.screen = screen
+        "=== THREADING ==="
+        self.controller_process = None
 
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
@@ -48,7 +51,9 @@ class VersusBot:
         self.start_games()
 
     def start_controller(self):
-        os.system(f'python "{os.path.join("main","gameplay","Controller.py")}"')
+        # script_path = os.system(f'python "{os.path.join("main","gameplay","Controller.py")}"')
+        script_path = os.path.join("main", "gameplay", "Controller.py")
+        self.controller_process = subprocess.Popen(["python", script_path],)
     
     def start_games(self):
         "The thread for generating action from bot"
@@ -210,6 +215,7 @@ class VersusBot:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.controller_process.terminate()
                     self.running = False
                     self.sock.close()
             

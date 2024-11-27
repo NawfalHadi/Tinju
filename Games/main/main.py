@@ -19,23 +19,29 @@ class MainMenu:
     def create_button(self):
         self.start_button = Button('Start Game', SCREEN_MARGIN, SCREEN_MARGIN,
                                     314, 400, RED, GRAY, self.start_game)
-        self.training_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
+        self.tutorial_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
                                       SCREEN_MARGIN, 314, 258, RED, GRAY, self.start_game)
-        self.coach_button = Button('As A Coach', self.training_button.rect.right + SCREEN_MARGIN,
+        self.coach_button = Button('As A Coach', self.tutorial_button.rect.right + SCREEN_MARGIN,
                                    SCREEN_MARGIN, 314, 400, GREEN, GRAY, self.start_game)
         self.record_button = Button('1 / 1 / 0', SCREEN_MARGIN, self.start_button.rect.bottom + SCREEN_MARGIN,
                                    314, 116, BLUE, GRAY, self.start_game)
         self.padwork_button = Button("Padwork", self.record_button.rect.right + SCREEN_MARGIN,
-                                     self.training_button.rect.bottom + SCREEN_MARGIN, 314, 258, GREEN, GRAY, self.start_game)
+                                     self.tutorial_button.rect.bottom + SCREEN_MARGIN, 314, 258, GREEN, GRAY, self.start_game)
         self.resoulution_button = Button("1024 x 576", self.padwork_button.rect.right + SCREEN_MARGIN,
                                          self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, BLUE, GRAY, self.start_game)
         self.exit_button = Button("Exit", self.resoulution_button.rect.right + SCREEN_MARGIN,
-                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, RED, GRAY, self.start_game)
+                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, RED, GRAY, self.exit_game)
 
     def start_game(self):
         from gameplay.VersusBot import VersusBot
         versus_bot = VersusBot()
         versus_bot.run()
+
+    def exit_game(self):
+        self.running = False
+        pygame.quit()
+
+
 
     def run(self):
         while self.running:
@@ -46,12 +52,13 @@ class MainMenu:
                     self.running = False
 
                 self.start_button.is_clicked(event)
+                self.exit_button.is_clicked(event)
 
                 
             # Rest Code
             
             self.start_button.draw(screen)
-            self.training_button.draw(screen)
+            self.tutorial_button.draw(screen)
             self.coach_button.draw(screen)
             self.record_button.draw(screen)
             self.padwork_button.draw(screen)
