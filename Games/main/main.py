@@ -33,8 +33,8 @@ class MainMenu:
                                   self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, RED, GRAY, self.exit_game)
 
     def start_game(self):
-        from gameplay.VersusBot import VersusBot
-        versus_bot = VersusBot()
+        from main.gameplay.VersusBotPage import VersusBotPage
+        versus_bot = VersusBotPage()
         versus_bot.run()
 
     def exit_game(self):
