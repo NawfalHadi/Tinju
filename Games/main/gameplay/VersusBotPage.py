@@ -56,7 +56,6 @@ class VersusBotPage:
         self.controller_process = subprocess.Popen(["python", script_path],)
     
     def start_games(self):
-        "The thread for generating action from bot"
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((SERVER_ADDRESS, SERVER_PORT))
         self.sock.listen()
