@@ -15,7 +15,11 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GRAY = (200, 200, 200)
-TRANSPARANT = (0, 0, 0, 0)
+
+BACKGROUND = (32, 40, 105)
+FOREGROUND = (237, 57, 98)
+
+
 # ====== FONTS =======
 FONT_SIZE = 40
 
