@@ -10,8 +10,8 @@ from main.helper.constants import *
 from main.helper.ui_elements.button import *
 
 padworks = [
-    [1, 5, ["jab", "straight", "guard", "duck", "jab"], "00:00:00"],
-    [2, 6, ["jab", "straight", "jab", "straight", "jab", "guard", "jab"], "00:00:00"]
+    [1, ["jab", "straight", "guard", "duck", "jab"], "00:00:00"],
+    [2, ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:00"]
 ]
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -63,16 +63,19 @@ class PadworkPage:
         self.show_loading = True
         self.sock = None
         
-        "=== INTERFACE ==="
-        self.draw_interface()
 
         "=== TIMER ==="
         self.isCountdownFinish = False
 
         "=== PADWORKS ==="
         self.padworks = data
-        self.currentPose = None
-        self.requirePose = None
+        self.list_pose = len(data[1])
+        self.current_pose = None
+        self.next_pose = None
+        self.isPadworkFinish = False
+        
+        "=== INTERFACE ==="
+        self.draw_interface()
 
         self.start_padwork()
 
@@ -113,12 +116,44 @@ class PadworkPage:
             pass
 
     def draw_interface(self):
-        self.pose_estimation = Button(str(self.player_action), 50, 50, 250, 100, RED, RED, self.no_function)
+        self.pose_requirement = Button(str(self.current_pose), 50, 50, 250, 100, RED, RED, self.no_function)
+        
 
     def update_interface(self):
         # Constant Changin Interface Put Here
-        self.pose_estimation = Button(str(self.player_action), 50, 50, 100, 50, GRAY, GRAY, self.no_function)
+        self.pose_requirement = Button(str(self.current_pose), 50, 50, 100, 50, GRAY, GRAY, self.no_function)
 
+    def update_padwork(self):
+        padwork_list = self.padworks[1]
+
+        try:
+            if not self.isPadworkFinish:
+                if self.list_pose > 0:
+                
+                    index = len(padwork_list) - self.list_pose
+                    self.current_pose = padwork_list[index]
+                    try:
+                        self.next_pose = padwork_list[index + 1]
+                    except Exception as e:
+                        self.isPadworkFinish = True
+                        pass
+                    
+                    if self.player_action == self.current_pose.capitalize():
+                        self.list_pose -= 1
+                        if self.isPadworkFinish:
+                            self.current_pose = "Done"
+                        else:
+                            self.current_pose = self.next_pose
+            else:
+                print("Padworks Done")
+
+                        
+                        
+        except Exception as e:
+            print("List Pose", e)
+
+
+    
     def no_function(self):
         print("test")
         pass
@@ -146,10 +181,7 @@ class PadworkPage:
     def stopwatch(self):
         pass
 
-    def update_padwork(self):
-        padworks = self.padworks[2]
-        
-        pass
+    
 
     def run(self):
         while self.running:
@@ -162,7 +194,7 @@ class PadworkPage:
                     self.sock.close()
 
             if not self.show_loading:
-                self.pose_estimation.draw(screen)
+                self.pose_requirement.draw(screen)
                 self.update_interface()
                 if not self.isCountdownFinish:
                     self.timer()
