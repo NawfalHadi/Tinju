@@ -54,7 +54,7 @@ class MainMenu:
 
                 self.start_button.is_clicked(event)
                 self.padwork_button.is_clicked(event)
-                
+
                 self.exit_button.is_clicked(event)
 
                 
