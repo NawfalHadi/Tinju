@@ -20,7 +20,7 @@ class MainMenu:
         self.start_button = Button('Start Game', SCREEN_MARGIN, SCREEN_MARGIN,
                                     314, 400, RED, GRAY, self.start_game)
         self.tutorial_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
-                                      SCREEN_MARGIN, 314, 258, RED, GRAY, self.start_game)
+                                      SCREEN_MARGIN, 314, 258, RED, GRAY, self.start_tutorial)
         self.coach_button = Button('As A Coach', self.tutorial_button.rect.right + SCREEN_MARGIN,
                                    SCREEN_MARGIN, 314, 400, GREEN, GRAY, self.start_game)
         self.record_button = Button('1 / 1 / 0', SCREEN_MARGIN, self.start_button.rect.bottom + SCREEN_MARGIN,
@@ -41,12 +41,16 @@ class MainMenu:
         from main.gameplay.PadworkPage import PadworkList
         PadworkList().run()
 
+    def start_tutorial(self):
+        from main.gameplay.TutorialPage import TutorialPage
+        TutorialPage().run()
+
     def exit_game(self):
         pygame.quit()
 
     def run(self):
         while self.running:
-            screen.fill(WHITE)
+            screen.fill(BACKGROUND)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -54,9 +58,9 @@ class MainMenu:
 
                 self.start_button.is_clicked(event)
                 self.padwork_button.is_clicked(event)
+                self.tutorial_button.is_clicked(event)
 
                 self.exit_button.is_clicked(event)
-
                 
             # Rest Code
             
@@ -69,7 +73,6 @@ class MainMenu:
             self.resoulution_button.draw(screen)
             self.exit_button.draw(screen)
             
-
             pygame.display.flip()
 
     def run_menu(self):

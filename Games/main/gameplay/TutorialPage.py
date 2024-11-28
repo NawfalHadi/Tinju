@@ -1,6 +1,12 @@
+import os
+
 import pygame
+import socket
+import threading
+import subprocess
 
 from main.helper.constants import *
+from main.helper.ui_elements.TextBox import TextBox
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Padworks')
@@ -20,20 +26,56 @@ class TutorialPage:
         self.tutorial_guard = False
         self.tutroial_duck = False
 
+        "=== TEXT ==="
+        self.explanation = ""
+
+        self.draw_interface()
+        self.setup()
+
     def setup(self):
         # Starting the thread of controller
 
         # Socket
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind((SERVER_ADDRESS, SERVER_PORT))
+        self.sock.listen()
 
-        # thread of data receive
-        # thread of controller
-        pass
+        print(f"Server listening on {SERVER_ADDRESS}:{SERVER_PORT}")
+
+        threading.Thread(target=self.receive_data, daemon=True).start()
+        threading.Thread(target=self.start_controller, daemon=True).start()
 
     def receive_data(self):
-        pass
+        try : 
+            conn, addr = self.sock.accept()
+            print(f"Connected by {addr}")
+            self.show_loading = False
+        except:
+            pass 
+        
+        try:
+            with conn:
+                while self.running:
+                    try:
+                        data = conn.recv(1024).decode()
+
+                        if data:
+                            self.player_action = data
+                            print(self.player_action)
+
+                    except ConnectionResetError:
+                        print("error")
+        except :
+            pass
 
     def start_controller(self):
-        pass
+        script_path = os.path.join("main", "gameplay", "Controller.py")
+        self.controller_process = subprocess.Popen(["python", script_path])
+
+    def draw_interface(self):
+        self.text_dialog = TextBox("Halo Coy, Selamat Pagi", 0,
+                                (self.screen.get_height() // 2) + 100,
+                                self.screen.get_width(), (self.screen.get_height() // 2) - 100)
 
     def step_menu(self):
         pass
@@ -49,13 +91,16 @@ class TutorialPage:
 
     def run(self):
         while self.running:
-            self.screen.fill(WHITE)
+            self.screen.fill(BACKGROUND)
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT():
+                if event.type == pygame.QUIT:
+                    self.controller_process.terminate()
                     self.running = False
 
+            self.text_dialog.draw(screen)
+
             pygame.display.update()
-            pygame.time.Clock(60)
+            pygame.time.Clock().tick(60)
                     
 

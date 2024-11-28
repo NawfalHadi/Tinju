@@ -90,7 +90,7 @@ class PadworkPage:
 
     def start_controller(self):
         script_path = os.path.join("main", "gameplay", "Controller.py")
-        self.controller_process = subprocess.Popen(["python", script_path],)
+        self.controller_process = subprocess.Popen(["python", script_path])
 
     def receive_data(self):
         try : 
@@ -182,7 +182,6 @@ class PadworkPage:
         pass
 
     
-
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
