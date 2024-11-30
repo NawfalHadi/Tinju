@@ -29,6 +29,7 @@ with open(model_path, 'rb') as f:
     model = pickle.load(f)
 
 box_form = [False, False, False, False, False]
+pause = False
 
 time.sleep(1)
 cap = cv2.VideoCapture(0)
