@@ -14,6 +14,7 @@ from collections import defaultdict
 
 from main.helper.constants import *
 from main.helper.ui_elements.Attribute import *
+from main.helper.ui_elements.button import *
 
 bot_model = "main/bot/q_table.pkl"
 controller = "main/gameplay/controller.py"
@@ -24,8 +25,13 @@ pygame.display.set_caption('Main Menu Example')
 class VersusBotPage:
     def __init__(self):
         self.screen = screen
+        
         "=== THREADING ==="
         self.controller_process = None
+
+        "=== TIMER ==="
+        self.clock = pygame.time.Clock()
+        self.total_seconds = 3 * 60
 
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
@@ -98,7 +104,6 @@ class VersusBotPage:
             # if(not self.show_loading):
             #     print("test")
             
-
     def receive_data(self):
         try : 
             conn, addr = self.sock.accept()
@@ -144,11 +149,18 @@ class VersusBotPage:
         screen.blit(font.render(self.bot_action, True, BLACK), (self.player_stamina_ui.rect.left, self.player_stamina_ui.rect.bottom))
 
     def start_timer(self):
-        text = "3:00"
+        if self.total_seconds > 0:
+            self.total_seconds -= 1 / 60
+        else:
+            pass
+        
+        minutes = int(self.total_seconds) // 60
+        seconds = int(self.total_seconds) % 60
+
+        text = f"{minutes}:{seconds:02d}"
         font = pygame.font.Font(None, 60)
         self.timer = screen.blit(font.render(text, True, BLACK),
-                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))
-                    
+                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))               
         
     def player_action_calculation(self):
         if self.player_action == "Jab":
@@ -205,9 +217,7 @@ class VersusBotPage:
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
         self.player_hp = max(0, min(MAX_HP, self.player_hp))
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
-        
-        
-        
+              
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
@@ -218,7 +228,6 @@ class VersusBotPage:
                     self.running = False
                     self.sock.close()
             
-            self.start_timer()
             
             self.player_hp_bg.draw(screen, corner_bottomRight=15)
             self.player_stamina_ui.draw(screen, corner_bottomRight=15)
@@ -230,7 +239,9 @@ class VersusBotPage:
                 self.update_interface()
                 self.bot_action_calculation()
                 self.player_action_calculation()
+                self.start_timer()
 
+            
             pygame.display.update()
             pygame.time.Clock().tick(60)
 
