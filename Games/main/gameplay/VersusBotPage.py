@@ -25,27 +25,31 @@ pygame.display.set_caption('Main Menu Example')
 class VersusBotPage:
     def __init__(self):
         self.screen = screen
-        "=== JUDGES ==="
+
+        "=== JUDGES & GAME SYSTEM==="
         self.isTimerFinish = False
-        self.judges_hp = [0, 0, 0]
-        self.judges_def = [0, 0, 0]
-        self.judges_off = [0, 0, 0] 
-        
+        self.current_rounds = 1
+
+        self.judges_hp = [[10, 10], [10, 10], [10, 10]]
+        self.judges_def = [[10, 10], [10, 10], [10, 10]]
+        self.judges_off = [[10, 10], [10, 10], [10, 10]] 
         "=== THREADING ==="
         self.controller_process = None
 
         "=== TIMER ==="
-        self.clock = pygame.time.Clock()
-        # self.total_seconds = 3 * 60
-        self.total_seconds = 1 * 1
+        self.total_seconds = 3 * 60
         
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
 
         self.bot_action = ACTIONS[0]
         self.bot_action_hit = True
-        self.bot_hp = 100
-        self.bot_stamina = 100
+
+        self.bot_maxhp = 100
+        self.bot_hp = self.bot_maxhp
+
+        self.bot_maxStm = 100
+        self.bot_stamina = self.bot_maxStm
 
         self.bot_offenseRate = 0
         self.bot_defenseRate = 0
@@ -54,8 +58,12 @@ class VersusBotPage:
         "=== PLAYER ATTRIBUTES ==="
         self.player_action = ACTIONS[0]
         self.player_action_hit = True
-        self.player_hp = 100
-        self.player_stamina = 100
+
+        self.player_maxHp = 100
+        self.player_hp = self.player_maxHp
+
+        self.player_maxStm = 100
+        self.player_stamina = self.player_maxStm
         # Stamina helps recovery
 
         self.player_offenseRate = 0
@@ -147,22 +155,29 @@ class VersusBotPage:
         bot_hp = ((self.bot_hp) / 100 * 400)
 
         self.player_hp_bg = Attributes(SCREEN_MARGIN, SCREEN_MARGIN, 400, 40, GRAY)
-        self.player_stamina_ui = Attributes(SCREEN_MARGIN,
-                                         self.player_hp_bg.rect.bottom, 350, 20, BLUE)
+        self.player_stamina_bg = Attributes(SCREEN_MARGIN,
+                                         self.player_hp_bg.rect.bottom, 350, 20, GRAY)
 
         self.bot_hp_bg = Attributes(self.screen.get_width() - (400 + SCREEN_MARGIN), SCREEN_MARGIN, 400, 40, GRAY) 
-        self.bot_stamina_ui = Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom,
-                                      350, 20, BLUE)
+        self.bot_stamina_bg = Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom,
+                                      350, 20, GRAY)
         
     def update_interface(self):
         player_hp = ((self.player_hp) / 100 * 400)
+        player_stm = ((self.player_stamina) / 100 * 350)
+
         bot_hp = ((self.bot_hp) / 100 * 400)
+        bot_stm = ((self.bot_stamina) / 100 * 350)
 
         Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_hp, 40, RED).draw(screen, corner_bottomRight = 15)
         Attributes(self.screen.get_width() - (bot_hp + SCREEN_MARGIN), SCREEN_MARGIN, bot_hp, 40, RED).draw(screen, corner_bottomLeft = 15)
+        
+        Attributes(SCREEN_MARGIN, self.player_hp_bg.rect.bottom, player_stm, 20, BLUE).draw(screen, corner_bottomRight = 15)
+        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLUE).draw(screen, corner_bottomLeft = 15)
+
 
         font = pygame.font.Font(None, 60)
-        screen.blit(font.render(self.bot_action, True, BLACK), (self.player_stamina_ui.rect.left, self.player_stamina_ui.rect.bottom))
+        screen.blit(font.render(self.bot_action, True, BLACK), (self.player_stamina_bg.rect.left, self.player_stamina_bg.rect.bottom))
 
     def start_timer(self):
         if self.total_seconds > 0:
@@ -197,36 +212,51 @@ class VersusBotPage:
             self.rect_roundNumber.left, self.rect_roundNumber.bottom + 20, 150, 366
         ))
 
+        
+
         "=== First Judges Scoring ==="
         self.first_judges = self.draw_player_name(self.empty_space.bottom + 20, BACKGROUND)
-        self.first_r1 = self.draw_round_score(10, 10, self.first_round.left, self.first_judges.top, BACKGROUND)
-        self.first_r2 = self.draw_round_score(10, 9, self.second_round.left, self.first_judges.top, BACKGROUND)
-        self.first_r3 = self.draw_round_score(9, 10, self.third_round.left, self.first_judges.top, BACKGROUND)
-        self.first_total = self.draw_round_score(29, 29, self.total_round.left, self.first_judges.top, BACKGROUND)
+        self.first_r1 = self.draw_round_score(self.judges_hp[0][0], self.judges_hp[0][1], self.first_round.left, self.first_judges.top, BACKGROUND)
+        self.first_r2 = self.draw_round_score(self.judges_hp[1][0], self.judges_hp[1][1], self.second_round.left, self.first_judges.top, BACKGROUND)
+        self.first_r3 = self.draw_round_score(self.judges_hp[2][0], self.judges_hp[2][1], self.third_round.left, self.first_judges.top, BACKGROUND)
+        
+        hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
+        hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
+        
+        self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
 
         "=== Second Judges Scoring ==="
         self.second_judges = self.draw_player_name(self.first_judges.bottom + 20, BACKGROUND)
-        self.second_r1 = self.draw_round_score(10, 10, self.first_round.left, self.second_judges.top, BACKGROUND) 
-        self.second_r2 = self.draw_round_score(10, 10, self.second_round.left, self.second_judges.top, BACKGROUND) 
-        self.second_r3 = self.draw_round_score(10, 10, self.third_round.left, self.second_judges.top, BACKGROUND) 
-        self.second_total = self.draw_round_score(10, 10, self.total_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_r1 = self.draw_round_score(self.judges_off[0][0], self.judges_off[0][1], self.first_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_r2 = self.draw_round_score(self.judges_off[1][0], self.judges_off[1][1], self.second_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_r3 = self.draw_round_score(self.judges_off[2][0], self.judges_off[2][1], self.third_round.left, self.second_judges.top, BACKGROUND) 
+        
+        offPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
+        offBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
+        
+        self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
 
         "=== Third Judges Scoring ==="
         self.third_judges = self.draw_player_name(self.second_judges.bottom + 20, BACKGROUND)
-        self.third_r1 = self.draw_round_score(10, 10, self.first_round.left, self.third_judges.top, BACKGROUND)
-        self.third_r2 = self.draw_round_score(10, 10, self.second_round.left, self.third_judges.top, BACKGROUND)
-        self.third_r3 = self.draw_round_score(10, 10, self.third_round.left, self.third_judges.top, BACKGROUND)
-        self.third_total = self.draw_round_score(10, 10, self.total_round.left, self.third_judges.top, BACKGROUND)
+        self.third_r1 = self.draw_round_score(self.judges_def[0][0], self.judges_def[0][1], self.first_round.left, self.third_judges.top, BACKGROUND)
+        self.third_r2 = self.draw_round_score(self.judges_def[1][0], self.judges_def[1][1], self.second_round.left, self.third_judges.top, BACKGROUND)
+        self.third_r3 = self.draw_round_score(self.judges_def[2][0], self.judges_def[2][1], self.third_round.left, self.third_judges.top, BACKGROUND)
+        
+        defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
+        defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
 
-        self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round).draw(self.screen)
+        self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
+
+        self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round)
 
     def continue_round(self):
-        print("test")
-        total_round = 1
-        if total_round == 3:
-            print("finish")
-        else:
-            print("next round")
+        self.isTimerFinish = False
+        self.total_seconds = 1 * 3
+
+        # if total_round == 3:
+        #     print("finish")
+        # else:
+        #     print("next round")
 
     def draw_rounds(self, text, rightOf, bottomOf, color = BACKGROUND):
         # Draw the rectangle
@@ -334,7 +364,14 @@ class VersusBotPage:
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
         self.player_hp = max(0, min(MAX_HP, self.player_hp))
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
-              
+
+    def scoring_round(self):
+        self.judges_hp
+        self.judges_off
+        self.judges_def
+
+        pass
+           
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
@@ -344,13 +381,17 @@ class VersusBotPage:
                     self.controller_process.terminate()
                     self.running = False
                     self.sock.close()
+
+                if self.isTimerFinish:
+                    self.next_button.is_clicked(event)
             
             
             self.player_hp_bg.draw(screen, corner_bottomRight=15)
-            self.player_stamina_ui.draw(screen, corner_bottomRight=15)
+            self.player_stamina_bg.draw(screen, corner_bottomRight=15)
             
             self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
-            self.bot_stamina_ui.draw(screen, corner_bottomLeft=15)
+            self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+
 
             if (not self.isLoading and not self.isTimerFinish) :    
                 self.update_interface()
@@ -360,6 +401,8 @@ class VersusBotPage:
 
             if self.isTimerFinish:
                 self.show_roundboard()
+                self.next_button.draw(screen)
+
 
             
             pygame.display.update()
