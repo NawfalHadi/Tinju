@@ -45,9 +45,7 @@ class PadworkList:
 
                 self.exit_button.is_clicked(event)
 
-            self.exit_button.draw(screen)
-            
-
+            self.exit_button.draw(screen)            
             pygame.display.update()
 
 class PadworkPage:

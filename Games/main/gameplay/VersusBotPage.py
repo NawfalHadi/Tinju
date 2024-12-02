@@ -25,33 +25,49 @@ pygame.display.set_caption('Main Menu Example')
 class VersusBotPage:
     def __init__(self):
         self.screen = screen
+        "=== JUDGES ==="
+        self.isTimerFinish = False
+        self.judges_hp = [0, 0, 0]
+        self.judges_def = [0, 0, 0]
+        self.judges_off = [0, 0, 0] 
         
         "=== THREADING ==="
         self.controller_process = None
 
         "=== TIMER ==="
         self.clock = pygame.time.Clock()
-        self.total_seconds = 3 * 60
-
+        # self.total_seconds = 3 * 60
+        self.total_seconds = 1 * 1
+        
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
+
         self.bot_action = ACTIONS[0]
         self.bot_action_hit = True
         self.bot_hp = 100
         self.bot_stamina = 100
+
+        self.bot_offenseRate = 0
+        self.bot_defenseRate = 0
+        "=============================="
 
         "=== PLAYER ATTRIBUTES ==="
         self.player_action = ACTIONS[0]
         self.player_action_hit = True
         self.player_hp = 100
         self.player_stamina = 100
+        # Stamina helps recovery
+
+        self.player_offenseRate = 0
+        self.player_defenseRate = 0
+        "============================="
 
         self.draw_interface()
         self.loading = True
         self.running = True
         
         "=== SOCKET ==="
-        self.show_loading = True
+        self.isLoading = True
         self.sock = None
 
         self.start_games()
@@ -108,7 +124,7 @@ class VersusBotPage:
         try : 
             conn, addr = self.sock.accept()
             print(f"Connected by {addr}")
-            self.show_loading = False
+            self.isLoading = False
         except:
             pass 
         
@@ -152,7 +168,7 @@ class VersusBotPage:
         if self.total_seconds > 0:
             self.total_seconds -= 1 / 60
         else:
-            pass
+            self.isTimerFinish = True
         
         minutes = int(self.total_seconds) // 60
         seconds = int(self.total_seconds) % 60
@@ -160,7 +176,108 @@ class VersusBotPage:
         text = f"{minutes}:{seconds:02d}"
         font = pygame.font.Font(None, 60)
         self.timer = screen.blit(font.render(text, True, BLACK),
-                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))               
+                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))          
+
+    def show_roundboard(self):
+        self.roundboard = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476)) 
+
+        # Round
+        self.rect_roundNumber = pygame.draw.rect(self.screen, WHITE, pygame.Rect(
+            self.roundboard.left + 20, self.roundboard.top + 20, 884, 50
+        ))
+
+        self.empty_space = self.draw_rounds("PLAYER", self.rect_roundNumber.left + 20, self.rect_roundNumber.top, WHITE)
+        self.first_round = self.draw_rounds("R1", self.empty_space.right + 20, self.rect_roundNumber.top)
+        self.second_round = self.draw_rounds("R2", self.first_round.right + 20, self.rect_roundNumber.top)
+        self.third_round = self.draw_rounds("R3", self.second_round.right + 20, self.rect_roundNumber.top)
+        self.total_round = self.draw_rounds("TOTAL", self.third_round.right + 20, self.rect_roundNumber.top)
+
+
+        self.rect_playerName = pygame.draw.rect(self.screen, WHITE, pygame.Rect(
+            self.rect_roundNumber.left, self.rect_roundNumber.bottom + 20, 150, 366
+        ))
+
+        "=== First Judges Scoring ==="
+        self.first_judges = self.draw_player_name(self.empty_space.bottom + 20, BACKGROUND)
+        self.first_r1 = self.draw_round_score(10, 10, self.first_round.left, self.first_judges.top, BACKGROUND)
+        self.first_r2 = self.draw_round_score(10, 9, self.second_round.left, self.first_judges.top, BACKGROUND)
+        self.first_r3 = self.draw_round_score(9, 10, self.third_round.left, self.first_judges.top, BACKGROUND)
+        self.first_total = self.draw_round_score(29, 29, self.total_round.left, self.first_judges.top, BACKGROUND)
+
+        "=== Second Judges Scoring ==="
+        self.second_judges = self.draw_player_name(self.first_judges.bottom + 20, BACKGROUND)
+        self.second_r1 = self.draw_round_score(10, 10, self.first_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_r2 = self.draw_round_score(10, 10, self.second_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_r3 = self.draw_round_score(10, 10, self.third_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_total = self.draw_round_score(10, 10, self.total_round.left, self.second_judges.top, BACKGROUND) 
+
+        "=== Third Judges Scoring ==="
+        self.third_judges = self.draw_player_name(self.second_judges.bottom + 20, BACKGROUND)
+        self.third_r1 = self.draw_round_score(10, 10, self.first_round.left, self.third_judges.top, BACKGROUND)
+        self.third_r2 = self.draw_round_score(10, 10, self.second_round.left, self.third_judges.top, BACKGROUND)
+        self.third_r3 = self.draw_round_score(10, 10, self.third_round.left, self.third_judges.top, BACKGROUND)
+        self.third_total = self.draw_round_score(10, 10, self.total_round.left, self.third_judges.top, BACKGROUND)
+
+        self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round).draw(self.screen)
+
+    def continue_round(self):
+        print("test")
+        total_round = 1
+        if total_round == 3:
+            print("finish")
+        else:
+            print("next round")
+
+    def draw_rounds(self, text, rightOf, bottomOf, color = BACKGROUND):
+        # Draw the rectangle
+        rect = pygame.Rect(rightOf, bottomOf, 152, 50)
+        pygame.draw.rect(self.screen, color, rect)
+
+        font = pygame.font.Font(None, 36) 
+        text_surface = font.render(text, True, (0, 0, 0))  
+        text_rect = text_surface.get_rect(center=rect.center) 
+
+        self.screen.blit(text_surface, text_rect)
+
+        return rect
+
+    def draw_player_name(self, bottomOf, color = BACKGROUND):
+        rect = pygame.Rect(self.rect_playerName.left, bottomOf, 150, 76)
+        pygame.draw.rect(self.screen, color, rect)
+
+        # Initialize the font
+        font = pygame.font.Font(None, 36)  # Adjust font size as needed
+
+        # Render the "Player" text
+        player_text_surface = font.render("Player", True, (WHITE))  # Black color for text
+        player_text_rect = player_text_surface.get_rect(center=(rect.centerx, rect.top + 15))  # Position near the top
+
+        # Render the "Bot" text
+        bot_text_surface = font.render("Bot", True, (WHITE))  # Black color for text
+        bot_text_rect = bot_text_surface.get_rect(center=(rect.centerx, rect.bottom - 15))  # Position near the bottom
+
+        # Blit the text onto the screen
+        self.screen.blit(player_text_surface, player_text_rect)
+        self.screen.blit(bot_text_surface, bot_text_rect)
+
+        return rect
+    
+    def draw_round_score(self, point_player, point_bot, rightOf, bottomOf, color= BACKGROUND):
+        rect = pygame.Rect(rightOf, bottomOf, 150, 76)
+        pygame.draw.rect(self.screen, color, rect)
+
+        font = pygame.font.Font(None, 36)
+
+        player_point_surface = font.render(str(point_player), True, (WHITE))  # Black color for text
+        player_point_rect = player_point_surface.get_rect(center=(rect.centerx, rect.top + 15))  # Position near the top
+
+        bot_point_surface = font.render(str(point_bot), True, (WHITE))  # Black color for text
+        bot_point_rect = bot_point_surface.get_rect(center=(rect.centerx, rect.bottom - 15))  # Position near the bottom
+
+        self.screen.blit(player_point_surface, player_point_rect)
+        self.screen.blit(bot_point_surface, bot_point_rect)
+
+        return rect
         
     def player_action_calculation(self):
         if self.player_action == "Jab":
@@ -235,11 +352,14 @@ class VersusBotPage:
             self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
             self.bot_stamina_ui.draw(screen, corner_bottomLeft=15)
 
-            if (not self.show_loading):    
+            if (not self.isLoading and not self.isTimerFinish) :    
                 self.update_interface()
                 self.bot_action_calculation()
                 self.player_action_calculation()
                 self.start_timer()
+
+            if self.isTimerFinish:
+                self.show_roundboard()
 
             
             pygame.display.update()
