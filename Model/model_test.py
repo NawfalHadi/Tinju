@@ -23,7 +23,7 @@ line_color = (0, 255, 0)  # Green color
 line_color_red = (0, 0, 255)  # Red color
 line_color_blue = (255, 0, 0)  # Blue color
 
-with open("v1_model.pkl", 'rb') as f:
+with open("v3_model.pkl", 'rb') as f:
     model = pickle.load(f)
 
 
@@ -41,12 +41,12 @@ def draw_horizontal_panel(image, shoulderR, shoulderL):
 def draw_vertical_panel(image, nose):
     height, width, _ = image.shape
     top_offset = 25
-    bottom_offset = 70
+    bottom_offset = 120
 
     noseY = int(nose.y * height)
 
-    top_y = (0, noseY - 150), (width, noseY - 150)
-    bottom_y = (0, noseY + 150), (width, noseY + 150)
+    top_y = (0, noseY - 130), (width, noseY - 130)
+    bottom_y = (0, noseY + 240), (width, noseY + 240)
 
     maxHeight = top_y[0][1]
     maxBottom = int(height) - int(bottom_y[0][1])
@@ -98,7 +98,8 @@ def draw_line_and_calculate_gap(image, start_point, end_point):
     else:
         return None
 
-cap = cv2.VideoCapture("../Evaluation/Scenario/scenario_2.mp4")
+# cap = cv2.VideoCapture("../Evaluation/Scenario/scenario_2.mp4")
+cap = cv2.VideoCapture(0)
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic :
 
     while cap.isOpened():
