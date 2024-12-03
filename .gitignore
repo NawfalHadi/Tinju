@@ -1,5 +1,6 @@
 /test
-/training/Dataset
+/training/Dataset/images
+/training/Dataset/Fixed
 /Games/main/helper/__pycache__
 /Games/main/helper/ui_elements/__pycache__
 /Games/main/gameplay/__pycache__
