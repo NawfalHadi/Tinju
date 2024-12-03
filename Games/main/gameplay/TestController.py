@@ -278,7 +278,7 @@ class TestController:
 
                     if prob > 0.70:
                         # print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
-                        print(body_language_class, f"{self.isNotJab}")
+                        
                         
                         if body_language_class == "Jab" and self.isNotJab:
                             self.update_pose_detection(Jab=False)
@@ -286,6 +286,7 @@ class TestController:
                                 self.send_data("Low_Jab")
                             else:
                                 self.send_data("Jab")
+                            print(self.isNotJab)
                         
                         elif body_language_class == "Straight" and self.isNotStraight:
                             self.update_pose_detection(Straight=False)
