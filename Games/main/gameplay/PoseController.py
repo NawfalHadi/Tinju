@@ -14,7 +14,7 @@ model_path = "main/gameplay/model/boxing_detection.pkl"
 SERVER_ADDRESS = 'localhost'
 SERVER_PORT = 12345
 
-def send_data(value):
+def  send_data(value):
     sock.sendall(value.encode())
 
 
@@ -119,18 +119,18 @@ def draw_line_and_calculate_gap(image, start_point, end_point):
     else:
         return None
 
-def update_pose_detection(isNotJab = True, isNotStraight = True, isNotLeftHook = True,
-                        isNotRightHook = True, isNotLeftUppercut = True,
-                        isNotRightUppercut = True, isNotGuard = True, isNotIdle = True):
+def update_pose_detection(Jab = True, Straight = True, LeftHook = True,
+                        RightHook = True, LeftUppercut = True,
+                        RightUppercut = True, Guard = True, Idle = True):
     
-    isNotJab = isNotJab
-    isNotStraight = isNotStraight
-    isNotLeftHook = isNotLeftHook
-    isNotRightHook = isNotRightHook
-    isNotLeftUppercut = isNotLeftUppercut
-    isNotRightUppercut = isNotRightUppercut
-    isNotGuard = isNotGuard
-    isNotIdle = isNotIdle
+    isNotJab = Jab
+    isNotStraight = Straight
+    isNotLeftHook = LeftHook
+    isNotRightHook = RightHook
+    isNotLeftUppercut = LeftUppercut
+    isNotRightUppercut = RightUppercut
+    isNotGuard = Guard
+    isNotIdle = Idle
 
 
 time.sleep(1)
@@ -276,50 +276,51 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
             prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
             if prob > 0.70:
-                print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
-
+                # print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
+                print(body_language_class, f"{isNotJab}")
+                
                 if body_language_class == "Jab" and isNotJab:
-                    update_pose_detection(isNotJab=False)
+                    update_pose_detection(Jab=False)
                     if isDucking:
                         send_data("Low_Jab")
                     else:
                         send_data("Jab")
                 
                 elif body_language_class == "Straight" and isNotStraight:
-                    update_pose_detection(isNotStraight=False)
+                    update_pose_detection(Straight=False)
                     if isDucking:
                         send_data("Low_Straight")
                     else:
                         send_data("Straight")        
                 
                 elif body_language_class == "Left_Hook" and isNotLeftHook:
-                    update_pose_detection(isNotLeftHook=False)
+                    update_pose_detection(LeftHook=False)
                     if isDucking:
                         send_data("Left_BodyHook")
                     else:
                         send_data("Left_Hook")
 
                 elif body_language_class == "Right_Hook" and isNotRightHook:
-                    update_pose_detection(isNotRightHook=False)
+                    update_pose_detection(RightHook=False)
                     if isDucking:
                         send_data("Right_BodyHook")
                     else:
                         send_data("Right_Hook")
 
                 elif body_language_class == "Left_Uppercut" and isNotLeftUppercut:
-                    update_pose_detection(isNotLeftUppercut=False)
+                    update_pose_detection(LeftUppercut=False)
                     send_data("Left Uppercut")
 
                 elif body_language_class == "Right_Uppercut" and isNotRightUppercut:
-                    update_pose_detection(isNotRightUppercut=False)
+                    update_pose_detection(RightUppercut=False)
                     send_data("Right_Uppercut")
 
                 elif body_language_class == "Guard" and isNotGuard:
-                    update_pose_detection(isNotGuard=False)
+                    update_pose_detection(Guard=False)
                     send_data("Guard")
 
                 elif body_language_class == "Idle" and isNotIdle:
-                    update_pose_detection(isNotIdle=False)
+                    update_pose_detection(Idle=False)
                     send_data("Idle")
             
         except Exception as e:
@@ -327,10 +328,10 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
 
         cv2.imshow('Raw Webcam Feed', image)
 
-        if connected == False:
+        if isConnected == False:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((SERVER_ADDRESS, SERVER_PORT))
-            connected = True
+            isConnected = True
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break

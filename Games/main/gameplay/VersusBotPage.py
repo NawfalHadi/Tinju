@@ -82,7 +82,7 @@ class VersusBotPage:
 
     def start_controller(self):
         # script_path = os.system(f'python "{os.path.join("main","gameplay","Controller.py")}"')
-        script_path = os.path.join("main", "gameplay", "Controller.py")
+        script_path = os.path.join("main", "gameplay", "TestController.py")
         self.controller_process = subprocess.Popen(["python", script_path],)
     
     def start_games(self):
@@ -117,9 +117,12 @@ class VersusBotPage:
             state = (self.bot_hp, self.player_hp, 
                     self.bot_stamina, self.player_stamina,
                     ACTIONS.index(self.player_action))
-            
-            action_state = self.choose_action(state)
-            self.bot_action = ACTIONS[action_state]
+            try:
+                action_state = self.choose_action(state)
+                self.bot_action = ACTIONS[action_state]
+            except Exception as e:
+                self.bot_action = ACTIONS[0]
+
 
             time.sleep(0.2)
             
@@ -143,7 +146,12 @@ class VersusBotPage:
                         data = conn.recv(1024).decode()
 
                         if data:
-                            self.player_action = data
+                            if (not self.isLoading and not self.isTimerFinish) :
+                                self.player_action = data
+                                print(self.player_action)
+                                self.player_action_calculation()
+                                
+
 
                     except ConnectionResetError:
                         print("error")
@@ -314,7 +322,7 @@ class VersusBotPage:
             if self.player_stamina >= 20:
                 self.player_stamina -= 25
                 if self.bot_action == "Idle":
-                    self.bot_hp -= 2
+                    self.bot_hp -= 25
                 elif self.bot_action == "Guard":
                     self.bot_hp -= 1
                 elif self.bot_action == "Jab":
@@ -396,14 +404,11 @@ class VersusBotPage:
             if (not self.isLoading and not self.isTimerFinish) :    
                 self.update_interface()
                 self.bot_action_calculation()
-                self.player_action_calculation()
                 self.start_timer()
 
             if self.isTimerFinish:
                 self.show_roundboard()
                 self.next_button.draw(screen)
-
-
             
             pygame.display.update()
             pygame.time.Clock().tick(60)
