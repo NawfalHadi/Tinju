@@ -17,7 +17,7 @@ from main.helper.ui_elements.Attribute import *
 from main.helper.ui_elements.button import *
 
 bot_model = "main/bot/q_table.pkl"
-controller = "main/gameplay/controller.py"
+controller = "main/gameplay/PoseController.py"
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Main Menu Example')
