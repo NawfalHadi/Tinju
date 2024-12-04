@@ -82,10 +82,12 @@ class PoseController:
                 # print("Log : Duck")
                 top_line = (0, (noseY + maxBottom )), (width, (noseY + maxBottom))
                 bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)
+                self.isDucking = True
                 # bottom_line = (0, (noseY + maxBottom ) + bottom_offset), (width, (noseY + maxBottom) + bottom_offset)
             else:
                 top_line = (0, noseY + top_offset), (width, noseY + top_offset)
                 bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)
+                self.isDucking = False
 
         cv2.line(image, top_line[0], top_line[1], BLUE, 1)
         cv2.line(image, bottom_line[0], bottom_line[1], BLUE, 1)
@@ -212,6 +214,7 @@ class PoseController:
                 wristL_topLine = wristL_y - top_line[0][1]
                 wristL_bottomLine = bottom_line[0][1] - wristL_y
 
+
                 cv2.line(image, wristL_verGap[0], wristL_verGap[1] ,RED, 1)
                 cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), RED, 1)
                 
@@ -276,7 +279,7 @@ class PoseController:
 
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
-                    if prob > 0.70:
+                    if prob > 0.75:
                         # print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
                         
                         

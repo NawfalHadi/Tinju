@@ -22,15 +22,15 @@ class MainMenu:
         self.tutorial_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
                                       SCREEN_MARGIN, 314, 258, RED, GRAY, self.start_tutorial)
         self.coach_button = Button('As A Coach', self.tutorial_button.rect.right + SCREEN_MARGIN,
-                                   SCREEN_MARGIN, 314, 400, GREEN, GRAY, self.start_game)
+                                   SCREEN_MARGIN, 314, 210, GREEN, GRAY, self.start_game)
         self.record_button = Button('1 / 1 / 0', SCREEN_MARGIN, self.start_button.rect.bottom + SCREEN_MARGIN,
                                    314, 116, BLUE, GRAY, self.start_game)
         self.padwork_button = Button("Padwork", self.record_button.rect.right + SCREEN_MARGIN,
                                      self.tutorial_button.rect.bottom + SCREEN_MARGIN, 314, 258, GREEN, GRAY, self.start_padwork)
-        self.resoulution_button = Button("1024 x 576", self.padwork_button.rect.right + SCREEN_MARGIN,
-                                         self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, BLUE, GRAY, self.start_game)
-        self.exit_button = Button("Exit", self.resoulution_button.rect.right + SCREEN_MARGIN,
-                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 147, 116, RED, GRAY, self.exit_game)
+        self.shadow_button = Button("Shadow Boxing", self.coach_button.rect.left,
+                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 314, 163, RED, GRAY, self.exit_game)
+        self.exit_button = Button("Exit", self.coach_button.rect.left,
+                                  self.shadow_button.rect.bottom + SCREEN_MARGIN, 314, 123, RED, GRAY, self.exit_game)
 
     def start_game(self):
         from main.gameplay.VersusBotPage import VersusBotPage
@@ -59,6 +59,7 @@ class MainMenu:
                 self.start_button.is_clicked(event)
                 self.padwork_button.is_clicked(event)
                 self.tutorial_button.is_clicked(event)
+                self.shadow_button.is_clicked(event)
 
                 self.exit_button.is_clicked(event)
                 
@@ -69,8 +70,8 @@ class MainMenu:
             self.coach_button.draw(screen)
             self.record_button.draw(screen)
             self.padwork_button.draw(screen)
-            
-            self.resoulution_button.draw(screen)
+            self.shadow_button.draw(screen)
+
             self.exit_button.draw(screen)
             
             pygame.display.flip()

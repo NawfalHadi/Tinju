@@ -33,7 +33,7 @@ ACTIONS_EFFECTS = {
         },
     },
     "Jab": {
-        "stamina_cost": 50,
+        "stamina_cost": 15,
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
