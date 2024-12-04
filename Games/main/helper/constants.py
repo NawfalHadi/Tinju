@@ -29,7 +29,7 @@ SERVER_PORT = 12345
 
 # ====== GAMES =====
 """
-Attribtues games are store in here
+- Attribtues games are store in here
 - actions : the action that are available in this games
 - coach_ask : the randomize coach ask for padwork
 - model : anything that realated to bot models
@@ -41,6 +41,7 @@ MAX_STM = 100
 # ====== ACTIONS =====
 # ACTION = ["no_guard", "guard", "jab", "straigth", "left_hook", "right_hook"]
 ACTIONS  = ["Idle","Jab", "Guard"]
+
 
 # ======= COACHES =====
 C_ASKPOSE = ["Give me a ", "Throw the ", "Show me your ", "I want see your "]
