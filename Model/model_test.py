@@ -23,16 +23,26 @@ line_color = (0, 255, 0)  # Green color
 line_color_red = (0, 0, 255)  # Red color
 line_color_blue = (255, 0, 0)  # Blue color
 
-with open("v3_model.pkl", 'rb') as f:
+with open("boxing_detection.pkl", 'rb') as f:
     model = pickle.load(f)
 
 
-def draw_horizontal_panel(image, shoulderR, shoulderL):
+def draw_horizontal_panel(image, shoulderR, shoulderL, nose):
     height, width, _ = image.shape
     
     left_line = (int(shoulderL.x * width) - offset, 0), (int(shoulderL.x * width) - offset, height)
     right_line = (int(shoulderR.x * width) + offset, 0), (int(shoulderR.x * width) + offset, height)
     
+    noseX = nose.x * width
+    noseRight = left_line[0][0] - (noseX)
+    noseLeft = right_line[0][0] - (noseX)   
+    
+    if noseRight > 0:
+        print("Slip Right")
+    elif noseLeft < 0:
+        print("Slip Left")
+
+
     cv2.line(image, left_line[0], left_line[1], line_color, line_thickness)
     cv2.line(image, right_line[0], right_line[1], line_color, line_thickness)
 
@@ -145,7 +155,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         wristL_x, wristL_y = int(wrist_l.x * image.shape[1]), int(wrist_l.y * image.shape[0])
         wristR_x, wristR_y = int(wrist_r.x * image.shape[1]), int(wrist_r.y * image.shape[0])
         
-        left_line, right_line = draw_horizontal_panel(image, shoulder_l, shoulder_r)
+        left_line, right_line = draw_horizontal_panel(image, shoulder_l, shoulder_r, nose)
         top_line, bottom_line = draw_vertical_panel(image, nose)
         
         # Below this is temporary for drawing the line, and we need the calculation of the gap
@@ -239,8 +249,8 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
 
             prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
-            if prob > 0.70:
-                print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
+            # if prob > 0.70:
+            #     print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
             
         except Exception as e:
             pass

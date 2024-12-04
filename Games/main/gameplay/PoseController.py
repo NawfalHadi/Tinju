@@ -32,7 +32,11 @@ class PoseController:
         self.isNotGuard = True
         self.isNotIdle = True
 
+        # Avoid
+        self.isSlipLeft = False
+        self.isSlipRight = False
         self.isDucking = False
+
         self.isPause = False
 
         "=== SOCKET ==="
@@ -46,11 +50,15 @@ class PoseController:
         with open(model_path, "rb") as f:
             self.model = pickle.load(f)
 
-    def draw_horizontal_panel(self, image, shoulderR, shoulderL):
+    def draw_horizontal_panel(self, image, shoulderR, shoulderL, nose):
         height, width, _ = image.shape
+        noseX = int(nose.x)
+
+        
         
         left_line = (int(shoulderL.x * width) - 10, 0), (int(shoulderL.x * width) - 10, height)
         right_line = (int(shoulderR.x * width) + 10, 0), (int(shoulderR.x * width) + 10, height)
+        
         
         cv2.line(image, left_line[0], left_line[1], BLUE, 1)
         cv2.line(image, right_line[0], right_line[1], BLUE, 1)
@@ -184,7 +192,7 @@ class PoseController:
                 wristL_x, wristL_y = int(wrist_l.x * image.shape[1]), int(wrist_l.y * image.shape[0])
                 wristR_x, wristR_y = int(wrist_r.x * image.shape[1]), int(wrist_r.y * image.shape[0])
                 
-                left_line, right_line = self.draw_horizontal_panel(image, shoulder_l, shoulder_r)
+                left_line, right_line = self.draw_horizontal_panel(image, shoulder_l, shoulder_r, nose)
                 top_line, bottom_line = self.draw_vertical_panel(image, nose)
                 
                 # Below this is temporary for drawing the line, and we need the calculation of the gap
@@ -198,8 +206,7 @@ class PoseController:
                 right_line_x, right_line_y = wristR_horGap[1]
                 
 
-                " Wrist Left "
-                
+                " Wrist Left "                
                 wristL_x, wristL_y = wristL_horGap[0]
 
                 # Horizontal Gap
