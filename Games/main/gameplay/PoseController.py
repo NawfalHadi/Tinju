@@ -12,9 +12,9 @@ from mediapipe.framework.formats import landmark_pb2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+RED = (0, 0, 255)
 GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+BLUE = (255, 0, 0)
 GRAY = (200, 200, 200)
 
 SERVER_ADDRESS = 'localhost'
@@ -30,6 +30,8 @@ class PoseController:
         self.isNotLeftUppercut = True
         self.isNotRightUppercut = True
         self.isNotGuard = True
+        self.isNotGuardLeftBody = True
+        self.isNotGuardRightBody = True
         self.isNotIdle = True
 
         # Avoid
@@ -61,12 +63,9 @@ class PoseController:
         noseLeft = right_line[0][0] - (noseX)   
         
         if noseRight > 0 and not self.isSlipRight:
-            # print("Slip Right")
-            print(self.isSlipRight)
             self.send_data("Slip_Right")
             self.update_pose_detection(SlipR=True)
         elif noseLeft < 0 and not self.isSlipLeft:
-            # print("Slip Left")
             self.send_data("Slip_Left")
             self.update_pose_detection(SlipL=True)
         elif not noseRight > 0 and not noseLeft < 0:
@@ -79,15 +78,47 @@ class PoseController:
 
         return left_line, right_line
     
-    def draw_vertical_panel(self, image, nose):
+    def draw_vertical_panel(self, image, nose, hip, elbow_l, elbow_r):
         height, width, _ = image.shape
         top_offset = 25
         bottom_offset = 120
 
         noseY = int(nose.y * height)
+        hipY = int(hip.y * height)
 
+        elbowL_y = int(elbow_l.y * height)
+        elbowR_y = int(elbow_r.y * height)
+
+        hip_elbowL = elbowL_y - hipY + 70
+        # print("hip_elbowL :", hip_elbowL)
+        hip_elbowR = elbowR_y - hipY + 70
+        # print("hip_elbowR :", hip_elbowR)
+
+        if not self.isDucking:
+            if hip_elbowL > 0  or hip_elbowR > 0:
+                if hip_elbowL > 0 and hip_elbowR > 0:
+                    if hip_elbowL > hip_elbowR and self.isNotGuardLeftBody:
+                        try:
+                            self.send_data("Guard_LeftBody")
+                            self.update_pose_detection(GuardLeftBody=False)
+                        except Exception as e:
+                            print(e)
+                    elif hip_elbowR > hip_elbowL and self.isNotGuardRightBody:
+                        self.send_data("Guard_RightBody")
+                        self.update_pose_detection(GuardRightBody=False)
+                elif hip_elbowL > 0 and self.isNotGuardLeftBody:
+                    self.send_data("Guard_LeftBody")
+                    self.update_pose_detection(GuardLeftBody=False)
+                elif hip_elbowR > 0 and self.isNotGuardRightBody:
+                    self.send_data("Guard_RightBody")
+                    self.update_pose_detection(GuardRightBody=False)
+            elif hip_elbowL < 0 and hip_elbowR < 0:
+                self.isNotGuardLeftBody = True
+                self.isNotGuardRightBody = True
+    
+        hip_line = (0, hipY - 70), (width, hipY - 70)
         top_y = (0, noseY - 130), (width, noseY - 130)
-        bottom_y = (0, noseY + 240), (width, noseY + 240)
+        bottom_y = (0, noseY + 260), (width, noseY + 260)
 
         maxHeight = top_y[0][1]
         maxBottom = int(height) - int(bottom_y[0][1])
@@ -116,6 +147,7 @@ class PoseController:
 
         cv2.line(image, top_y[0], top_y[1], RED, 1)
         cv2.line(image, bottom_y[0], bottom_y[1], RED, 1)
+        cv2.line(image, hip_line[0], hip_line[1], RED, 2)
 
         return top_line, bottom_line
 
@@ -143,7 +175,8 @@ class PoseController:
         
     def update_pose_detection(self, Jab = True, Straight = True, LeftHook = True,
                         RightHook = True, LeftUppercut = True,
-                        RightUppercut = True, Guard = True, Idle = True, SlipL = False, SlipR = False):
+                        RightUppercut = True, Guard = True, Idle = True,
+                        GuardLeftBody = True, GuardRightBody = True, SlipL = False, SlipR = False):
     
         self.isNotJab = Jab
         self.isNotStraight = Straight
@@ -152,6 +185,8 @@ class PoseController:
         self.isNotLeftUppercut = LeftUppercut
         self.isNotRightUppercut = RightUppercut
         self.isNotGuard = Guard
+        self.isNotGuardLeftBody = GuardLeftBody
+        self.isNotGuardRightBody = GuardRightBody
         self.isNotIdle = Idle
 
         self.isSlipLeft = SlipL
@@ -236,9 +271,11 @@ class PoseController:
                 # Use For Making Guideline Purpose
                 shoulder_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_SHOULDER]
                 shoulder_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_SHOULDER]
+                hip = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_HIP]
+
 
                 show_landmark_list = landmark_pb2.NormalizedLandmarkList()
-                show_landmark_list.landmark.extend([nose, wrist_l, wrist_r, elbow_l, elbow_r])
+                show_landmark_list.landmark.extend([nose, wrist_l, wrist_r, elbow_l, elbow_r, hip])
                 
                 # Draw landmarks
                 for landmark in show_landmark_list.landmark:
@@ -256,7 +293,7 @@ class PoseController:
                 wristR_x, wristR_y = int(wrist_r.x * image.shape[1]), int(wrist_r.y * image.shape[0])
                 
                 left_line, right_line = self.draw_horizontal_panel(image, shoulder_l, shoulder_r, nose)
-                top_line, bottom_line = self.draw_vertical_panel(image, nose)
+                top_line, bottom_line = self.draw_vertical_panel(image, nose, hip, elbow_l, elbow_r)
                 
                 # Below this is temporary for drawing the line, and we need the calculation of the gap
                 wristL_horGap = (wristL_x, wristL_y), (left_line[0][0], wristL_y)
@@ -349,7 +386,7 @@ class PoseController:
 
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
-                    if not self.isSlipLeft and not self.isSlipRight:
+                    if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
                         if prob > 0.75:
                             self.send_prediction(body_language_class)
                     
