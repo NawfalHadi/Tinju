@@ -52,14 +52,28 @@ class PoseController:
 
     def draw_horizontal_panel(self, image, shoulderR, shoulderL, nose):
         height, width, _ = image.shape
-        noseX = int(nose.x)
-
-        
         
         left_line = (int(shoulderL.x * width) - 10, 0), (int(shoulderL.x * width) - 10, height)
         right_line = (int(shoulderR.x * width) + 10, 0), (int(shoulderR.x * width) + 10, height)
         
+        noseX = nose.x * width
+        noseRight = left_line[0][0] - (noseX)
+        noseLeft = right_line[0][0] - (noseX)   
         
+        if noseRight > 0 and not self.isSlipRight:
+            # print("Slip Right")
+            print(self.isSlipRight)
+            self.send_data("Slip_Right")
+            self.update_pose_detection(SlipR=True)
+        elif noseLeft < 0 and not self.isSlipLeft:
+            # print("Slip Left")
+            self.send_data("Slip_Left")
+            self.update_pose_detection(SlipL=True)
+        elif not noseRight > 0 and not noseLeft < 0:
+            self.isSlipLeft = False
+            self.isSlipRight = False
+            
+
         cv2.line(image, left_line[0], left_line[1], BLUE, 1)
         cv2.line(image, right_line[0], right_line[1], BLUE, 1)
 
@@ -129,7 +143,7 @@ class PoseController:
         
     def update_pose_detection(self, Jab = True, Straight = True, LeftHook = True,
                         RightHook = True, LeftUppercut = True,
-                        RightUppercut = True, Guard = True, Idle = True):
+                        RightUppercut = True, Guard = True, Idle = True, SlipL = False, SlipR = False):
     
         self.isNotJab = Jab
         self.isNotStraight = Straight
@@ -139,6 +153,55 @@ class PoseController:
         self.isNotRightUppercut = RightUppercut
         self.isNotGuard = Guard
         self.isNotIdle = Idle
+
+        self.isSlipLeft = SlipL
+        self.isSlipRight = SlipR
+    
+    def send_prediction(self, body_language_class):
+        if body_language_class == "Jab" and self.isNotJab:
+            self.update_pose_detection(Jab=False)
+            if self.isDucking:
+                self.send_data("Low_Jab")
+            else:
+                self.send_data("Jab")
+            print(self.isNotJab)
+                        
+        elif body_language_class == "Straight" and self.isNotStraight:
+            self.update_pose_detection(Straight=False)
+            if self.isDucking:
+                self.send_data("Low_Straight")
+            else:
+                self.send_data("Straight")        
+                        
+        elif body_language_class == "Left_Hook" and self.isNotLeftHook:
+            self.update_pose_detection(LeftHook=False)
+            if self.isDucking:
+                self.send_data("Left_BodyHook")
+            else:
+                self.send_data("Left_Hook")
+
+        elif body_language_class == "Right_Hook" and self.isNotRightHook:
+            self.update_pose_detection(RightHook=False)
+            if self.isDucking:
+                self.send_data("Right_BodyHook")
+            else:
+                self.send_data("Right_Hook")
+
+        elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut:
+            self.update_pose_detection(LeftUppercut=False)
+            self.send_data("Left Uppercut")
+
+        elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut:
+            self.update_pose_detection(RightUppercut=False)
+            self.send_data("Right_Uppercut")
+
+        elif body_language_class == "Guard" and self.isNotGuard:
+            self.update_pose_detection(Guard=False)
+            self.send_data("Guard")
+
+        elif body_language_class == "Idle" and self.isNotIdle:
+            self.update_pose_detection(Idle=False)
+            self.send_data("Idle")
 
     def send_data(self, value):
         self.sock.sendall(value.encode())
@@ -286,54 +349,9 @@ class PoseController:
 
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
-                    if prob > 0.75:
-                        # print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
-                        
-                        
-                        if body_language_class == "Jab" and self.isNotJab:
-                            self.update_pose_detection(Jab=False)
-                            if self.isDucking:
-                                self.send_data("Low_Jab")
-                            else:
-                                self.send_data("Jab")
-                            print(self.isNotJab)
-                        
-                        elif body_language_class == "Straight" and self.isNotStraight:
-                            self.update_pose_detection(Straight=False)
-                            if self.isDucking:
-                                self.send_data("Low_Straight")
-                            else:
-                                self.send_data("Straight")        
-                        
-                        elif body_language_class == "Left_Hook" and self.isNotLeftHook:
-                            self.update_pose_detection(LeftHook=False)
-                            if self.isDucking:
-                                self.send_data("Left_BodyHook")
-                            else:
-                                self.send_data("Left_Hook")
-
-                        elif body_language_class == "Right_Hook" and self.isNotRightHook:
-                            self.update_pose_detection(RightHook=False)
-                            if self.isDucking:
-                                self.send_data("Right_BodyHook")
-                            else:
-                                self.send_data("Right_Hook")
-
-                        elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut:
-                            self.update_pose_detection(LeftUppercut=False)
-                            self.send_data("Left Uppercut")
-
-                        elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut:
-                            self.update_pose_detection(RightUppercut=False)
-                            self.send_data("Right_Uppercut")
-
-                        elif body_language_class == "Guard" and self.isNotGuard:
-                            self.update_pose_detection(Guard=False)
-                            self.send_data("Guard")
-
-                        elif body_language_class == "Idle" and self.isNotIdle:
-                            self.update_pose_detection(Idle=False)
-                            self.send_data("Idle")
+                    if not self.isSlipLeft and not self.isSlipRight:
+                        if prob > 0.75:
+                            self.send_prediction(body_language_class)
                     
                 except Exception as e:
                     pass
