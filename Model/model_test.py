@@ -23,9 +23,11 @@ line_color = (0, 255, 0)  # Green color
 line_color_red = (0, 0, 255)  # Red color
 line_color_blue = (255, 0, 0)  # Blue color
 
-with open("boxing_detection.pkl", 'rb') as f:
-    model = pickle.load(f)
+# with open("boxing_detection.pkl", 'rb') as f:
+#     model = pickle.load(f)
 
+with open("v4_model.pkl", 'rb') as f:
+    model = pickle.load(f)
 
 def draw_horizontal_panel(image, shoulderR, shoulderL, nose):
     height, width, _ = image.shape
