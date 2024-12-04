@@ -82,8 +82,8 @@ class VersusBotPage:
 
     def start_controller(self):
         # script_path = os.system(f'python "{os.path.join("main","gameplay","Controller.py")}"')
-        script_path = os.path.join("main", "gameplay", "TestController.py")
-        self.controller_process = subprocess.Popen(["python", script_path],)
+        script_path = os.path.join("main", "gameplay", "PoseController.py")
+        self.controller_process = subprocess.Popen(["python", script_path])
     
     def start_games(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
