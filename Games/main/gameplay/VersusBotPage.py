@@ -37,7 +37,7 @@ class VersusBotPage:
         self.controller_process = None
 
         "=== TIMER ==="
-        self.total_seconds = 3 * 60
+        self.total_seconds = 3 * 1
         
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)

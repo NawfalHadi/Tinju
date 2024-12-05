@@ -1,6 +1,7 @@
 import pickle
 import warnings
 import datetime
+import cv2.text
 import numpy as np
 import pandas as pd
 import csv
@@ -22,6 +23,15 @@ line_thickness = 2
 line_color = (0, 255, 0)  # Green color
 line_color_red = (0, 0, 255)  # Red color
 line_color_blue = (255, 0, 0)  # Blue color
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+GRAY = (200, 200, 200)
+PINK = (98, 57, 237)
+PURPLE = (105, 40, 32)
 
 # with open("boxing_detection.pkl", 'rb') as f:
 #     model = pickle.load(f)
@@ -45,8 +55,8 @@ def draw_horizontal_panel(image, shoulderR, shoulderL, nose):
         print("Slip Left")
 
 
-    cv2.line(image, left_line[0], left_line[1], line_color, line_thickness)
-    cv2.line(image, right_line[0], right_line[1], line_color, line_thickness)
+    cv2.line(image, left_line[0], left_line[1], GREEN, 3)
+    cv2.line(image, right_line[0], right_line[1], GREEN, 3)
 
     return left_line, right_line
 
@@ -80,11 +90,11 @@ def draw_vertical_panel(image, nose):
             top_line = (0, noseY + top_offset), (width, noseY + top_offset)
             bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)
 
-    cv2.line(image, top_line[0], top_line[1], line_color_blue, line_thickness)
-    cv2.line(image, bottom_line[0], bottom_line[1], line_color_blue, line_thickness)
+    cv2.line(image, top_line[0], top_line[1], GREEN, 3)
+    cv2.line(image, bottom_line[0], bottom_line[1], GREEN, 3)
 
-    cv2.line(image, top_y[0], top_y[1], line_color_red, line_thickness)
-    cv2.line(image, bottom_y[0], bottom_y[1], line_color_red, line_thickness)
+    cv2.line(image, top_y[0], top_y[1], RED, 2)
+    cv2.line(image, bottom_y[0], bottom_y[1], RED, 2)
 
     return top_line, bottom_line
 
@@ -100,7 +110,7 @@ def draw_line_and_calculate_gap(image, start_point, end_point):
         # Draw line
         x1, y1 = int(x1), int(y1)
         x2, y2 = int(x2), int(y2)
-        cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+        cv2.line(image, (x1, y1), (x2, y2), GRAY, 2)
 
         gap_landmark = landmark_pb2.NormalizedLandmark()
         gap_landmark.x = gap_x
@@ -180,15 +190,15 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         wristL_leftLine = wristL_x - left_line_x
         wristL_rightLine = wristL_x -right_line_x
          
-        cv2.line(image, wristL_horGap[0], wristL_horGap[1], line_color_blue, line_thickness)
-        cv2.line(image, wristL_horGap[0], (right_line[0][0], wristL_y + 20), line_color_red, line_thickness)
+        cv2.line(image, wristL_horGap[0], wristL_horGap[1], PINK, 4)
+        cv2.line(image, wristL_horGap[0], (right_line[0][0], wristL_y + 20), PINK, 4)
 
         # Vertical Gap
         wristL_topLine = wristL_y - top_line[0][1]
         wristL_bottomLine = bottom_line[0][1] - wristL_y
 
-        cv2.line(image, wristL_verGap[0], wristL_verGap[1] ,line_color_red, line_thickness)
-        cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), line_color_red, line_thickness)
+        cv2.line(image, wristL_verGap[0], wristL_verGap[1] ,PURPLE, 4)
+        cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), PURPLE, 4)
         
         wristLeft_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
         wristLeft_leftTopLine_landmark.x = wristL_leftLine
@@ -205,15 +215,15 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         wristR_leftLine = wristR_x - left_line_x
         wristR_rightLine = wristR_x - right_line_x
 
-        cv2.line(image, wristR_horGap[0], wristR_horGap[1] , line_color_blue, line_thickness)
-        cv2.line(image, wristR_horGap[0], (left_line[0][0], wristR_y + 20) , line_color_red, line_thickness)
+        cv2.line(image, wristR_horGap[0], wristR_horGap[1] , PINK, 4)
+        cv2.line(image, wristR_horGap[0], (left_line[0][0], wristR_y + 20) , PINK, 4)
 
         #Vertical Gap
         wristR_topLine = wristR_y - top_line[0][1]
         wristR_bottomLine = bottom_line[0][1] - wristR_y
 
-        cv2.line(image, wristR_verGap[0], wristR_verGap[1], line_color_red, line_thickness)
-        cv2.line(image, wristR_verGap[0], (wristR_x, bottom_line[0][1]), line_color_red, line_thickness)
+        cv2.line(image, wristR_verGap[0], wristR_verGap[1], PURPLE, 4)
+        cv2.line(image, wristR_verGap[0], (wristR_x, bottom_line[0][1]), PURPLE, 4)
 
         wristRight_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
         wristRight_leftTopLine_landmark.x = wristR_leftLine
@@ -251,8 +261,8 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
 
             prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
-            # if prob > 0.70:
-            #     print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
+            if prob > 0.70:
+                print(body_language_class, str(round(body_language_prob[np.argmax(body_language_prob)],2)))
             
         except Exception as e:
             pass

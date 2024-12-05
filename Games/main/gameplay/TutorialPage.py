@@ -122,7 +122,7 @@ class TutorialPage:
     
     def step_menu(self):
         if self.inTutorialMenu:
-            self.explanation = "Tutorial Menu"
+            self.explanation = "Maju Kedepan Untuk Pause Permainan, untuk sekarang\n akan mempelihatkan tombol lanjutkan tutorial berikutnya"
 
             if self.isPaused:
                 self.pause_button.draw(self.screen)

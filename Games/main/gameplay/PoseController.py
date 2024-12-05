@@ -12,10 +12,12 @@ from mediapipe.framework.formats import landmark_pb2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (0, 0, 255)
+RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-BLUE = (255, 0, 0)
+BLUE = (0, 0, 255)
 GRAY = (200, 200, 200)
+PINK = (98, 57, 237)
+PURPLE = (105, 40, 32)
 
 SERVER_ADDRESS = 'localhost'
 SERVER_PORT = 12345
@@ -73,8 +75,8 @@ class PoseController:
             self.isSlipRight = False
             
 
-        cv2.line(image, left_line[0], left_line[1], BLUE, 1)
-        cv2.line(image, right_line[0], right_line[1], BLUE, 1)
+        cv2.line(image, left_line[0], left_line[1], GREEN, 3)
+        cv2.line(image, right_line[0], right_line[1], GREEN, 3)
 
         return left_line, right_line
     
@@ -142,12 +144,13 @@ class PoseController:
                 bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)
                 self.isDucking = False
 
-        cv2.line(image, top_line[0], top_line[1], BLUE, 1)
-        cv2.line(image, bottom_line[0], bottom_line[1], BLUE, 1)
+        cv2.line(image, top_line[0], top_line[1], GREEN, 3)
+        cv2.line(image, bottom_line[0], bottom_line[1], GREEN, 3)
 
-        cv2.line(image, top_y[0], top_y[1], RED, 1)
-        cv2.line(image, bottom_y[0], bottom_y[1], RED, 1)
-        cv2.line(image, hip_line[0], hip_line[1], RED, 2)
+        cv2.line(image, top_y[0], top_y[1], RED, 2)
+        cv2.line(image, bottom_y[0], bottom_y[1], RED, 2)
+
+        cv2.line(image, hip_line[0], hip_line[1], RED, 1)
 
         return top_line, bottom_line
 
@@ -314,16 +317,16 @@ class PoseController:
                 wristL_leftLine = wristL_x - left_line_x
                 wristL_rightLine = wristL_x -right_line_x
                 
-                cv2.line(image, wristL_horGap[0], wristL_horGap[1], BLUE, 1)
-                cv2.line(image, wristL_horGap[0], (right_line[0][0], wristL_y + 20), RED, 1)
+                cv2.line(image, wristL_horGap[0], wristL_horGap[1], PINK, 4)
+                cv2.line(image, wristL_horGap[0], (right_line[0][0], wristL_y + 20), PINK, 4)
 
                 # Vertical Gap
                 wristL_topLine = wristL_y - top_line[0][1]
                 wristL_bottomLine = bottom_line[0][1] - wristL_y
 
 
-                cv2.line(image, wristL_verGap[0], wristL_verGap[1] ,RED, 1)
-                cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), RED, 1)
+                cv2.line(image, wristL_verGap[0], wristL_verGap[1] , PURPLE, 4)
+                cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), PURPLE, 4)
                 
                 wristLeft_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
                 wristLeft_leftTopLine_landmark.x = wristL_leftLine
@@ -340,22 +343,22 @@ class PoseController:
                 wristR_leftLine = wristR_x - left_line_x
                 wristR_rightLine = wristR_x - right_line_x
 
-                cv2.line(image, wristR_horGap[0], wristR_horGap[1] , BLUE, 1)
-                cv2.line(image, wristR_horGap[0], (left_line[0][0], wristR_y + 20) , RED, 1)
+                cv2.line(image, wristR_horGap[0], wristR_horGap[1] , PINK, 4)
+                cv2.line(image, wristR_horGap[0], (left_line[0][0], wristR_y + 20) , PINK, 4)
 
                 #Vertical Gap
                 wristR_topLine = wristR_y - top_line[0][1]
                 wristR_bottomLine = bottom_line[0][1] - wristR_y
 
-                cv2.line(image, wristR_verGap[0], wristR_verGap[1], RED, 1)
-                cv2.line(image, wristR_verGap[0], (wristR_x, bottom_line[0][1]), RED, 1)
+                cv2.line(image, wristR_verGap[0], wristR_verGap[1], PURPLE, 4)
+                cv2.line(image, wristR_verGap[0], (wristR_x, bottom_line[0][1]), PURPLE, 4)
 
                 wristRight_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
                 wristRight_leftTopLine_landmark.x = wristR_leftLine
                 wristRight_leftTopLine_landmark.y = wristR_topLine
 
                 wristRight_rightBottomLine_landmark = landmark_pb2.NormalizedLandmark()
-                wristRight_rightBottomLine_landmark.x = wristR_rightLine
+                wristRight_rightBottomLine_landmark.x = wristR_rightLine    
                 wristRight_rightBottomLine_landmark.y = wristR_bottomLine
 
                 # Drawing line and calculating gap for left wrist
