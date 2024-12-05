@@ -6,6 +6,9 @@ import pandas as pd
 import numpy as np
 import pickle
 
+import csv
+import datetime
+
 import mediapipe as mp
 from mediapipe.framework.formats import landmark_pb2
 
@@ -39,9 +42,15 @@ class PoseController:
         self.isSlipLeft = False
         self.isSlipRight = False
         self.isDucking = False
-
         self.isPause = False
 
+        "=== Scenario ==="
+        self.pose_counter = 0
+        self.recent_pose = None
+        self.condition = []
+        self.pose_detected = []
+        self.pose_sequence = []
+        
         "=== Load Model ==="
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_holistic = mp.solutions.holistic
@@ -186,7 +195,6 @@ class PoseController:
         self.isNotGuardLeftBody = GuardLeftBody
         self.isNotGuardRightBody = GuardRightBody
         self.isNotIdle = Idle
-
         self.isSlipLeft = SlipL
         self.isSlipRight = SlipR
     
@@ -237,12 +245,47 @@ class PoseController:
             self.send_data("Idle")
 
     def send_data(self, value):
-        print(value)
+        if value != self.recent_pose:
+            print(value)
+            self.recent_pose = value
+            
+            self.condition.append(self.pose_sequence[self.pose_counter] == self.recent_pose)
+            self.pose_detected.append(self.recent_pose)
 
-    def run(self):
+            print(self.recent_pose, self.pose_counter)
+            self.pose_counter += 1
+
+    def evaluating(self):
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') 
+
+        with open('Scenario/scenario.csv', 'r') as csvfile, open(f'Tested/{timestamp}.csv', 'w', newline='') as outfile:
+            reader = csv.reader(csvfile)
+            data = list(reader)
+            writer = csv.writer(outfile)
+
+            for row in data:
+                scenario = row[0]
+                file = row[1]
+                pose = row[2:]
+
+                evaluated = self.run(file, len(pose)-1, pose)
+                print(evaluated)
+            
+                modified_row = row + ['detected'] + evaluated[0] + ['condition'] + evaluated[1]
+                writer.writerow(modified_row) 
+
+    def run(self, file, pose_limit, poses):
         time.sleep(1)
+        
+        self.pose_counter = 0
+        self.recent_pose = None
+        self.pose_sequence = poses
+        self.condition = []
+        self.pose_detected = []
 
-        cap = cv2.VideoCapture(0)
+        print(pose_limit)
+
+        cap = cv2.VideoCapture(f"Scenario/{file}")
         with self.mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic :
 
             while cap.isOpened():
@@ -373,17 +416,22 @@ class PoseController:
                     pose = new_lm.landmark
                     pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
 
-                    pose_detected = pd.DataFrame([pose_row])
+                    detected_pose = pd.DataFrame([pose_row])
                     warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
 
-                    body_language_class = self.model.predict(pose_detected)[0]
-                    body_language_prob = self.model.predict_proba(pose_detected)[0]
+                    body_language_class = self.model.predict(detected_pose)[0]
+                    body_language_prob = self.model.predict_proba(detected_pose)[0]
 
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
                     if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
                         if prob > 0.75:
                             self.send_prediction(body_language_class)
+                    
+                    if self.pose_counter == pose_limit:
+                        cap.release()
+                        cv2.destroyAllWindows()
+                        return self.pose_detected, self.condition 
                     
                 except Exception as e:
                     pass
@@ -399,4 +447,4 @@ class PoseController:
 
 
 if __name__ == "__main__":
-    PoseController("boxing_detection_v2.pkl").run()
+    PoseController("boxing_detection_v2.pkl").evaluating()
