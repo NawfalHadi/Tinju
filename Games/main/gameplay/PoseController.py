@@ -202,7 +202,6 @@ class PoseController:
                 self.send_data("Low_Jab")
             else:
                 self.send_data("Jab")
-            print(self.isNotJab)
                         
         elif body_language_class == "Straight" and self.isNotStraight:
             self.update_pose_detection(Straight=False)

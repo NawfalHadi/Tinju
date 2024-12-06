@@ -61,8 +61,8 @@ class TutorialPage:
 
         "=== TUTORIAL BODY OFFENSE ==="
         self.tutorial_bodyOffense = ["Sambil menunduk lakukan gerakan offense seperti ini", 
-                                     "Coba Jab sambil nunduk", "Lakukan straigth sambil nunduk",
-                                     "Terus hook kanan sama kiri", "mantap, maju buat keluar dari tutorial"]
+                                     "Coba Gunakan Jab 5 kali", "Lakukan straigth sambil nunduk 3 kali",
+                                     "Terus hook kanan sama kiri masing masing 5 kali", "mantap terakhir, maju buat keluar dari tutorial"]
         
         self.lowJab_counter = 0
         self.lowStraigth_counter = 0
@@ -105,7 +105,9 @@ class TutorialPage:
                         
                         if data:
                             self.player_action = data
+                            print(self.player_action)
                             self.counter_offense()
+                            self.counter_defence()
 
                     except ConnectionResetError:
                         print("error")
@@ -152,7 +154,8 @@ class TutorialPage:
     def next_tutorial(self):
         self.isPaused = False
         self.inTutorialMenu = False
-        self.inTutorialOffensse = True
+        # self.inTutorialOffensse = True
+        self.inTutorialGuard = True
 
     def step_offense(self):
         if self.inTutorialOffensse:
@@ -236,36 +239,42 @@ class TutorialPage:
     
     def step_guard(self):
         if self.inTutorialGuard:
-            self.explanation = "Guard Offense"
             self.draw_interface()
 
             if self.faceGuard_counter < 3:
                 # self.image = None
                 self.explanation = self.tutorial_guard[0]
+                self.draw_interface()
 
                 if self.faceGuard_counter == 1:
                     self.explanation = self.tutorial_guard[1]
+                    self.draw_interface()
 
-            elif self.bodyLeftGuard_counter < 3 or self.bodyRightGuard_counter:
+            elif self.bodyLeftGuard_counter < 3 or self.bodyRightGuard_counter < 3:
                 self.explanation = self.tutorial_guard[2]
+                self.draw_interface()
 
                 if self.bodyLeftGuard_counter == 1 or self.bodyRightGuard_counter == 1:
                     # Change Image to another side of bodyguard
                     pass
+                
 
             elif self.slipLeft_counter < 3 or self.slipRigth_counter < 3:
                 self.explanation = self.tutorial_guard[3]
+                self.draw_interface()
 
                 if self.slipLeft_counter == 1 or self.slipRigth_counter == 1:
                     # Change Image to another side of bodyguard
                     pass
-            
+                
             elif self.duck_counter < 3:
                 self.explanation = self.tutorial_guard[4]
+                self.draw_interface()
 
                 if self.duck_counter == 1:
                     self.explanation = self.tutorial_guard[5]
-            
+                    self.draw_interface()
+                
             else:
                 self.inTutorialGuard = False
                 self.inTutorialLowOffence = True
@@ -276,23 +285,28 @@ class TutorialPage:
                 if self.player_action == "Guard":
                     self.faceGuard_counter += 1
 
-            elif self.bodyLeftGuard_counter < 3 or self.bodyRightGuard_counter:
+            elif self.bodyLeftGuard_counter < 3 or self.bodyRightGuard_counter < 3:
                 if self.player_action == "Guard_LeftBody":
                     self.bodyLeftGuard_counter += 1
+                    print("Guard Body Left:", self.bodyLeftGuard_counter)
 
                 elif self.player_action == "Guard_RightBody":
                     self.bodyRightGuard_counter += 1
+                    print("Guard Body Right:", self.bodyRightGuard_counter)
 
             elif self.slipLeft_counter < 3 or self.slipRigth_counter < 3:
                 if self.player_action == "Slip_Left":
                     self.slipLeft_counter += 1
+                    print("Slip Left:", self.slipLeft_counter)
 
                 elif self.player_action == "Slip_Right":
                     self.slipRigth_counter += 1
+                    print("Slip Right:", self.slipRigth_counter)
 
             elif self.duck_counter < 3:
                 if self.player_action == "Duck":
                     self.duck_counter += 1
+                    print("Duck:", self.duck_counter)
 
     def step_low_offence(self):
         if self.inTutorialLowOffence:
@@ -328,6 +342,7 @@ class TutorialPage:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.controller_process.terminate()
+                    self.sock.close()
                     self.running = False
 
                 self.pause_button.is_clicked(event)
