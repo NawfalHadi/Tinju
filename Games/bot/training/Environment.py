@@ -24,7 +24,7 @@ ACTIONS_EFFECTS = {
         "health_recovery": 2,
         "stamina_recovery": 20,
         "hit_damage": {
-            "Idle": 0, "Guard": 0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
+            "Idle": 10, "Guard": 0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0
         },
