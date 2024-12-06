@@ -227,7 +227,7 @@ class PoseController:
 
         elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut:
             self.update_pose_detection(LeftUppercut=False)
-            self.send_data("Left Uppercut")
+            self.send_data("Left_Uppercut")
 
         elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut:
             self.update_pose_detection(RightUppercut=False)

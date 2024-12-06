@@ -149,8 +149,6 @@ class VersusBotPage:
                                 self.player_action = data
                                 print(self.player_action)
                                 self.player_action_calculation()
-                                
-
 
                     except ConnectionResetError:
                         print("error")

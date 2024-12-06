@@ -17,6 +17,7 @@ class TutorialPage:
     def __init__(self) -> None:
         self.screen = screen
         self.running = True
+        self.isLoading = True
 
         "=== CONTROLLER ==="
         self.controller_process = None
@@ -24,7 +25,7 @@ class TutorialPage:
         self.player_action = ACTIONS[0]
 
         "=== STEPS ==="
-        self.inTutorialMenu = True
+        self.inTutorialMenu = False
         self.inTutorialOffensse = False
         self.inTutorialGuard = False
         self.inTutorialDuck = False
@@ -71,7 +72,7 @@ class TutorialPage:
         self.image = None
 
         self.draw_interface()
-        # self.setup()
+        self.setup()
 
     def setup(self):
         # Starting the thread of controller
@@ -90,7 +91,7 @@ class TutorialPage:
         try : 
             conn, addr = self.sock.accept()
             print(f"Connected by {addr}")
-            self.show_loading = False
+            self.isLoading = False
         except:
             pass 
         
@@ -99,10 +100,10 @@ class TutorialPage:
                 while self.running:
                     try:
                         data = conn.recv(1024).decode()
-
+                        
                         if data:
                             self.player_action = data
-                            print(self.player_action)
+                            self.counter_offense()
 
                     except ConnectionResetError:
                         print("error")
@@ -110,7 +111,7 @@ class TutorialPage:
             pass
 
     def start_controller(self):
-        script_path = os.path.join("main", "gameplay", "Controller.py")
+        script_path = os.path.join("main", "gameplay", "PoseController.py")
         self.controller_process = subprocess.Popen(["python", script_path])
 
     def draw_interface(self):
@@ -123,9 +124,20 @@ class TutorialPage:
                                     (self.screen.get_height() // 2) - 100 // 2,
                                    300, 100, GRAY, FOREGROUND, self.next_tutorial)
     
+    def step_loading(self):
+        if self.isLoading:
+            self.image = pygame.image.load(TUTORIAL_WAIT_IMG)
+            screen.blit(self.image, (327, 71))
+
+            self.explanation = "Tunggu, Nyalain Pose Estimationnya Dulu"
+
+            self.draw_interface()
+        else:
+            self.inTutorialMenu = True
+
     def step_menu(self):
         if self.inTutorialMenu:
-            self.image = pygame.image.load(PAUSE_TUTORIAL_IMG)
+            self.image = pygame.image.load(TUTORIAL_PAUSE_IMG)
             screen.blit(self.image, (327, 71))
 
             self.explanation = "Maju dekati kamera sampai garis yang ditunjuk pada gambar keluar\nframe untuk memberhentikan permainan, \ndan klik continue untuk tutorial berikutnya."
@@ -143,45 +155,43 @@ class TutorialPage:
     def step_offense(self):
         if self.inTutorialOffensse:
             self.explanation = self.tutorial_offense[0]
-            self.image = pygame.image.load(JAB_TUTORIAL_IMG)
             screen.blit(self.image, (327, 71))
 
             self.draw_interface()
-            print(self.player_action)
-
 
             if self.jab_counter < 5 :
-                if self.player_action == "Jab":
-                    self.jab_counter += 1
-
+                self.image = pygame.image.load(TUTORIAL_JAB_IMG)
+                
                 if self.jab_counter >= 1 :
                     self.explanation = self.tutorial_offense[1]
                     self.draw_interface()
+
+                if self.jab_counter == 5:
+                    self.straigth_counter = 0
             
-            elif self.straigth_counter <= 5:
+            elif self.straigth_counter < 5:
                 self.explanation = self.tutorial_offense[2]
                 self.draw_interface()
 
-
-                if self.player_action == "Straigth":
-                    self.straigth_counter += 1
+                if self.straigth_counter == 5:
+                    print("OK")
+                    self.leftHook_counter = 0
+                    self.rigthHook_counter = 0
 
             elif self.leftHook_counter < 3 or self.rigthHook_counter < 3:
+                
                 self.explanation = self.tutorial_offense[3]
                 self.draw_interface()
 
-                if self.player_action == "Left Hook":
-                    self.leftHook_counter += 1
-
-                elif self.player_action == "Rigth Hook":
-                    self.rigthHook_counter += 1
+                if self.leftHook_counter == 3 and self.rigthHook_counter == 3:
+                    self.leftUppercut_counter = 0
 
             elif self.leftUppercut_counter < 3:
                 self.explanation = self.tutorial_offense[4]
                 self.draw_interface()
                 
-                if self.player_action == "Left Uppercut":
-                    self.leftUppercut_counter += 1
+                if self.leftUppercut_counter == 3:
+                    self.rigthUppercut_counter = 0
                 
             elif self.rigthUppercut_counter < 4:
                 self.explanation = self.tutorial_offense[5]
@@ -190,13 +200,41 @@ class TutorialPage:
                 if self.rigthUppercut_counter == 3:
                     self.explanation = "Once Again, and we move to guaard tutorial"
 
-                if self.player_action == "Rigth Uppercut":
-                    self.rigthUppercut_counter += 1
-
             else:
                 self.inTutorialOffensse = False
                 self.inTutorialGuard = True
                 
+    def counter_offense(self):
+        print(self.player_action)
+
+        if self.jab_counter < 5 :
+            if self.player_action == "Jab":
+                self.jab_counter += 1
+        
+        elif self.straigth_counter < 5:
+            if self.player_action == "Straight":
+                self.straigth_counter += 1
+                print("Straight", self.straigth_counter)
+
+        elif self.leftHook_counter < 3 or self.rigthHook_counter < 3:
+            if self.player_action == "Left_Hook":
+                self.leftHook_counter += 1
+                print("Left Hook", self.leftHook_counter)
+
+            elif self.player_action == "Right_Hook":
+                self.rigthHook_counter += 1
+                print("Right Hook", self.rigthHook_counter)
+
+        elif self.leftUppercut_counter < 3:            
+            if self.player_action == "Left_Uppercut":
+                self.leftUppercut_counter += 1
+                print("Left Uppercut", self.rigthHook_counter)
+            
+        elif self.rigthUppercut_counter < 4:
+            if self.player_action == "Right_Uppercut":
+                self.rigthUppercut_counter += 1
+                print("Right Uppercut", self.rigthHook_counter)
+    
     def step_guard(self):
         if self.inTutorialGuard:
             self.explanation = "Guard Offense"
@@ -235,17 +273,18 @@ class TutorialPage:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # self.controller_process.terminate()
+                    self.controller_process.terminate()
                     self.running = False
 
                 self.pause_button.is_clicked(event)
 
-            self.handle_key_press()
+            # self.handle_key_press()
 
             self.text_dialog_shadow.draw(screen)
             self.text_dialog.draw(screen)
             self.notes.draw(screen, font_color=FOREGROUND)
             
+            self.step_loading()
             self.step_menu()
             self.step_offense()
             self.step_guard()

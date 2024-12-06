@@ -1,4 +1,5 @@
 # IMAGE FOR THE PURPOSE OF TUTORIAL
 tutorial_path = "main/assets/tutorial/"
-PAUSE_TUTORIAL_IMG = f"{tutorial_path}pause.png"
-JAB_TUTORIAL_IMG = f"{tutorial_path}jab.png"
+TUTORIAL_WAIT_IMG = f"{tutorial_path}wait.png"
+TUTORIAL_PAUSE_IMG = f"{tutorial_path}pause.png"
+TUTORIAL_JAB_IMG = f"{tutorial_path}jab.png"
