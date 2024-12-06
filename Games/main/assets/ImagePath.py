@@ -25,3 +25,25 @@ BOT_GUARD_IMG = [f"{bot_path}bot_guard_1.png", f"{bot_path}bot_guard_2.png", f"{
 BOT_GUARD_BODY_L_IMG = [f"{bot_path}bot_guard_body_l_1.png", f"{bot_path}bot_guard_body_l_2.png", f"{bot_path}bot_guard_body_l_3.png"]
 BOT_GUARD_BODY_R_IMG = [f"{bot_path}bot_guard_body_r_1.png", f"{bot_path}bot_guard_body_r_2.png", f"{bot_path}bot_guard_body_r_3.png"]
 BOT_DUCK_IMG = [f"{bot_path}bot_duck_1.png", f"{bot_path}bot_duck_2.png", f"{bot_path}bot_duck_3.png"]
+BOT_IDLE_IMG = [f"{bot_path}bot_idle_1.png", f"{bot_path}bot_idle_2.png", f"{bot_path}bot_idle_3.png"]
+
+ACTIONS_IMAGE = {
+    "Jab": BOT_JAB_IMG,
+    "Straight": BOT_STRAIGHT_IMG,
+    "Left_Hook": BOT_LH_IMG,
+    "Right_Hook": BOT_RH_IMG,
+    "Low_Jab": BOT_LJ_IMG,
+    "Low_Straight": BOT_LS_IMG,
+    "Left_BodyHook": BOT_LBH_IMG,
+    "Right_BodyHook": BOT_RBH_IMG,
+    "Left_Uppercut": BOT_LEFT_UPP_IMG,
+    "Right_Uppercut": BOT_RIGHT_UPP_IMG,
+    "Slip_Left": BOT_LEFT_SLIP_IMG,
+    "Slip_Right": BOT_RIGHT_SLIP_IMG,
+    "Guard": BOT_GUARD_IMG,
+    "Guard_LeftBody": BOT_GUARD_BODY_L_IMG,
+    "Guard_RightBody": BOT_GUARD_BODY_R_IMG,
+    "Duck": BOT_DUCK_IMG,
+    "Idle": BOT_IDLE_IMG,
+}
+

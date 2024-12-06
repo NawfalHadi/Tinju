@@ -44,6 +44,7 @@ class VersusBotPage:
         self.load_bots(bot_model)
 
         self.bot_action = ACTIONS[0]
+        self.bot_img = pygame.image.load(ACTIONS_IMAGE["Idle"][0])
         self.bot_action_hit = True
 
         self.bot_maxhp = 100
@@ -345,6 +346,8 @@ class VersusBotPage:
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
 
     def bot_action_calculation(self):
+        self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
+
         if self.bot_action == "Jab":
             if self.bot_stamina >= 20:
                 self.bot_stamina -= 25
@@ -383,7 +386,8 @@ class VersusBotPage:
         while self.running:
             self.screen.fill(WHITE)
             screen.blit(self.image, (0, 0))
-
+            screen.blit(self.bot_img, (119, 139))
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.controller_process.terminate()
