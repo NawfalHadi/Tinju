@@ -235,11 +235,17 @@ class PoseController:
 
         elif body_language_class == "Guard" and self.isNotGuard:
             self.update_pose_detection(Guard=False)
-            self.send_data("Guard")
+            if self.isDucking:
+                self.send_data("Duck")
+            else:
+                self.send_data("Guard")
 
         elif body_language_class == "Idle" and self.isNotIdle:
             self.update_pose_detection(Idle=False)
-            self.send_data("Idle")
+            if self.isDucking:
+                self.send_data("Duck")
+            else:
+                self.send_data("Idle")
 
     def send_data(self, value):
         self.sock.sendall(value.encode())
