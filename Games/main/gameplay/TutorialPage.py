@@ -66,8 +66,9 @@ class TutorialPage:
         self.lowLeftHook_counter = 0
         self.lowRigthHook_counter = 0
 
-        "=== TEXT ==="
+        "=== CHANGING VIEW ==="
         self.explanation = ""
+        self.image = None
 
         self.draw_interface()
         # self.setup()
@@ -113,6 +114,7 @@ class TutorialPage:
         self.controller_process = subprocess.Popen(["python", script_path])
 
     def draw_interface(self):
+
         self.text_dialog_shadow = TextBox("", 40, self.screen.get_rect().bottom - 176, 950, 145, SHADOW_FOREGROUND)
         self.text_dialog = TextBox(self.explanation, 30, self.text_dialog_shadow.rect.top - 10, 950, 145)
         self.notes = Button("Notes", self.text_dialog.rect.left + 30, self.text_dialog.rect.top - 30, 210, 40, WHITE, WHITE, font=30)
@@ -123,6 +125,9 @@ class TutorialPage:
     
     def step_menu(self):
         if self.inTutorialMenu:
+            self.image = pygame.image.load(PAUSE_TUTORIAL_IMG)
+            screen.blit(self.image, (327, 71))
+
             self.explanation = "Maju dekati kamera sampai garis yang ditunjuk pada gambar keluar\nframe untuk memberhentikan permainan, \ndan klik continue untuk tutorial berikutnya."
 
             if self.isPaused:
@@ -138,6 +143,9 @@ class TutorialPage:
     def step_offense(self):
         if self.inTutorialOffensse:
             self.explanation = self.tutorial_offense[0]
+            self.image = pygame.image.load(JAB_TUTORIAL_IMG)
+            screen.blit(self.image, (327, 71))
+
             self.draw_interface()
             print(self.player_action)
 
