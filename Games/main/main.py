@@ -33,9 +33,11 @@ class MainMenu:
                                   self.shadow_button.rect.bottom + SCREEN_MARGIN, 314, 123, RED, GRAY, self.exit_game)
 
     def start_game(self):
-        from main.gameplay.VersusBotPage import VersusBotPage
-        versus_bot = VersusBotPage()
-        versus_bot.run()
+        # from main.gameplay.VersusBotPage import VersusBotPage
+        # versus_bot = VersusBotPage()
+        from main.gameplay.ChooseBotPage import ChooseBotPage
+        ChooseBotPage().run()
+        
 
     def start_padwork(self):
         from main.gameplay.PadworkPage import PadworkList

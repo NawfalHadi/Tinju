@@ -18,10 +18,11 @@ class Button:
         mouse_pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
             pygame.draw.rect(screen, self.hover_color, self.rect)
+            text_surface = font.render(self.text, True, FOREGROUND)
         else:
             pygame.draw.rect(screen, self.color, self.rect)
+            text_surface = font.render(self.text, True, WHITE)
 
-        text_surface = font.render(self.text, True, BLACK)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 

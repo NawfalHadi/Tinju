@@ -18,6 +18,7 @@ GRAY = (200, 200, 200)
 
 BACKGROUND = (32, 40, 105)
 FOREGROUND = (237, 57, 98)
+FOREGROUND_2 = (182, 65, 92)
 
 
 # ====== FONTS =======
