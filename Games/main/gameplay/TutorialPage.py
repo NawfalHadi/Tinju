@@ -5,6 +5,7 @@ import socket
 import threading
 import subprocess
 
+from main.assets.ImagePath import *
 from main.helper.constants import *
 from main.helper.ui_elements.TextBox import TextBox
 from main.helper.ui_elements.button import Button
@@ -112,9 +113,9 @@ class TutorialPage:
         self.controller_process = subprocess.Popen(["python", script_path])
 
     def draw_interface(self):
-        self.text_dialog = TextBox(self.explanation, 0,
-                                (self.screen.get_height() // 2) + 100,
-                                self.screen.get_width(), (self.screen.get_height() // 2) - 100)
+        self.text_dialog_shadow = TextBox("", 40, self.screen.get_rect().bottom - 176, 950, 145, SHADOW_FOREGROUND)
+        self.text_dialog = TextBox(self.explanation, 30, self.text_dialog_shadow.rect.top - 10, 950, 145)
+        self.notes = Button("Notes", self.text_dialog.rect.left + 30, self.text_dialog.rect.top - 30, 210, 40, WHITE, WHITE, font=30)
         
         self.pause_button = Button("Continue", (self.screen.get_width() // 2) - 300 // 2,
                                     (self.screen.get_height() // 2) - 100 // 2,
@@ -122,7 +123,7 @@ class TutorialPage:
     
     def step_menu(self):
         if self.inTutorialMenu:
-            self.explanation = "Maju Kedepan Untuk Pause Permainan, untuk sekarang\n akan mempelihatkan tombol lanjutkan tutorial berikutnya"
+            self.explanation = "Maju dekati kamera sampai garis yang ditunjuk pada gambar keluar\nframe untuk memberhentikan permainan, \ndan klik continue untuk tutorial berikutnya."
 
             if self.isPaused:
                 self.pause_button.draw(self.screen)
@@ -133,7 +134,6 @@ class TutorialPage:
         self.isPaused = False
         self.inTutorialMenu = False
         self.inTutorialOffensse = True
-
 
     def step_offense(self):
         if self.inTutorialOffensse:
@@ -234,7 +234,9 @@ class TutorialPage:
 
             self.handle_key_press()
 
+            self.text_dialog_shadow.draw(screen)
             self.text_dialog.draw(screen)
+            self.notes.draw(screen, font_color=FOREGROUND)
             
             self.step_menu()
             self.step_offense()
