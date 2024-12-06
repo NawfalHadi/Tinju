@@ -1,3 +1,7 @@
+# IMAGE FOR THE PLACE BACKGROUND
+place_path = "main/assets/place/"
+PLACE_RING = f"{place_path}ring.png"
+
 # IMAGE FOR THE PURPOSE OF TUTORIAL
 tutorial_path = "main/assets/tutorial/"
 TUTORIAL_WAIT_IMG = f"{tutorial_path}wait.png"

@@ -13,6 +13,7 @@ import pickle
 from collections import defaultdict
 
 from main.helper.constants import *
+from main.assets.ImagePath import *
 from main.helper.ui_elements.Attribute import *
 from main.helper.ui_elements.button import *
 
@@ -24,6 +25,7 @@ pygame.display.set_caption('Main Menu Example')
 class VersusBotPage:
     def __init__(self, bot_model):
         self.screen = screen
+        self.image = pygame.image.load(PLACE_RING)
 
         "=== JUDGES & GAME SYSTEM==="
         self.isTimerFinish = False
@@ -380,6 +382,7 @@ class VersusBotPage:
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
+            screen.blit(self.image, (0, 0))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
