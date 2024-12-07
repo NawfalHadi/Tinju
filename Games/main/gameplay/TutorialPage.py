@@ -60,9 +60,9 @@ class TutorialPage:
         self.duck_counter = 0
 
         "=== TUTORIAL BODY OFFENSE ==="
-        self.tutorial_bodyOffense = ["Sambil menunduk lakukan gerakan offense seperti ini", 
-                                     "Coba Gunakan Jab 5 kali", "Lakukan straigth sambil nunduk 3 kali",
-                                     "Terus hook kanan sama kiri masing masing 5 kali", "mantap terakhir, maju buat keluar dari tutorial"]
+        self.tutorial_bodyOffense = ["Sambil menunduk lakukan gerakan jab seperti ini", 
+                                     "Coba Gunakan Jab 5 kali", "Lakukan straight 5 kali",
+                                     "Terus hook kanan sama kiri masing masing 3 kali", "mantap terakhir, maju buat keluar dari tutorial"]
         
         self.lowJab_counter = 0
         self.lowStraigth_counter = 0
@@ -108,6 +108,7 @@ class TutorialPage:
                             print(self.player_action)
                             self.counter_offense()
                             self.counter_defence()
+                            self.counter_low_offence()
 
                     except ConnectionResetError:
                         print("error")
@@ -155,7 +156,8 @@ class TutorialPage:
         self.isPaused = False
         self.inTutorialMenu = False
         # self.inTutorialOffensse = True
-        self.inTutorialGuard = True
+        # self.inTutorialGuard = True
+        self.inTutorialLowOffence = True
 
     def step_offense(self):
         if self.inTutorialOffensse:
@@ -310,9 +312,46 @@ class TutorialPage:
 
     def step_low_offence(self):
         if self.inTutorialLowOffence:
-            self.explanation = "Duck Offennse"
             self.draw_interface()
 
+            if self.lowJab_counter < 5:
+                self.explanation = self.tutorial_bodyOffense[0]
+                self.draw_interface()
+                if self.lowJab_counter == 1:
+                    self.explanation = self.tutorial_bodyOffense[1]
+                    self.draw_interface()
+
+            elif self.lowStraigth_counter < 5:
+                self.explanation = self.tutorial_bodyOffense[2]
+                self.draw_interface()
+            
+            elif self.lowLeftHook_counter < 3 or self.lowRigthHook_counter < 3:
+                self.explanation = self.tutorial_bodyOffense[3]
+                self.draw_interface()
+            
+            elif self.isPaused:
+                pygame.quit()
+            
+    def counter_low_offence(self):
+        if self.lowJab_counter < 5:
+            if self.player_action == "Low_Jab":
+                self.lowJab_counter += 1
+                print("Low Jab:", self.lowJab_counter)
+
+        elif self.lowStraigth_counter < 5:
+            if self.player_action == "Low_Straight":
+                self.lowStraigth_counter += 1
+                print("Low Straight:", self.lowStraigth_counter)
+        
+        elif self.lowLeftHook_counter < 3 or self.lowRigthHook_counter < 3:
+            if self.player_action == "Left_BodyHook" :
+                print("Left Body Hook:", self.lowLeftHook_counter)
+                self.lowLeftHook_counter += 1
+            
+            elif self.player_action == "Right_BodyHook" :
+                self.lowRigthHook_counter += 1
+                print("Right Body Hook:", self.lowRigthHook_counter)
+        
     def handle_key_press(self):
         # Temporary Function
         keys = pygame.key.get_pressed()  # Get a list of all pressed keys
@@ -352,6 +391,11 @@ class TutorialPage:
             self.text_dialog_shadow.draw(screen)
             self.text_dialog.draw(screen)
             self.notes.draw(screen, font_color=FOREGROUND)
+
+            if self.player_action == "Pause":
+                self.isPaused = True
+            else:
+                self.isPaused = False
             
             self.step_loading()
             self.step_menu()

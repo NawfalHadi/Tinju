@@ -64,15 +64,16 @@ class PoseController:
         noseRight = left_line[0][0] - (noseX)
         noseLeft = right_line[0][0] - (noseX)   
         
-        if noseRight > 0 and not self.isSlipRight:
-            self.send_data("Slip_Right")
-            self.update_pose_detection(SlipR=True)
-        elif noseLeft < 0 and not self.isSlipLeft:
-            self.send_data("Slip_Left")
-            self.update_pose_detection(SlipL=True)
-        elif not noseRight > 0 and not noseLeft < 0:
-            self.isSlipLeft = False
-            self.isSlipRight = False
+        if not self.isPause:
+            if noseRight > 0 and not self.isSlipRight:
+                self.send_data("Slip_Right")
+                self.update_pose_detection(SlipR=True)
+            elif noseLeft < 0 and not self.isSlipLeft:
+                self.send_data("Slip_Left")
+                self.update_pose_detection(SlipL=True)
+            elif not noseRight > 0 and not noseLeft < 0:
+                self.isSlipLeft = False
+                self.isSlipRight = False
             
 
         cv2.line(image, left_line[0], left_line[1], GREEN, 3)
@@ -96,27 +97,28 @@ class PoseController:
         hip_elbowR = elbowR_y - hipY + 70
         # print("hip_elbowR :", hip_elbowR)
 
-        if not self.isDucking:
-            if hip_elbowL > 0  or hip_elbowR > 0:
-                if hip_elbowL > 0 and hip_elbowR > 0:
-                    if hip_elbowL > hip_elbowR and self.isNotGuardLeftBody:
-                        try:
-                            self.send_data("Guard_LeftBody")
-                            self.update_pose_detection(GuardLeftBody=False)
-                        except Exception as e:
-                            print(e)
-                    elif hip_elbowR > hip_elbowL and self.isNotGuardRightBody:
+        if not self.isPause:
+            if not self.isDucking:
+                if hip_elbowL > 0  or hip_elbowR > 0:
+                    if hip_elbowL > 0 and hip_elbowR > 0:
+                        if hip_elbowL > hip_elbowR and self.isNotGuardLeftBody:
+                            try:
+                                self.send_data("Guard_LeftBody")
+                                self.update_pose_detection(GuardLeftBody=False)
+                            except Exception as e:
+                                print(e)
+                        elif hip_elbowR > hip_elbowL and self.isNotGuardRightBody:
+                            self.send_data("Guard_RightBody")
+                            self.update_pose_detection(GuardRightBody=False)
+                    elif hip_elbowL > 0 and self.isNotGuardLeftBody:
+                        self.send_data("Guard_LeftBody")
+                        self.update_pose_detection(GuardLeftBody=False)
+                    elif hip_elbowR > 0 and self.isNotGuardRightBody:
                         self.send_data("Guard_RightBody")
                         self.update_pose_detection(GuardRightBody=False)
-                elif hip_elbowL > 0 and self.isNotGuardLeftBody:
-                    self.send_data("Guard_LeftBody")
-                    self.update_pose_detection(GuardLeftBody=False)
-                elif hip_elbowR > 0 and self.isNotGuardRightBody:
-                    self.send_data("Guard_RightBody")
-                    self.update_pose_detection(GuardRightBody=False)
-            elif hip_elbowL < 0 and hip_elbowR < 0:
-                self.isNotGuardLeftBody = True
-                self.isNotGuardRightBody = True
+                elif hip_elbowL < 0 and hip_elbowR < 0:
+                    self.isNotGuardLeftBody = True
+                    self.isNotGuardRightBody = True
     
         hip_line = (0, hipY - 70), (width, hipY - 70)
         top_y = (0, noseY - 130), (width, noseY - 130)
@@ -126,12 +128,12 @@ class PoseController:
         maxBottom = int(height) - int(bottom_y[0][1])
 
         if (maxHeight < 0):
-            # print("Log : Paused Game")
+            self.isPause = True
             top_line = (0, (noseY  + maxHeight) + top_offset ), (width, (noseY + maxHeight) + top_offset)
             bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)
             # bottom_line = (0, (noseY  + maxHeight) + bottom_offset ), (width, maxHeight - bottom_offset)
         else:
-            # print("Log : Game Running")
+            self.isPause = False
             
             if(maxBottom < 0):
                 # print("Log : Duck")
@@ -394,9 +396,14 @@ class PoseController:
 
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
-                    if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
-                        if prob > 0.75:
-                            self.send_prediction(body_language_class)
+                    if not self.isPause:
+                        if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
+                            if prob > 0.75:
+                                self.send_prediction(body_language_class)
+                            # elif self.isDucking:
+                            #     self.send_data("Duck")
+                    else:
+                        self.send_data("Pause")
                     
                 except Exception as e:
                     pass
