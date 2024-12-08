@@ -6,6 +6,7 @@ import socket
 import threading
 import subprocess
 
+from main.assets.ImagePath import *
 from main.helper.constants import *
 from main.helper.ui_elements.button import *
 
@@ -156,6 +157,7 @@ class PadworkPage:
     def __init__(self, data) -> None:
         self.screen = screen
         self.running = True
+        self.img = self.image = pygame.image.load(PLACE_RING)
 
         "=== CONTROLLER ==="
         self.controller_process = None
@@ -287,6 +289,7 @@ class PadworkPage:
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
+            screen.blit(self.image, (0, 0))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

@@ -103,22 +103,40 @@ class PoseController:
                     if hip_elbowL > 0 and hip_elbowR > 0:
                         if hip_elbowL > hip_elbowR and self.isNotGuardLeftBody:
                             try:
-                                self.send_data("Guard_LeftBody")
-                                self.update_pose_detection(GuardLeftBody=False)
+                                if not self.isDucking:
+                                    self.send_data("Guard_LeftBody")
+                                    self.update_pose_detection(GuardLeftBody=False)
+                                else:
+                                    self.update_pose_detection()
                             except Exception as e:
                                 print(e)
                         elif hip_elbowR > hip_elbowL and self.isNotGuardRightBody:
+                            if not self.isDucking:
+                                self.send_data("Guard_RightBody")
+                                self.update_pose_detection(GuardRightBody=False)
+                            else:
+                                self.update_pose_detection
+                    elif hip_elbowL > 0 and self.isNotGuardLeftBody:
+                        if not self.isDucking:
+                            self.send_data("Guard_LeftBody")
+                            self.update_pose_detection(GuardLeftBody=False)
+                        else:
+                            self.update_pose_detection()
+                    elif hip_elbowR > 0 and self.isNotGuardRightBody:
+                        if not self.isDucking:
                             self.send_data("Guard_RightBody")
                             self.update_pose_detection(GuardRightBody=False)
-                    elif hip_elbowL > 0 and self.isNotGuardLeftBody:
-                        self.send_data("Guard_LeftBody")
-                        self.update_pose_detection(GuardLeftBody=False)
-                    elif hip_elbowR > 0 and self.isNotGuardRightBody:
-                        self.send_data("Guard_RightBody")
-                        self.update_pose_detection(GuardRightBody=False)
+                        else:
+                            self.update_pose_detection()
+
                 elif hip_elbowL < 0 and hip_elbowR < 0:
                     self.isNotGuardLeftBody = True
                     self.isNotGuardRightBody = True
+            else:
+                self.update_pose_detection()
+                self.isNotGuardLeftBody = True
+                self.isNotGuardRightBody = True
+
     
         hip_line = (0, hipY - 70), (width, hipY - 70)
         top_y = (0, noseY - 130), (width, noseY - 130)
@@ -397,11 +415,12 @@ class PoseController:
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
                     if not self.isPause:
-                        if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
-                            if prob > 0.75:
-                                self.send_prediction(body_language_class)
-                            # elif self.isDucking:
-                            #     self.send_data("Duck")
+                        if not self.isSlipLeft and not self.isSlipRight:
+                            if self.isNotGuardLeftBody and self.isNotGuardRightBody:
+                                if prob > 0.75:
+                                    self.send_prediction(body_language_class)
+                                
+                                    
                     else:
                         self.send_data("Pause")
                     
