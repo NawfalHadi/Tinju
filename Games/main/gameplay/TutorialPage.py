@@ -11,7 +11,7 @@ from main.helper.ui_elements.TextBox import TextBox
 from main.helper.ui_elements.button import Button
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Padworks')
+pygame.display.set_caption('Tutorial')
 
 class TutorialPage:
     def __init__(self) -> None:

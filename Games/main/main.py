@@ -22,7 +22,7 @@ class MainMenu:
         self.tutorial_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
                                       SCREEN_MARGIN, 314, 258, RED, GRAY, self.start_tutorial)
         self.coach_button = Button('As A Coach', self.tutorial_button.rect.right + SCREEN_MARGIN,
-                                   SCREEN_MARGIN, 314, 210, GREEN, GRAY, self.start_game)
+                                   SCREEN_MARGIN, 314, 210, GREEN, GRAY, self.start_coach)
         self.record_button = Button('1 / 1 / 0', SCREEN_MARGIN, self.start_button.rect.bottom + SCREEN_MARGIN,
                                    314, 116, BLUE, GRAY, self.start_game)
         self.padwork_button = Button("Padwork", self.record_button.rect.right + SCREEN_MARGIN,
@@ -33,11 +33,12 @@ class MainMenu:
                                   self.shadow_button.rect.bottom + SCREEN_MARGIN, 314, 123, RED, GRAY, self.exit_game)
 
     def start_game(self):
-        # from main.gameplay.VersusBotPage import VersusBotPage
-        # versus_bot = VersusBotPage()
         from main.gameplay.ChooseBotPage import ChooseBotPage
         ChooseBotPage().run()
-        
+
+    def start_coach(self):
+        from main.gameplay.BotInformation import BotInformation
+        BotInformation().run()
 
     def start_padwork(self):
         from main.gameplay.PadworkPage import PadworkList
@@ -66,6 +67,7 @@ class MainMenu:
                 self.padwork_button.is_clicked(event)
                 self.tutorial_button.is_clicked(event)
                 self.shadow_button.is_clicked(event)
+                self.coach_button.is_clicked(event  )
 
                 self.exit_button.is_clicked(event)
                 
