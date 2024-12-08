@@ -14,7 +14,7 @@ ACTIONS = [
     "Idle", "Guard", "Jab", "Low_Jab", "Straight", "Low_Straight",
     "Left_Hook", "Right_Hook", "Left_BodyHook", "Right_BodyHook",
     "Left_Uppercut", "Right_Uppercut", "Slip_Left", "Slip_Right", 
-    "Guard_LeftBody", "Guard_RightBody"
+    "Guard_LeftBody", "Guard_RightBody", "Duck"
 ]
 
 
@@ -44,11 +44,10 @@ ACTIONS_EFFECTS = {
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0, "Duck": 0
-        }
+        
         },
     },
     "Low_Jab": {
@@ -56,18 +55,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Straight": {
@@ -75,18 +70,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Low_Straight": {
@@ -94,18 +85,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Left_Hook": {
@@ -113,18 +100,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Left_BodyHook":{
@@ -132,18 +115,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Right_Hook": {
@@ -151,18 +130,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Right_BodyHook" : {
@@ -170,18 +145,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Left_Uppercut": {
@@ -189,18 +160,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Right_Uppercut":{
@@ -208,18 +175,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },        
     },
     "Guard" : {
@@ -227,18 +190,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 5,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Slip_Left" : {
@@ -246,18 +205,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Slip_Right" : {
@@ -265,18 +220,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Duck" : {
@@ -284,18 +235,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Guard_LeftBody" : {
@@ -303,18 +250,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
     "Guard_RightBody" : {
@@ -322,18 +265,14 @@ ACTIONS_EFFECTS = {
         "health_recovery": 0,
         "stamina_recovery": 0,
         "hit_damage": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
         "point_training": {
-            "point_training": {
             "Idle": 0,"Guard":0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0,
             "Left_Hook": 0, "Right_Hook": 0, "Left_BodyHook": 0, "Right_BodyHook": 0,
             "Left_Uppercut": 0, "Right_Uppercut": 0, "Slip_Left": 0, "Slip_Right": 0,"Guard_LeftBody": 0, "Guard_RightBody": 0, "Duck": 0
-        }
         },
     },
       

@@ -41,9 +41,12 @@ MAX_HP = 100
 MAX_STM = 100
 
 # ====== ACTIONS =====
-# ACTION = ["no_guard", "guard", "jab", "straigth", "left_hook", "right_hook"]
-ACTIONS  = ["Idle","Jab", "Guard"]
-
+ACTIONS = [
+    "Idle", "Guard", "Jab", "Low_Jab", "Straight", "Low_Straight",
+    "Left_Hook", "Right_Hook", "Left_BodyHook", "Right_BodyHook",
+    "Left_Uppercut", "Right_Uppercut", "Slip_Left", "Slip_Right", 
+    "Guard_LeftBody", "Guard_RightBody", "Duck"
+]
 
 # ======= COACHES =====
 C_ASKPOSE = ["Give me a ", "Throw the ", "Show me your ", "I want see your "]
