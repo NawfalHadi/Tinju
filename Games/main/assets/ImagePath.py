@@ -1,6 +1,7 @@
 # IMAGE FOR THE PLACE BACKGROUND
 place_path = "main/assets/place/"
 PLACE_RING = f"{place_path}ring.png"
+PLACE_RING_SIDE = f"{place_path}ring_side.png"
 
 # IMAGE FOR THE PURPOSE OF TUTORIAL
 tutorial_path = "main/assets/tutorial/"

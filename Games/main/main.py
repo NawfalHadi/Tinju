@@ -28,7 +28,7 @@ class MainMenu:
         self.padwork_button = Button("Padwork", self.record_button.rect.right + SCREEN_MARGIN,
                                      self.tutorial_button.rect.bottom + SCREEN_MARGIN, 314, 258, GREEN, GRAY, self.start_padwork)
         self.shadow_button = Button("Shadow Boxing", self.coach_button.rect.left,
-                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 314, 163, RED, GRAY, self.exit_game)
+                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 314, 163, RED, GRAY, self.start_shadow_boxing)
         self.exit_button = Button("Exit", self.coach_button.rect.left,
                                   self.shadow_button.rect.bottom + SCREEN_MARGIN, 314, 123, RED, GRAY, self.exit_game)
 
@@ -46,6 +46,10 @@ class MainMenu:
     def start_tutorial(self):
         from main.gameplay.TutorialPage import TutorialPage
         TutorialPage().run()
+
+    def start_shadow_boxing(self):
+        from main.gameplay.ShadowBoxing import ShadowBoxing
+        ShadowBoxing().run()
 
     def exit_game(self):
         pygame.quit()
