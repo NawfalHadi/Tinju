@@ -350,6 +350,8 @@ class Environment:
         self.player_successOffense = 0
         self.player_successDefense = 0
         
+        "=== TIMER ==="
+        self.total_seconds = 3 * 1
 
         "=== TRAINING VARIABLE ==="
         self.Q = self.load_q_table()
@@ -407,8 +409,10 @@ class Environment:
     
     def handle_user_actions(self):
         while self.player_hp > 0 and self.bot_hp > 0:
-            keys = pygame.key.get_pressed()
-            self.handle_key_pressed(keys)
+            # keys = pygame.key.get_pressed()
+            # self.handle_key_pressed(keys)
+            self.player_action = random.choice(ACTIONS)
+
 
             if self.player_stm >= ACTIONS_EFFECTS[self.player_action]["stamina_cost"]:
                 # Player
@@ -491,6 +495,12 @@ class Environment:
         if self.bot_stm < ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]:
             point -= 20
 
+        if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
+            point += 10
+        elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
+            # Success Guard
+            point += 20
+
         action_reward = point + ACTIONS_EFFECTS[self.bot_action]["point_training"][self.player_action]
 
         return action_reward
@@ -505,7 +515,7 @@ class Environment:
 
             if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
                 self.bot_successOffense += 1
-            elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10:
+            elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
                 self.bot_successDefense += 1 
             
             # Player
@@ -560,9 +570,11 @@ class Environment:
             result_text = font.render("You Win! Bot Loses!", True, BLACK)
 
         window.blit(result_text, (width // 2 - result_text.get_width() // 2, height // 2))
-        pygame.display.update()
 
-        time.sleep(3)
+        pygame.display.update()
+        pygame.time.Clock().tick(60)
+
+        time.sleep(2)
         # pygame.quit()
 
 # Main script

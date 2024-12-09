@@ -5,3 +5,5 @@
 /Games/main/helper/ui_elements/__pycache__
 /Games/main/gameplay/__pycache__
 /Games/main/__pycache__
+/scenario
+videocapture.py
