@@ -8,6 +8,22 @@ tutorial_path = "main/assets/tutorial/"
 TUTORIAL_WAIT_IMG = f"{tutorial_path}wait.png"
 TUTORIAL_PAUSE_IMG = f"{tutorial_path}pause.png"
 TUTORIAL_JAB_IMG = f"{tutorial_path}jab.png"
+TUTORIAL_STRAIGHT_IMG = f"{tutorial_path}S.png"
+TUTORIAL_LEFT_HOOK_IMG = f"{tutorial_path}LH.png"
+TURORIAL_RIGHT_HOOK_IMG = f"{tutorial_path}RH.png"
+TUTORIAL_LEFT_UPP_IMG = f"{tutorial_path}LUPP.png"
+TUTORIAL_RIGHT_UPP_IMG = f"{tutorial_path}RUPP.png"
+TUTORIAL_GUARD_IMG = f"{tutorial_path}G1.png"
+TUTORIAL_GUARD_BODY_LEFT_IMG =f"{tutorial_path}GBL.png"
+TUTORIAL_GUARD_BODY_RIGHT_IMG =f"{tutorial_path}GBR.png"
+TUTORIAL_SLIP_LEFT_IMG = f"{tutorial_path}SL.png"
+TUTORIAL_SLIP_RIGHT_IMG = f"{tutorial_path}SR.png"
+TUTORIAL_LEFT_BODY_HOOK_IMG = f"{tutorial_path}LBH.png"
+TUTORIAL_RIGHT_BODY_HOOK_IMG = f"{tutorial_path}RBH.png"
+TUTORIAL_DUCK_1_IMG = f"{tutorial_path}D1.png"
+TUTORIAL_DUCK_2_IMG = f"{tutorial_path}D2.png"
+
+
 
 bot_path = "main/assets/bot/"
 BOT_JAB_IMG = [f"{bot_path}bot_jab_1.png", f"{bot_path}bot_jab_2.png", f"{bot_path}bot_jab_3.png"]

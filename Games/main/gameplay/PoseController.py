@@ -12,9 +12,9 @@ from mediapipe.framework.formats import landmark_pb2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+RED = (0, 0, 255)
 GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+BLUE = (255, 0, 0)
 GRAY = (200, 200, 200)
 PINK = (98, 57, 237)
 PURPLE = (105, 40, 32)
@@ -145,7 +145,7 @@ class PoseController:
         maxHeight = top_y[0][1]
         maxBottom = int(height) - int(bottom_y[0][1])
 
-        if (maxHeight < 0):
+        if (maxHeight < -10):
             self.isPause = True
             top_line = (0, (noseY  + maxHeight) + top_offset ), (width, (noseY + maxHeight) + top_offset)
             bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)

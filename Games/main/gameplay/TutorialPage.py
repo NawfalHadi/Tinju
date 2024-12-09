@@ -128,6 +128,8 @@ class TutorialPage:
         self.pause_button = Button("Continue", (self.screen.get_width() // 2) - 300 // 2,
                                     (self.screen.get_height() // 2) - 100 // 2,
                                    300, 100, GRAY, FOREGROUND, self.next_tutorial)
+        if self.image:
+            screen.blit(self.image, (327, 71))
     
     def step_loading(self):
         if self.isLoading:
@@ -155,9 +157,9 @@ class TutorialPage:
     def next_tutorial(self):
         self.isPaused = False
         self.inTutorialMenu = False
-        # self.inTutorialOffensse = True
+        self.inTutorialOffensse = True
         # self.inTutorialGuard = True
-        self.inTutorialLowOffence = True
+        # self.inTutorialLowOffence = True
 
     def step_offense(self):
         if self.inTutorialOffensse:
@@ -168,6 +170,7 @@ class TutorialPage:
 
             if self.jab_counter < 5 :
                 self.image = pygame.image.load(TUTORIAL_JAB_IMG)
+                self.draw_interface()
                 
                 if self.jab_counter >= 1 :
                     self.explanation = self.tutorial_offense[1]
@@ -177,6 +180,7 @@ class TutorialPage:
                     self.straigth_counter = 0
             
             elif self.straigth_counter < 5:
+                self.image = pygame.image.load(TUTORIAL_STRAIGHT_IMG)
                 self.explanation = self.tutorial_offense[2]
                 self.draw_interface()
 
@@ -185,14 +189,18 @@ class TutorialPage:
                     self.rigthHook_counter = 0
 
             elif self.leftHook_counter < 3 or self.rigthHook_counter < 3:
-                
+                self.image = pygame.image.load(TUTORIAL_LEFT_HOOK_IMG)
                 self.explanation = self.tutorial_offense[3]
                 self.draw_interface()
+
+                if self.leftHook_counter == 2:
+                    self.image = pygame.image.load(TURORIAL_RIGHT_HOOK_IMG)
 
                 if self.leftHook_counter == 3 and self.rigthHook_counter == 3:
                     self.leftUppercut_counter = 0
 
             elif self.leftUppercut_counter < 3:
+                self.image = pygame.image.load(TUTORIAL_LEFT_UPP_IMG)
                 self.explanation = self.tutorial_offense[4]
                 self.draw_interface()
                 
@@ -200,6 +208,7 @@ class TutorialPage:
                     self.rigthUppercut_counter = 0
                 
             elif self.rigthUppercut_counter < 4:
+                self.image = pygame.image.load(TUTORIAL_RIGHT_UPP_IMG)
                 self.explanation = self.tutorial_offense[5]
                 self.draw_interface()
 
@@ -244,7 +253,7 @@ class TutorialPage:
             self.draw_interface()
 
             if self.faceGuard_counter < 3:
-                # self.image = None
+                self.image = pygame.image.load(TUTORIAL_GUARD_IMG)
                 self.explanation = self.tutorial_guard[0]
                 self.draw_interface()
 
@@ -253,27 +262,31 @@ class TutorialPage:
                     self.draw_interface()
 
             elif self.bodyLeftGuard_counter < 3 or self.bodyRightGuard_counter < 3:
+                self.image = pygame.image.load(TUTORIAL_GUARD_BODY_LEFT_IMG)
                 self.explanation = self.tutorial_guard[2]
                 self.draw_interface()
 
                 if self.bodyLeftGuard_counter == 1 or self.bodyRightGuard_counter == 1:
-                    # Change Image to another side of bodyguard
+                    self.image = pygame.image.load(TUTORIAL_GUARD_BODY_RIGHT_IMG)
                     pass
                 
 
             elif self.slipLeft_counter < 3 or self.slipRigth_counter < 3:
+                self.image = pygame.image.load(TUTORIAL_SLIP_LEFT_IMG)
                 self.explanation = self.tutorial_guard[3]
                 self.draw_interface()
 
                 if self.slipLeft_counter == 1 or self.slipRigth_counter == 1:
-                    # Change Image to another side of bodyguard
+                    self.image = pygame.image.load(TUTORIAL_SLIP_RIGHT_IMG)
                     pass
                 
             elif self.duck_counter < 3:
+                self.image = pygame.image.load(TUTORIAL_DUCK_1_IMG)
                 self.explanation = self.tutorial_guard[4]
                 self.draw_interface()
 
                 if self.duck_counter == 1:
+                    self.image = pygame.image.load(TUTORIAL_DUCK_2_IMG)
                     self.explanation = self.tutorial_guard[5]
                     self.draw_interface()
                 
@@ -315,6 +328,7 @@ class TutorialPage:
             self.draw_interface()
 
             if self.lowJab_counter < 5:
+                # self.image = pygame.image.load(BOT_LJ_IMG)
                 self.explanation = self.tutorial_bodyOffense[0]
                 self.draw_interface()
                 if self.lowJab_counter == 1:
@@ -322,6 +336,7 @@ class TutorialPage:
                     self.draw_interface()
 
             elif self.lowStraigth_counter < 5:
+                # self.image = pygame.image.load(BOT_LS_IMG)
                 self.explanation = self.tutorial_bodyOffense[2]
                 self.draw_interface()
             
