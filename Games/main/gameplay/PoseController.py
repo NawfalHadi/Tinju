@@ -17,6 +17,7 @@ GREEN = (0, 255, 0)
 BLUE = (255, 0, 0)
 GRAY = (200, 200, 200)
 PINK = (98, 57, 237)
+YOUNG_BLUE = (237, 129, 57)
 PURPLE = (105, 40, 32)
 
 SERVER_ADDRESS = 'localhost'
@@ -65,6 +66,8 @@ class PoseController:
         noseLeft = right_line[0][0] - (noseX)   
         
         if not self.isPause:
+            # Dont Do It incase left guard body
+            
             if noseRight > 0 and not self.isSlipRight:
                 self.send_data("Slip_Right")
                 self.update_pose_detection(SlipR=True)
@@ -140,12 +143,12 @@ class PoseController:
     
         hip_line = (0, hipY - 70), (width, hipY - 70)
         top_y = (0, noseY - 130), (width, noseY - 130)
-        bottom_y = (0, noseY + 260), (width, noseY + 260)
+        bottom_y = (0, noseY + 235), (width, noseY + 235)
 
         maxHeight = top_y[0][1]
         maxBottom = int(height) - int(bottom_y[0][1])
 
-        if (maxHeight < -10):
+        if (maxHeight < 0):
             self.isPause = True
             top_line = (0, (noseY  + maxHeight) + top_offset ), (width, (noseY + maxHeight) + top_offset)
             bottom_line = (0, noseY + bottom_offset), (width, noseY + bottom_offset)
@@ -167,7 +170,7 @@ class PoseController:
         cv2.line(image, top_line[0], top_line[1], GREEN, 3)
         cv2.line(image, bottom_line[0], bottom_line[1], GREEN, 3)
 
-        cv2.line(image, top_y[0], top_y[1], RED, 2)
+        cv2.line(image, top_y[0], top_y[1], BLUE, 2)
         cv2.line(image, bottom_y[0], bottom_y[1], RED, 2)
 
         cv2.line(image, hip_line[0], hip_line[1], RED, 1)
@@ -186,7 +189,7 @@ class PoseController:
             # Draw line
             x1, y1 = int(x1), int(y1)
             x2, y2 = int(x2), int(y2)
-            cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+            cv2.line(image, (x1, y1), (x2, y2), YOUNG_BLUE, 3)
 
             gap_landmark = landmark_pb2.NormalizedLandmark()
             gap_landmark.x = gap_x
@@ -415,12 +418,10 @@ class PoseController:
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
                     if not self.isPause:
-                        if not self.isSlipLeft and not self.isSlipRight:
-                            if self.isNotGuardLeftBody and self.isNotGuardRightBody:
-                                if prob > 0.75:
-                                    self.send_prediction(body_language_class)
-                                
-                                    
+                        if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
+                            if prob > 0.75:
+                                self.send_prediction(body_language_class)
+                                       
                     else:
                         self.send_data("Pause")
                     
