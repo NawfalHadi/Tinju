@@ -126,7 +126,7 @@ class PadworkList:
         pass
 
     def exit_page(self):
-        self.running = False
+        pygame.event.post(pygame.event.Event(pygame.QUIT))
 
     def run(self):
         while self.running:

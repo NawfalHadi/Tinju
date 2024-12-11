@@ -12,8 +12,9 @@ import pickle
 
 from collections import defaultdict
 
-from main.helper.constants import *
 from main.assets.ImagePath import *
+from main.helper.constants import *
+from main.helper.Actions import *
 from main.helper.ui_elements.Attribute import *
 from main.helper.ui_elements.button import *
 
@@ -29,11 +30,13 @@ class VersusBotPage:
 
         "=== JUDGES & GAME SYSTEM==="
         self.isTimerFinish = False
+        self.scroing_round = 1
         self.current_rounds = 1
 
         self.judges_hp = [[10, 10], [10, 10], [10, 10]]
         self.judges_def = [[10, 10], [10, 10], [10, 10]]
         self.judges_off = [[10, 10], [10, 10], [10, 10]] 
+        
         "=== THREADING ==="
         self.controller_process = None
 
@@ -127,12 +130,7 @@ class VersusBotPage:
 
 
             time.sleep(0.2)
-            
-            # print(self.bot_action)
-            
-            # if(not self.show_loading):
-            #     print("test")
-            
+                     
     def receive_data(self):
         try : 
             conn, addr = self.sock.accept()
@@ -192,6 +190,9 @@ class VersusBotPage:
             self.total_seconds -= 1 / 60
         else:
             self.isTimerFinish = True
+            if self.current_rounds == self.scroing_round:
+                self.scoring_system() 
+            
         
         minutes = int(self.total_seconds) // 60
         seconds = int(self.total_seconds) % 60
@@ -199,7 +200,12 @@ class VersusBotPage:
         text = f"{minutes}:{seconds:02d}"
         font = pygame.font.Font(None, 60)
         self.timer = screen.blit(font.render(text, True, BLACK),
-                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))          
+                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))         
+ 
+    def scoring_system(self):
+        print("Ngitung")
+        self.scroing_round += 1
+            
 
     def show_roundboard(self):
         self.roundboard = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476)) 
@@ -220,40 +226,49 @@ class VersusBotPage:
             self.rect_roundNumber.left, self.rect_roundNumber.bottom + 20, 150, 366
         ))
 
-        
+        print(self.current_rounds)
 
         "=== First Judges Scoring ==="
         self.first_judges = self.draw_player_name(self.empty_space.bottom + 20, BACKGROUND)
-        self.first_r1 = self.draw_round_score(self.judges_hp[0][0], self.judges_hp[0][1], self.first_round.left, self.first_judges.top, BACKGROUND)
-        self.first_r2 = self.draw_round_score(self.judges_hp[1][0], self.judges_hp[1][1], self.second_round.left, self.first_judges.top, BACKGROUND)
-        self.first_r3 = self.draw_round_score(self.judges_hp[2][0], self.judges_hp[2][1], self.third_round.left, self.first_judges.top, BACKGROUND)
+        if self.current_rounds >= 1:
+            self.first_r1 = self.draw_round_score(self.judges_hp[0][0], self.judges_hp[0][1], self.first_round.left, self.first_judges.top, BACKGROUND)
+        if self.current_rounds >= 2:
+            self.first_r2 = self.draw_round_score(self.judges_hp[1][0], self.judges_hp[1][1], self.second_round.left, self.first_judges.top, BACKGROUND)
+        if self.current_rounds >= 3:
+            self.first_r3 = self.draw_round_score(self.judges_hp[2][0], self.judges_hp[2][1], self.third_round.left, self.first_judges.top, BACKGROUND)
         
-        hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
-        hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
-        
-        self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
+            hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
+            hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
+            
+            self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
 
         "=== Second Judges Scoring ==="
         self.second_judges = self.draw_player_name(self.first_judges.bottom + 20, BACKGROUND)
-        self.second_r1 = self.draw_round_score(self.judges_off[0][0], self.judges_off[0][1], self.first_round.left, self.second_judges.top, BACKGROUND) 
-        self.second_r2 = self.draw_round_score(self.judges_off[1][0], self.judges_off[1][1], self.second_round.left, self.second_judges.top, BACKGROUND) 
-        self.second_r3 = self.draw_round_score(self.judges_off[2][0], self.judges_off[2][1], self.third_round.left, self.second_judges.top, BACKGROUND) 
+        if self.current_rounds >= 1:
+            self.second_r1 = self.draw_round_score(self.judges_off[0][0], self.judges_off[0][1], self.first_round.left, self.second_judges.top, BACKGROUND) 
+        if self.current_rounds >= 2:
+            self.second_r2 = self.draw_round_score(self.judges_off[1][0], self.judges_off[1][1], self.second_round.left, self.second_judges.top, BACKGROUND) 
+        if self.current_rounds >= 3:
+            self.second_r3 = self.draw_round_score(self.judges_off[2][0], self.judges_off[2][1], self.third_round.left, self.second_judges.top, BACKGROUND) 
         
-        offPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
-        offBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
-        
-        self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
+            offPlayer_scoring = sum(sublist[0] for sublist in self.judges_off)
+            offBot_scoring = sum(sublist[1] for sublist in self.judges_off)
+            
+            self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
 
         "=== Third Judges Scoring ==="
         self.third_judges = self.draw_player_name(self.second_judges.bottom + 20, BACKGROUND)
-        self.third_r1 = self.draw_round_score(self.judges_def[0][0], self.judges_def[0][1], self.first_round.left, self.third_judges.top, BACKGROUND)
-        self.third_r2 = self.draw_round_score(self.judges_def[1][0], self.judges_def[1][1], self.second_round.left, self.third_judges.top, BACKGROUND)
-        self.third_r3 = self.draw_round_score(self.judges_def[2][0], self.judges_def[2][1], self.third_round.left, self.third_judges.top, BACKGROUND)
+        if self.current_rounds >= 1:
+            self.third_r1 = self.draw_round_score(self.judges_def[0][0], self.judges_def[0][1], self.first_round.left, self.third_judges.top, BACKGROUND)
+        if self.current_rounds >= 2:
+            self.third_r2 = self.draw_round_score(self.judges_def[1][0], self.judges_def[1][1], self.second_round.left, self.third_judges.top, BACKGROUND)
+        if self.current_rounds >= 3:
+            self.third_r3 = self.draw_round_score(self.judges_def[2][0], self.judges_def[2][1], self.third_round.left, self.third_judges.top, BACKGROUND)
         
-        defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
-        defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
+            defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
+            defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
 
-        self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
+            self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
 
         self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round)
 
@@ -261,10 +276,31 @@ class VersusBotPage:
         self.isTimerFinish = False
         self.total_seconds = 1 * 3
 
-        # if total_round == 3:
-        #     print("finish")
-        # else:
-        #     print("next round")
+        hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
+        hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
+
+        offPlayer_scoring = sum(sublist[0] for sublist in self.judges_off)
+        offBot_scoring = sum(sublist[1] for sublist in self.judges_off)
+
+        defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
+        defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
+
+        playerScore = hpPlayer_scoring + offPlayer_scoring + defPlayer_scoring
+        botScore = hpBot_scoring + offBot_scoring + defBot_scoring
+
+        if self.current_rounds < 3:
+            self.current_rounds += 1
+        elif self.current_rounds == 3:
+            if playerScore > botScore:
+                print("Player Win by Anonimous Decision")
+            elif playerScore == botScore:
+                print("Draw")
+            elif playerScore < botScore:
+                print("Bot Win by Anonimous Decision")
+            
+            time.sleep(1)
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+
 
     def draw_rounds(self, text, rightOf, bottomOf, color = BACKGROUND):
         # Draw the rectangle
@@ -318,27 +354,20 @@ class VersusBotPage:
         return rect
         
     def player_action_calculation(self):
-        if self.player_action == "Jab":
-            if self.player_stamina >= 20:
-                self.player_stamina -= 25
-                if self.bot_action == "Idle":
-                    self.bot_hp -= 25
-                elif self.bot_action == "Guard":
-                    self.bot_hp -= 1
-                elif self.bot_action == "Jab":
-                    self.bot_hp -= 3
         
-        elif self.player_action == "Guard":
-            self.player_stamina += 1
-            self.player_hp += 0.002
-            if self.bot_action == "Jab":
-                self.player_stamina += 2
-        
-        elif self.player_action == "Idle":
-            self.player_stamina += 2
-            self.player_hp += 0.01
-            if self.bot_action == "Jab":
-                self.player_stamina += 4
+        if self.player_stamina >= ACTIONS_EFFECTS[self.player_action]["stamina_cost"]:
+            # Player
+            self.player_stamina -= ACTIONS_EFFECTS[self.player_action]["stamina_cost"]
+            self.player_hp += ACTIONS_EFFECTS[self.player_action]["health_recovery"]
+            self.player_stamina += ACTIONS_EFFECTS[self.player_action]["stamina_recovery"]
+
+            if ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] > 10:
+                self.player_offenseRate += 1
+            elif ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] < 10:
+                self.player_defenseRate += 1
+
+            # Bot
+            self.bot_hp -= ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action]
 
         self.bot_hp = max(0, min(MAX_HP, self.bot_hp))
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
@@ -346,41 +375,27 @@ class VersusBotPage:
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
 
     def bot_action_calculation(self):
-        self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
 
-        if self.bot_action == "Jab":
-            if self.bot_stamina >= 20:
-                self.bot_stamina -= 25
-                if self.player_action == "Idle":
-                    self.player_hp -= 2
-                elif self.player_action == "Guard":
-                    self.player_hp -= 1
-                elif self.player_action == "Jab":
-                    self.player_hp -= 3
-        
-        elif self.bot_action == "Guard":
-            self.bot_stamina += 1
-            self.bot_hp += 0.002
-            if self.player_action == "Jab":
-                self.bot_stamina += 2
-        
-        elif self.bot_action == "Idle":
-            self.bot_stamina += 2
-            self.bot_hp += 0.01
-            if self.player_action == "Jab":
-                self.bot_stamina += 4
+        if self.bot_stamina >= ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]:
+            self.bot_stamina -= ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]
+            self.bot_hp += ACTIONS_EFFECTS[self.bot_action]["health_recovery"]
+            self.bot_stamina += ACTIONS_EFFECTS[self.bot_action]["stamina_recovery"]
+
+            if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
+                self.bot_offenseRate += 1
+            elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
+                self.bot_defenseRate += 1 
+            
+            # Player
+            self.player_hp -= ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action]
+
+        self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
 
         self.bot_hp = max(0, min(MAX_HP, self.bot_hp))
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
         self.player_hp = max(0, min(MAX_HP, self.player_hp))
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
 
-    def scoring_round(self):
-        self.judges_hp
-        self.judges_off
-        self.judges_def
-
-        pass
            
     def run(self):
         while self.running:
