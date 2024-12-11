@@ -24,7 +24,6 @@ TUTORIAL_DUCK_1_IMG = f"{tutorial_path}D1.png"
 TUTORIAL_DUCK_2_IMG = f"{tutorial_path}D2.png"
 
 
-
 bot_path = "main/assets/bot/"
 BOT_JAB_IMG = [f"{bot_path}bot_jab_1.png", f"{bot_path}bot_jab_2.png", f"{bot_path}bot_jab_3.png"]
 BOT_STRAIGHT_IMG = [f"{bot_path}bot_straight_1.png", f"{bot_path}bot_straight_2.png", f"{bot_path}bot_straight_3.png"]
@@ -43,6 +42,7 @@ BOT_GUARD_BODY_L_IMG = [f"{bot_path}bot_guard_body_l_1.png", f"{bot_path}bot_gua
 BOT_GUARD_BODY_R_IMG = [f"{bot_path}bot_guard_body_r_1.png", f"{bot_path}bot_guard_body_r_2.png", f"{bot_path}bot_guard_body_r_3.png"]
 BOT_DUCK_IMG = [f"{bot_path}bot_duck_1.png", f"{bot_path}bot_duck_2.png", f"{bot_path}bot_duck_3.png"]
 BOT_IDLE_IMG = [f"{bot_path}bot_idle_1.png", f"{bot_path}bot_idle_2.png", f"{bot_path}bot_idle_3.png"]
+
 
 ACTIONS_IMAGE = {
     "Jab": BOT_JAB_IMG,
@@ -64,3 +64,42 @@ ACTIONS_IMAGE = {
     "Idle": BOT_IDLE_IMG,
 }
 
+padwork_path = "main/assets/padwork/"
+"!! === BELUM BIKIN === !!"
+PW_JAB_IMG = [f"{padwork_path}pw_jab_1.png", f"{padwork_path}pw_jab_2.png", f"{padwork_path}pw_jab_3.png"]
+PW_STRAIGHT_IMG = [f"{padwork_path}pw_straight_1.png", f"{padwork_path}pw_straight_2.png", f"{padwork_path}pw_straight_3.png"]
+PW_LH_IMG = [f"{padwork_path}pw_lh_1.png", f"{padwork_path}pw_lh_2.png", f"{padwork_path}pw_lh_3.png"]
+PW_RH_IMG = [f"{padwork_path}pw_rh_1.png", f"{padwork_path}pw_rh_2.png", f"{padwork_path}pw_rh_3.png"]
+PW_LJ_IMG = [f"{padwork_path}pw_LJ_1.png", f"{padwork_path}pw_LJ_2.png", f"{padwork_path}pw_LJ_3.png"]
+PW_LS_IMG = [f"{padwork_path}pw_LS_1.png", f"{padwork_path}pw_LS_2.png", f"{padwork_path}pw_LS_3.png"]
+PW_LBH_IMG = [f"{padwork_path}pw_LBH_1.png", f"{padwork_path}pw_LBH_2.png", f"{padwork_path}pw_LBH_3.png"]
+PW_RBH_IMG = [f"{padwork_path}pw_RBH_1.png", f"{padwork_path}pw_RBH_2.png", f"{padwork_path}pw_RBH_3.png"]
+PW_LEFT_UPP_IMG = [f"{padwork_path}pw_left_upp_1.png", f"{padwork_path}pw_left_upp_2.png", f"{padwork_path}pw_left_upp_3.png"]
+PW_RIGHT_UPP_IMG = [f"{padwork_path}pw_right_upp_1.png", f"{padwork_path}pw_right_upp_2.png", f"{padwork_path}pw_right_upp_3.png"]
+PW_LEFT_SLIP_IMG = [f"{padwork_path}pw_left_slip_1.png", f"{padwork_path}pw_left_slip_2.png", f"{padwork_path}pw_left_slip_3.png"]
+PW_RIGHT_SLIP_IMG = [f"{padwork_path}pw_right_slip_1.png", f"{padwork_path}pw_right_slip_2.png", f"{padwork_path}pw_right_slip_3.png"]
+PW_GUARD_IMG = [f"{padwork_path}pw_guard_1.png", f"{padwork_path}pw_guard_2.png", f"{padwork_path}pw_guard_3.png"]
+PW_GUARD_BODY_L_IMG = [f"{padwork_path}pw_guard_body_l_1.png", f"{padwork_path}pw_guard_body_l_2.png", f"{padwork_path}pw_guard_body_l_3.png"]
+PW_GUARD_BODY_R_IMG = [f"{padwork_path}pw_guard_body_r_1.png", f"{padwork_path}pw_guard_body_r_2.png", f"{padwork_path}pw_guard_body_r_3.png"]
+PW_DUCK_IMG = [f"{padwork_path}pw_duck_1.png", f"{padwork_path}pw_duck_2.png", f"{padwork_path}pw_duck_3.png"]
+PW_IDLE_IMG = [f"{padwork_path}pw_idle_1.png", f"{padwork_path}pw_idle_2.png", f"{padwork_path}pw_idle_3.png"]
+
+PADWROKS_ACTIONS_IMAGE = {
+    "Jab": PW_JAB_IMG,
+    "Straight": PW_STRAIGHT_IMG,
+    "Left_Hook": PW_LH_IMG,
+    "Right_Hook": PW_RH_IMG,
+    "Low_Jab": PW_LJ_IMG,
+    "Low_Straight": PW_LS_IMG,
+    "Left_BodyHook": PW_LBH_IMG,
+    "Right_BodyHook": PW_RBH_IMG,
+    "Left_Uppercut": PW_LEFT_UPP_IMG,
+    "Right_Uppercut": PW_RIGHT_UPP_IMG,
+    "Slip_Left": PW_LEFT_SLIP_IMG,
+    "Slip_Right": PW_RIGHT_SLIP_IMG,
+    "Guard": PW_GUARD_IMG,
+    "Guard_LeftBody": PW_GUARD_BODY_L_IMG,
+    "Guard_RightBody": PW_GUARD_BODY_R_IMG,
+    "Duck": PW_DUCK_IMG,
+    "Idle": PW_IDLE_IMG,
+}
