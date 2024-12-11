@@ -152,13 +152,13 @@ class VersusBotPage:
                                 self.player_action_calculation()
 
                     except ConnectionResetError:
-                        print("error")
+                        print("Connection Reset")
         except :
             pass
 
     def draw_interface(self):
-        player_hp = ((self.player_hp) / 100 * 400)
         bot_hp = ((self.bot_hp) / 100 * 400)
+
 
         self.player_hp_bg = Attributes(SCREEN_MARGIN, SCREEN_MARGIN, 400, 40, GRAY)
         self.player_stamina_bg = Attributes(SCREEN_MARGIN,
@@ -171,16 +171,23 @@ class VersusBotPage:
     def update_interface(self):
         player_hp = ((self.player_hp) / 100 * 400)
         player_stm = ((self.player_stamina) / 100 * 350)
+        player_maxHp = ((self.player_maxHp) / 100 * 400)
+        player_maxStm = ((self.player_maxStm) / 100 * 350)
 
         bot_hp = ((self.bot_hp) / 100 * 400)
         bot_stm = ((self.bot_stamina) / 100 * 350)
+        bot_maxHp = ((self.bot_maxhp) / 100 * 400)
+        bot_maxStm = ((self.bot_maxStm) / 100 * 350)
 
+        Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_maxHp, 40, BLACK).draw(screen, corner_bottomRight=15)
         Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_hp, 40, RED).draw(screen, corner_bottomRight = 15)
-        Attributes(self.screen.get_width() - (bot_hp + SCREEN_MARGIN), SCREEN_MARGIN, bot_hp, 40, RED).draw(screen, corner_bottomLeft = 15)
-        
+        Attributes(SCREEN_MARGIN, self.player_hp_bg.rect.bottom, player_maxStm, 20, BLACK).draw(screen, corner_bottomRight = 15)
         Attributes(SCREEN_MARGIN, self.player_hp_bg.rect.bottom, player_stm, 20, BLUE).draw(screen, corner_bottomRight = 15)
-        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLUE).draw(screen, corner_bottomLeft = 15)
 
+        Attributes(self.screen.get_width() - (bot_maxHp + SCREEN_MARGIN), SCREEN_MARGIN, bot_maxHp, 40, BLACK).draw(screen, corner_bottomLeft = 15)
+        Attributes(self.screen.get_width() - (bot_hp + SCREEN_MARGIN), SCREEN_MARGIN, bot_hp, 40, RED).draw(screen, corner_bottomLeft = 15)
+        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_maxStm, 20, BLACK).draw(screen, corner_bottomLeft = 15)
+        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLACK).draw(screen, corner_bottomLeft = 15)
 
         font = pygame.font.Font(None, 60)
         screen.blit(font.render(self.bot_action, True, BLACK), (self.player_stamina_bg.rect.left, self.player_stamina_bg.rect.bottom))
@@ -191,7 +198,8 @@ class VersusBotPage:
         else:
             self.isTimerFinish = True
             if self.current_rounds == self.scroing_round:
-                self.scoring_system() 
+                self.scoring_system()
+                self.hitpoint_stamina_calculation() 
             
         
         minutes = int(self.total_seconds) // 60
@@ -203,7 +211,6 @@ class VersusBotPage:
                     (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))         
  
     def scoring_system(self):
-        print("Ngitung")
         if self.player_hp < self.bot_hp:
             self.judges_hp[self.current_rounds - 1][0] -= 1
         elif self.player_hp > self.bot_hp:
@@ -221,6 +228,26 @@ class VersusBotPage:
 
         self.scroing_round += 1
             
+    def hitpoint_stamina_calculation(self):
+        if self.current_rounds >= 1:    
+            self.player_maxHp = min(self.player_hp * 0.30 + self.player_hp, 100)
+            self.player_maxStm = min(self.player_stamina * 0.90 + self.player_stamina, 100)
+
+            self.bot_maxhp = min(self.bot_hp * 0.30 + self.bot_hp, 100)
+            self.bot_maxStm = min(self.bot_stamina * 0.90 + self.bot_stamina, 100)
+        elif self.current_rounds >= 2:
+            self.player_maxHp = min(self.player_hp * 0.20 + self.player_hp, 100)
+            self.player_maxStm = min(self.player_stamina * 0.80 + self.player_stamina, 100)
+
+            self.bot_maxhp = min(self.bot_hp * 0.20 + self.bot_hp, 100)
+            self.bot_maxStm = min(self.bot_stamina * 0.80 + self.bot_stamina, 100)
+        elif self.current_rounds >= 3:
+            self.player_maxHp = min(self.player_hp * 0.15 + self.player_hp, 100)
+            self.player_maxStm = min(self.player_stamina * 0.75 + self.player_stamina, 100)
+
+            self.bot_maxhp = min(self.bot_hp * 0.15 + self.bot_hp, 100)
+            self.bot_maxStm = min(self.bot_stamina * 0.75 + self.bot_stamina, 100)
+
     def show_roundboard(self):
         self.roundboard = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476)) 
 
@@ -239,8 +266,6 @@ class VersusBotPage:
         self.rect_playerName = pygame.draw.rect(self.screen, WHITE, pygame.Rect(
             self.rect_roundNumber.left, self.rect_roundNumber.bottom + 20, 150, 366
         ))
-
-        print(self.current_rounds)
 
         "=== First Judges Scoring ==="
         self.first_judges = self.draw_player_name(self.empty_space.bottom + 20, BACKGROUND)
@@ -315,7 +340,6 @@ class VersusBotPage:
             time.sleep(1)
             pygame.event.post(pygame.event.Event(pygame.QUIT))
 
-
     def draw_rounds(self, text, rightOf, bottomOf, color = BACKGROUND):
         # Draw the rectangle
         rect = pygame.Rect(rightOf, bottomOf, 152, 50)
@@ -383,9 +407,9 @@ class VersusBotPage:
             # Bot
             self.bot_hp -= ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action]
 
-        self.bot_hp = max(0, min(MAX_HP, self.bot_hp))
+        self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
-        self.player_hp = max(0, min(MAX_HP, self.player_hp))
+        self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
 
     def bot_action_calculation(self):
@@ -405,12 +429,11 @@ class VersusBotPage:
 
         self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
 
-        self.bot_hp = max(0, min(MAX_HP, self.bot_hp))
+        self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
-        self.player_hp = max(0, min(MAX_HP, self.player_hp))
+        self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
-
-           
+         
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
@@ -426,15 +449,13 @@ class VersusBotPage:
                 if self.isTimerFinish:
                     self.next_button.is_clicked(event)
             
-            
-            self.player_hp_bg.draw(screen, corner_bottomRight=15)
-            self.player_stamina_bg.draw(screen, corner_bottomRight=15)
-            
-            self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
-            self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
-
-
             if (not self.isLoading and not self.isTimerFinish) :    
+                self.player_hp_bg.draw(screen, corner_bottomRight=15)
+                self.player_stamina_bg.draw(screen, corner_bottomRight=15)
+                
+                self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
+                self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+                
                 self.update_interface()
                 self.bot_action_calculation()
                 self.start_timer()
