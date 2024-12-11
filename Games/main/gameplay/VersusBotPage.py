@@ -204,9 +204,23 @@ class VersusBotPage:
  
     def scoring_system(self):
         print("Ngitung")
+        if self.player_hp < self.bot_hp:
+            self.judges_hp[self.current_rounds - 1][0] -= 1
+        elif self.player_hp > self.bot_hp:
+            self.judges_hp[self.current_rounds - 1][1] -= 1
+
+        if self.player_offenseRate < self.bot_offenseRate:
+            self.judges_off[self.current_rounds - 1][0] -= 1
+        elif self.player_offenseRate > self.bot_offenseRate:
+            self.judges_off[self.current_rounds - 1][1] -= 1
+
+        if self.player_defenseRate < self.bot_defenseRate:
+            self.judges_def[self.current_rounds - 1][0] -= 1
+        elif self.player_defenseRate > self.bot_defenseRate:
+            self.judges_def[self.current_rounds - 1][1] -= 1
+
         self.scroing_round += 1
             
-
     def show_roundboard(self):
         self.roundboard = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476)) 
 
@@ -287,7 +301,7 @@ class VersusBotPage:
 
         playerScore = hpPlayer_scoring + offPlayer_scoring + defPlayer_scoring
         botScore = hpBot_scoring + offBot_scoring + defBot_scoring
-
+            
         if self.current_rounds < 3:
             self.current_rounds += 1
         elif self.current_rounds == 3:
