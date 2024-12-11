@@ -1,5 +1,6 @@
 import time
 import os
+import csv
 
 import pygame
 import socket
@@ -9,19 +10,7 @@ import subprocess
 from main.assets.ImagePath import *
 from main.helper.constants import *
 from main.helper.ui_elements.button import *
-
-padworks = [
-    ["Offensive \nPadworks", ["jab", "straight", "guard", "duck", "jab"], "00:00:00"],
-    ["Defensive \nPadworks", ["guard", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:50:21"],
-    ["First Padworks", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:00"],
-    ["Long Padworks", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:12"],
-    ["Short Padworks", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:20"],
-    ["Jab Straight \nPadworks", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:00"],
-    ["Anu Padworks", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:32"],
-    ["Selebeew \nPadworks", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:00"],
-    ["Laufey", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "00:00:31"],
-    ["Nawfal \nHadi", ["jab", "straigth", "jab", "straigth", "jab", "guard", "jab"], "10:00:00"],
-]
+from main.helper.ui_elements.Attribute import *
 
 # Scroll settings
 SCROLL_SPEED = 20
@@ -37,6 +26,10 @@ class PadworkList:
     def __init__(self) -> None:
         self.screen = screen
         self.running = True
+
+        self.padworks = []
+        self.read_padworks_csv()
+
         "=== PREVIEW ==="
         self.title = "Title \nPadworks"
         self.timer = "00:00:00"
@@ -44,9 +37,21 @@ class PadworkList:
         "=== SCROLL SETTINGS ==="
         self.scroll_pos = 0
         self.scroll_speed = 20
-        self.scroll_max = len(padworks) * ITEM_HEIGHT - 430
+        self.scroll_max = len(self.padworks) * ITEM_HEIGHT - 430
 
         self.create_button()
+
+    def read_padworks_csv(self):
+        with open("main/information/padworks.csv") as padworks_csv:
+            reader = csv.DictReader(padworks_csv)
+
+            for row in reader:
+                name = row["name"]
+                seq = row["sequences"].split(", ")
+                rec = row["record"]
+
+                self.padworks.append([name, seq, rec])
+
 
     def draw_interface(self):
         self.padwork_preview = self.create_card(f"{self.title}", 20, 20)
@@ -64,7 +69,7 @@ class PadworkList:
         
         self.buttons = []
 
-        for i, item in enumerate(padworks[start_idx:end_idx], start=start_idx):
+        for i, item in enumerate(self.padworks[start_idx:end_idx], start=start_idx):
             item_y = list_rect.y + (i * ITEM_HEIGHT - self.scroll_pos)
             
             # text = font.render(str(item[0]), True, BLACK)
@@ -77,8 +82,8 @@ class PadworkList:
                 width=595, height=65,
                 color = WHITE,
                 hover_color= FOREGROUND,
-                action=lambda i=i: self.start_padwork(padworks[i]),
-                action_hover=lambda i=i: self.button_hover(padworks[i][0], padworks[i][2])
+                action=lambda i=i: self.start_padwork(self.padworks[i]),
+                action_hover=lambda i=i: self.button_hover(self.padworks[i][0], self.padworks[i][2])
                 )
             self.buttons.append(button)
         
@@ -169,7 +174,12 @@ class PadworkPage:
         
 
         "=== TIMER ==="
+        self.totalCountdown = 4
         self.isCountdownFinish = False
+        self.countdownText = "" 
+
+        self.start_time = 0
+        self.elapsed_time = 0
 
         "=== PADWORKS ==="
         self.padworks = data
@@ -182,6 +192,11 @@ class PadworkPage:
         self.draw_interface()
 
         self.start_padwork()
+    
+    def format_time(self, time_string):
+        minutes, seconds, milliseconds = map(int, time_string.split(':'))
+        return minutes, seconds, milliseconds
+        
 
     def start_padwork(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -220,12 +235,24 @@ class PadworkPage:
             pass
 
     def draw_interface(self):
-        self.pose_requirement = Button(str(self.current_pose), 50, 50, 250, 100, RED, RED, self.no_function)
+        center_x = (SCREEN_WIDTH - 250) // 2 
+        self.pose_requirement_shadow = Attributes(center_x, 20, 250, 50, SHADOW_FOREGROUND)
+        self.pose_requirement = Button(str(self.current_pose), center_x + 5, self.pose_requirement_shadow.rect.top + 10, 250, 50, FOREGROUND, FOREGROUND)
         
-
     def update_interface(self):
         # Constant Changin Interface Put Here
-        self.pose_requirement = Button(str(self.current_pose), 50, 50, 100, 50, GRAY, GRAY, self.no_function)
+        center_x = (SCREEN_WIDTH - 250) // 2
+        self.pose_requirement_shadow = Attributes(center_x, 20, 250, 50, SHADOW_FOREGROUND)
+        self.pose_requirement = Button(str(self.countdownText), center_x + 5, self.pose_requirement_shadow.rect.top + 10, 250, 50, FOREGROUND, FOREGROUND)
+
+
+        # Text Requirements
+        font = pygame.font.Font(None, 48)  # Font and size
+        text = self.current_pose
+        text_surface = font.render(text, True, WHITE)
+        text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, self.pose_requirement.rect.bottom + 48))
+
+        self.screen.blit(text_surface, text_rect)
 
     def update_padwork(self):
         padwork_list = self.padworks[1]
@@ -249,13 +276,33 @@ class PadworkPage:
                         else:
                             self.current_pose = self.next_pose
             else:
-                print("Padworks Done")
-
-                        
+                old_time = self.format_time(self.padworks[2])
+                current_time = self.format_time(self.countdownText)
+                
+                if old_time < current_time or old_time == (0, 0, 0):
+                    self.save_record(current_time)
+                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                else:
+                    print("Faster BRUV")
                         
         except Exception as e:
             print("List Pose", e)
 
+    def save_record(self, record):
+
+        filename = "main/information/padworks.csv" 
+        with open(filename, 'r') as file:
+            reader = csv.reader(file)
+            rows = list(reader)
+
+        for row in rows:
+            if row[0] == self.padworks[0]:
+                row[2] = f"{record[0]:02d}:{record[1]:02d}:{record[2]:02d}"
+                break
+        
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
 
     
     def no_function(self):
@@ -265,26 +312,28 @@ class PadworkPage:
     def pause(self):
         pass
 
-    def timer(self):
-        font = pygame.font.Font(None, 100)
-        
-        self.isCountdownFinish = True
+    def start_countdown(self):
+        if not self.isCountdownFinish:
+            if self.totalCountdown > 0:
+                self.totalCountdown -= 1 / 60
+            else:
+                self.isCountdownFinish = True
 
-        # for i in range (3, 0, -1):
-        #     text = font.render(str(i), True, BLACK)
-        #     text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            minutes = int(self.totalCountdown) // 60
+            seconds = int(self.totalCountdown) % 60
 
-        #     screen.blit(text, text_rect)
-            
-
-        #     screen.fill(WHITE)            
-
-        # else:
-        #     print("Countdown Finish")
+            self.countdownText = f"{minutes:02d}:{seconds:02d}"
 
     def stopwatch(self):
-        pass
+        if self.isCountdownFinish:
+            self.totalCountdown += 1 / 60
 
+            minutes = int(self.totalCountdown) // 60
+            seconds = int(self.totalCountdown) % 60
+            milliseconds = int((self.totalCountdown % 1) * 1000)
+
+            self.countdownText = f"{minutes:02d}:{seconds:02d}:{milliseconds:02d}"
+            
     
     def run(self):
         while self.running:
@@ -298,10 +347,11 @@ class PadworkPage:
                     self.sock.close()
 
             if not self.show_loading:
+                self.pose_requirement_shadow.draw(screen)
                 self.pose_requirement.draw(screen)
                 self.update_interface()
                 if not self.isCountdownFinish:
-                    self.timer()
+                    self.start_countdown()
                 else:
                     self.stopwatch()
                     self.update_padwork()

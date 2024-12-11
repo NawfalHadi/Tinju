@@ -77,7 +77,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 elif body_language_class == "straigth" and not box_form[3]:
                     box_form = [False, False, False, True, False, False]
 
-                    send_data("Straigth")
+                    send_data("Straight")
                 elif body_language_class == "left_hook" and not box_form[4]:
                     box_form = [False, False, False, False, True, False]
 

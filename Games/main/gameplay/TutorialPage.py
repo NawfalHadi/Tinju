@@ -345,7 +345,7 @@ class TutorialPage:
                 self.draw_interface()
             
             elif self.isPaused:
-                pygame.event.post(pygame.event.Event(pygame.QUIT))
+                pygame.quit()
             
     def counter_low_offence(self):
         if self.lowJab_counter < 5:
