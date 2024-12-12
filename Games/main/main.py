@@ -18,19 +18,19 @@ class MainMenu:
 
     def create_button(self):
         self.start_button = Button('Start Game', SCREEN_MARGIN, SCREEN_MARGIN,
-                                    314, 400, RED, GRAY, self.start_game)
+                                    314, 400, FOREGROUND, WHITE, self.start_game)
         self.tutorial_button = Button('Tutorial', self.start_button.rect.right + SCREEN_MARGIN,
-                                      SCREEN_MARGIN, 314, 258, RED, GRAY, self.start_tutorial)
+                                      SCREEN_MARGIN, 314, 258, FOREGROUND, WHITE, self.start_tutorial)
         self.coach_button = Button('As A Coach', self.tutorial_button.rect.right + SCREEN_MARGIN,
-                                   SCREEN_MARGIN, 314, 210, GREEN, GRAY, self.start_coach)
-        self.record_button = Button('1 / 1 / 0', SCREEN_MARGIN, self.start_button.rect.bottom + SCREEN_MARGIN,
-                                   314, 116, BLUE, GRAY, self.start_game)
+                                   SCREEN_MARGIN, 314, 210, FOREGROUND, WHITE, self.start_coach)
+        self.record_button = Button('0 / 0 / 0', SCREEN_MARGIN, self.start_button.rect.bottom + SCREEN_MARGIN,
+                                   314, 116, BLUE, BLUE)
         self.padwork_button = Button("Padwork", self.record_button.rect.right + SCREEN_MARGIN,
-                                     self.tutorial_button.rect.bottom + SCREEN_MARGIN, 314, 258, GREEN, GRAY, self.start_padwork)
+                                     self.tutorial_button.rect.bottom + SCREEN_MARGIN, 314, 258, FOREGROUND, WHITE, self.start_padwork)
         self.shadow_button = Button("Shadow Boxing", self.coach_button.rect.left,
-                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 314, 163, RED, GRAY, self.start_shadow_boxing)
+                                  self.coach_button.rect.bottom + SCREEN_MARGIN, 314, 163, FOREGROUND, WHITE, self.start_shadow_boxing)
         self.exit_button = Button("Exit", self.coach_button.rect.left,
-                                  self.shadow_button.rect.bottom + SCREEN_MARGIN, 314, 123, RED, GRAY, self.exit_game)
+                                  self.shadow_button.rect.bottom + SCREEN_MARGIN, 314, 123, FOREGROUND, WHITE, self.exit_game)
 
     def start_game(self):
         from main.gameplay.ChooseBotPage import ChooseBotPage
