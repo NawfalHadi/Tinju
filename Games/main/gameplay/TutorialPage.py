@@ -32,10 +32,10 @@ class TutorialPage:
 
         "=== TUTORIAL OFFENSE ==="
         self.isTutorialOffenseFinish = False
-        self.tutorial_offense = ["Everytime you throw an offense, pull to guard,\n for throwing the same offense attack",
-                                 "Give Me a 5 Jabs, Like this","Try Throw 5 Straigth",
-                                 "Combine Left Hook and Right Hook 3 Times",
-                                 "Here you throw uppercut, try left 3 times","then right uppercut 3 times also"]
+        self.tutorial_offense = ["Setiap kali memukul tarik lagi pukulan ke guard,\nUntuk melakukan serangan yang sama",
+                                 "Lemparkan 5 pukulan jabs, seperti yang \nada digambar","Sekarang gunakan tangan kanan untuk \nStraight",
+                                 "Lemparkan 5 kali pukulan hook kiri dan kanan \nmasing masing 3 kali pukulan",
+                                 "Lakukan Uppercut Kiri 3 Kali ","Sekarang coba Uppercut Kanan 3 Kali juga"]
 
         self.jab_counter = 0
         self.straigth_counter = 0
@@ -45,7 +45,7 @@ class TutorialPage:
         self.rigthUppercut_counter = 0
 
         "=== TUTORIAL GUARD ==="
-        self.tutorial_guard = ["Lindungin muka pakai tangan kayak gini.", 
+        self.tutorial_guard = ["Lindungin muka pakai tangan seperti ini untuk \nmelakukan gerakan guard.", 
                                "Coba lempar pukulan apa saja, terus guard lagi",
                                "Untuk melindungi badan turunkan siku mu sampe ke perut \ncoba kanan dan kiri 3 kali",
                                "coba untuk menghindar ke kiri seperti ini, lalu ke kanan 3 kali",
@@ -157,9 +157,9 @@ class TutorialPage:
     def next_tutorial(self):
         self.isPaused = False
         self.inTutorialMenu = False
-        self.inTutorialOffensse = True
+        # self.inTutorialOffensse = True
         # self.inTutorialGuard = True
-        # self.inTutorialLowOffence = True
+        self.inTutorialLowOffence = True
 
     def step_offense(self):
         if self.inTutorialOffensse:

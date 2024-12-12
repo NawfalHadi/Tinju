@@ -8,7 +8,7 @@ import pygame
 from main.helper.ui_elements.button import *
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Main Menu Example')
+pygame.display.set_caption('Main Menu')
 
 
 class MainMenu:
@@ -53,7 +53,7 @@ class MainMenu:
         ShadowBoxing().run()
 
     def exit_game(self):
-        pygame.quit()
+        pygame.event.post(pygame.event.Event(pygame.QUIT))
 
     def run(self):
         while self.running:

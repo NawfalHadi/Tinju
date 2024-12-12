@@ -1,5 +1,6 @@
 import time
 import os
+import random
 import csv
 
 import pygame
@@ -172,7 +173,6 @@ class PadworkPage:
         self.show_loading = True
         self.sock = None
         
-
         "=== TIMER ==="
         self.totalCountdown = 4
         self.isCountdownFinish = False
@@ -185,6 +185,7 @@ class PadworkPage:
         self.padworks = data
         self.list_pose = len(data[1])
         self.current_pose = None
+        self.current_image = pygame.image.load(PADWROKS_ACTIONS_IMAGE["Jab"][0])
         self.next_pose = None
         self.isPadworkFinish = False
         
@@ -230,7 +231,7 @@ class PadworkPage:
                             print(self.player_action)
 
                     except ConnectionResetError:
-                        print("error")
+                        print("Connection Reset")
         except :
             pass
 
@@ -263,6 +264,7 @@ class PadworkPage:
                 
                     index = len(padwork_list) - self.list_pose
                     self.current_pose = padwork_list[index]
+                    self.current_image = pygame.image.load(random.choice(PADWROKS_ACTIONS_IMAGE[self.current_pose]))
                     try:
                         self.next_pose = padwork_list[index + 1]
                     except Exception as e:
@@ -339,6 +341,7 @@ class PadworkPage:
         while self.running:
             self.screen.fill(WHITE)
             screen.blit(self.image, (0, 0))
+            screen.blit(self.current_image, (119, 139))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
