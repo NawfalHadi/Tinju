@@ -1,3 +1,5 @@
+INFO_Q_POINTS_MIN = "main/assets/more/q_points_table_min.png"
+
 # IMAGE FOR THE PLACE BACKGROUND
 place_path = "main/assets/place/"
 PLACE_RING = f"{place_path}ring.png"

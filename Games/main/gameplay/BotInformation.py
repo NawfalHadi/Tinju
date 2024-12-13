@@ -3,6 +3,7 @@ import os, csv
 
 
 from main.helper.constants import *
+from main.assets.ImagePath import *
 from main.helper.ui_elements.button import Button
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -15,6 +16,7 @@ class BotInformation:
         self.screen = screen
         self.isRunning = True
         self.bot_info = "main/information/your_bots.csv"
+        self.q_points_info = pygame.image.load(INFO_Q_POINTS_MIN)
 
         "=== BOT INFORMATION ==="
         self.bot_name = ""
@@ -64,6 +66,8 @@ class BotInformation:
 
     def draw_interface(self):
         self.bot_information, self.bot_training = self.create_card(self.bot_name, 20, 20)
+        self.bot_sparring_btn = Button("Simulate My Bot Versus Bot", self.bot_information.right + 10, 392, self.q_points_info.get_rect().width, 50, FOREGROUND, WHITE, None, 32)
+        self.bot_training_btn = Button("Train The Bot", self.bot_information.right + 10, self.bot_sparring_btn.rect.bottom + 20, self.q_points_info.get_rect().width, 50, FOREGROUND, WHITE, self.start_training, 32)
 
     def create_card(self, text, rightOf, bottomOf):
         rect = pygame.Rect(rightOf, bottomOf, 315, 536)
@@ -105,15 +109,19 @@ class BotInformation:
 
     def run(self):
         while self.isRunning:
-            self.screen.fill(BACKGROUND) 
+            self.screen.fill(BACKGROUND)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
 
                 self.bot_training.is_clicked(event)
+                self.bot_training_btn.is_clicked(event)
 
             self.draw_interface()
+            self.screen.blit(pygame.image.load(INFO_Q_POINTS_MIN), (self.bot_information.right + 10, self.bot_information.top)) 
+            self.bot_sparring_btn.draw(screen)
+            self.bot_training_btn.draw(screen)
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
