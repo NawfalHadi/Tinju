@@ -209,7 +209,7 @@ class PadworkPage:
         threading.Thread(target=self.start_controller, daemon=True).start()
 
     def start_controller(self):
-        script_path = os.path.join("main", "gameplay", "Controller.py")
+        script_path = os.path.join("main", "gameplay", "PoseController.py")
         self.controller_process = subprocess.Popen(["python", script_path])
 
     def receive_data(self):
@@ -264,7 +264,7 @@ class PadworkPage:
                 
                     index = len(padwork_list) - self.list_pose
                     self.current_pose = padwork_list[index]
-                    self.current_image = pygame.image.load(random.choice(PADWROKS_ACTIONS_IMAGE[self.current_pose]))
+                    self.current_image = pygame.image.load(PADWROKS_ACTIONS_IMAGE[self.current_pose][0])
                     try:
                         self.next_pose = padwork_list[index + 1]
                     except Exception as e:
