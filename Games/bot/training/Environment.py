@@ -30,10 +30,10 @@ ACTIONS_EFFECTS = {
 
         },
         "point_training": {
-            "Idle": 20, "Jab": -10, "Low_Jab": -12, "Straight": -10, "Low_Straight": -12,
+            "Idle": 0, "Jab": -10, "Low_Jab": -12, "Straight": -10, "Low_Straight": -12,
             "Left_Hook": -15, "Left_BodyHook": -15, "Right_Hook": -15, "Right_BodyHook": -15,
-            "Left_Uppercut": 20, "Right_Uppercut": -20, "Guard": 20, "Slip_Left": 20,
-            "Slip_Right": 20, "Duck": 30, "Guard_LeftBody": 30, "Guard_RightBody": 30
+            "Left_Uppercut": -20, "Right_Uppercut": -20, "Guard": 0, "Slip_Left": -2,
+            "Slip_Right": -2, "Duck": -2, "Guard_LeftBody": -2, "Guard_RightBody": -2
         },
     },
     "Jab": {
@@ -217,10 +217,10 @@ ACTIONS_EFFECTS = {
             "Slip_Right": 0, "Duck":0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
         "point_training": {
-            "Idle": 15, "Jab": 10, "Low_Jab": -10, "Straight": 10, "Low_Straight": -10,
+            "Idle": 0, "Jab": 10, "Low_Jab": -10, "Straight": 10, "Low_Straight": -10,
             "Left_Hook": 5, "Left_BodyHook": -15, "Right_Hook": 5, "Right_BodyHook": -15,
-            "Left_Uppercut": 2, "Right_Uppercut": 2, "Guard": 20, "Slip_Left": 25,
-            "Slip_Right": 25, "Duck": 30, "Guard_LeftBody": 30, "Guard_RightBody": 30
+            "Left_Uppercut": -2, "Right_Uppercut": -2, "Guard": 0, "Slip_Left": 0,
+            "Slip_Right": 0, "Duck": 0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
     },
     "Slip_Left" : {
@@ -234,10 +234,10 @@ ACTIONS_EFFECTS = {
             "Slip_Right": 0, "Duck":0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
         "point_training": {
-            "Idle": 5, "Jab": 15, "Low_Jab": 5, "Straight": -5, "Low_Straight": 5,
+            "Idle": 0, "Jab": 15, "Low_Jab": 5, "Straight": -5, "Low_Straight": 5,
             "Left_Hook": 5, "Left_BodyHook": -15, "Right_Hook": -3, "Right_BodyHook": -10,
-            "Left_Uppercut": 10, "Right_Uppercut": 10, "Guard": 5, "Slip_Left": 10,
-            "Slip_Right": 10, "Duck": 10, "Guard_LeftBody": 10, "Guard_RightBody": 10
+            "Left_Uppercut": 10, "Right_Uppercut": 10, "Guard": -2, "Slip_Left": -2,
+            "Slip_Right": -2, "Duck": 0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
     },
     "Slip_Right" : {
@@ -251,10 +251,10 @@ ACTIONS_EFFECTS = {
             "Slip_Right": 0, "Duck":0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
         "point_training": {
-            "Idle": 5, "Jab": 15, "Low_Jab": 5, "Straight": 5, "Low_Straight": 5,
+            "Idle": 0, "Jab": 15, "Low_Jab": 5, "Straight": 5, "Low_Straight": 5,
             "Left_Hook": -5, "Left_BodyHook": -10, "Right_Hook": -3, "Right_BodyHook": -15,
-            "Left_Uppercut": 10, "Right_Uppercut": 10, "Guard": 5, "Slip_Left": 10,
-            "Slip_Right": 10, "Duck": 10, "Guard_LeftBody": 10, "Guard_RightBody": 10
+            "Left_Uppercut": 10, "Right_Uppercut": 10, "Guard": 0, "Slip_Left": 0,
+            "Slip_Right": 0, "Duck": 0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
     },
     "Duck" : {
@@ -285,10 +285,10 @@ ACTIONS_EFFECTS = {
             "Slip_Right": 0, "Duck":0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
         "point_training": {
-            "Idle": 5, "Jab": 5, "Low_Jab": -5, "Straight": -10, "Low_Straight": 10,
+            "Idle": 0, "Jab": 5, "Low_Jab": -5, "Straight": -10, "Low_Straight": 10,
             "Left_Hook": 10, "Left_BodyHook": -10, "Right_Hook": -15, "Right_BodyHook": 15,
-            "Left_Uppercut": 3, "Right_Uppercut": 3, "Guard": 5, "Slip_Left": 5,
-            "Slip_Right": 5, "Duck": 5, "Guard_LeftBody": 3, "Guard_RightBody": 3
+            "Left_Uppercut": 3, "Right_Uppercut": 3, "Guard": 0, "Slip_Left": -2,
+            "Slip_Right": -2, "Duck": 0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
     },
     "Guard_RightBody" : {
@@ -302,10 +302,10 @@ ACTIONS_EFFECTS = {
             "Slip_Right": 0, "Duck":0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
         "point_training": {
-            "Idle": 5, "Jab": -5, "Low_Jab": 5, "Straight": 5, "Low_Straight": -10,
+            "Idle": 0, "Jab": -5, "Low_Jab": 5, "Straight": 5, "Low_Straight": -10,
             "Left_Hook": -10, "Left_BodyHook": 10, "Right_Hook": 15, "Right_BodyHook": -15,
-            "Left_Uppercut": 3, "Right_Uppercut": 3, "Guard": 5, "Slip_Left": 5,
-            "Slip_Right": 5, "Duck": 5, "Guard_LeftBody": 3, "Guard_RightBody": 3
+            "Left_Uppercut": 3, "Right_Uppercut": 3, "Guard": -2, "Slip_Left": -2,
+            "Slip_Right": -2, "Duck": 0, "Guard_LeftBody": 0, "Guard_RightBody": 0
         },
     },
       
@@ -330,9 +330,11 @@ BLUE = (0, 0, 255)
 GRAY = (200, 200, 200)
 
 class Environment:
-    def __init__(self) -> None:
+    def __init__(self, action, step) -> None:
         self.screen = window
         self.isRunning = True
+        self.action = action
+        self.step = step
         
         self.bot_action = ACTIONS[0]
         self.bot_maxHp = 100
@@ -351,7 +353,8 @@ class Environment:
         self.player_successDefense = 0
         
         "=== TIMER ==="
-        self.total_seconds = 3 * 1
+        self.total_seconds = 2 * 60
+        self.isTimerFinish = False
 
         "=== TRAINING VARIABLE ==="
         self.Q = self.load_q_table()
@@ -411,8 +414,13 @@ class Environment:
         while self.player_hp > 0 and self.bot_hp > 0:
             # keys = pygame.key.get_pressed()
             # self.handle_key_pressed(keys)
-            self.player_action = random.choice(ACTIONS)
+            # self.player_action = random.choice(ACTIONS)
+            # self.player_action = ACTIONS[0]
 
+            if self.player_stm == 100:
+                self.player_action = action
+            elif self.player_stm < ACTIONS_EFFECTS[self.player_action]["stamina_cost"]:
+                self.player_action = ACTIONS[0]
 
             if self.player_stm >= ACTIONS_EFFECTS[self.player_action]["stamina_cost"]:
                 # Player
@@ -447,9 +455,10 @@ class Environment:
     
     def choose_action(self, state):
         if random.uniform(0, 1) < epsilon:
-            return random.choice(range(len(ACTIONS) - 1))  # Explore
+            return random.choice(range(len(ACTIONS) - 1)), "R :"  # Explore
         else:
-            return np.argmax(self.Q[state])  # Exploit
+            return np.argmax(self.Q[state]), "Q :"  # Exploit
+        
 
     def update_q_table(self, state, action, reward, next_state):
         """Updates the Q-table using the Q-learning formula."""
@@ -459,11 +468,11 @@ class Environment:
         td_error = td_target - self.Q[state][action]
         self.Q[state][action] += alpha * td_error
 
-    def save_q_table(self, q_table, filename="../model/q_table.pkl"):
+    def save_q_table(self, q_table, filename="../model/new_q.pkl"):
         with open(filename, "wb") as f:
             pickle.dump(dict(q_table), f)
 
-    def load_q_table(self, filename="../model/q_table.pkl"):
+    def load_q_table(self, filename="../model/new_q.pkl"):
         try:
             with open(filename, "rb") as f:
                 return defaultdict(lambda: np.zeros(17), pickle.load(f))
@@ -473,13 +482,15 @@ class Environment:
     def generate_bot_action(self):
         while self.player_hp > 0 and self.bot_hp > 0:
             state = self.get_state()
-            get_action = self.choose_action(state)
+            get_action, get_chooce = self.choose_action(state)
             
             self.bot_action = ACTIONS[get_action]
             self.handle_bot_action()
 
+
             next_state = self.get_state()
             reward = self.calculate_reward()
+            print(get_chooce, self.bot_action, "|| Reward :", reward)
             self.update_q_table(state, get_action, reward, next_state)
 
             time.sleep(0.2) 
@@ -487,13 +498,19 @@ class Environment:
     def calculate_reward(self):
         point = 0
 
-        if self.player_hp < self.bot_hp:
-            point += 20
-        elif self.player_hp > self.bot_hp:
-            point -= 20
+        # if self.player_hp < self.bot_hp and self.bot_action != "Idle":
+        #     point += 10
+        # elif self.player_hp > self.bot_hp:
+        #     point -= 10
+
+        if self.player_action == ACTIONS[0] and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
+            point += 10
+
+        if self.player_stm < 40 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
+            point += 10
 
         if self.bot_stm < ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]:
-            point -= 20
+            point -= 10
 
         if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
             point += 10
@@ -526,6 +543,25 @@ class Environment:
         self.player_stm = max(0, min(self.player_maxHp, self.player_stm))
         self.player_hp = max(0, min(self.player_maxStm, self.player_hp))
 
+    def start_timer(self):
+        if self.total_seconds > 0:
+            self.total_seconds -= 1 / 60
+        else:
+            self.isTimerFinish = True
+
+
+        minutes = int(self.total_seconds) // 60
+        seconds = int(self.total_seconds) % 60
+        
+        text = f"{minutes}:{seconds:02d}"
+        font = pygame.font.Font(None, 60)
+
+        self.screen.blit(font.render(text, True, BLACK), (50, 300))
+
+        training_text = f"Episode Training {self.step} For {self.action}"
+        self.screen.blit(font.render(training_text, True, BLACK), (50, 400))
+        
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
@@ -534,11 +570,19 @@ class Environment:
                 if event.type == pygame.QUIT:
                     self.isRunning = False
 
+            self.start_timer()
+
             if self.bot_hp == 0 or self.player_hp == 0:
                 self.save_q_table(self.Q)
                 print(f"Game Over : Bot Health: {self.bot_hp}, Player Health: {self.player_hp}")
                 self.isRunning = False
                 continue
+
+            if self.isTimerFinish:
+                self.save_q_table(self.Q)
+                print(f"Game Over : Bot Health: {self.bot_hp}, Player Health: {self.player_hp}")
+                self.isRunning = False
+
 
             text1 = font.render(f"Bot Thread: {self.bot_action}", True, BLACK)
             text2 = font.render(f"User Action: {self.player_action}", True, BLACK)
@@ -566,9 +610,14 @@ class Environment:
         self.screen.fill(WHITE)
         if self.player_hp == 0:
             result_text = font.render("You Lost! Bot Wins!", True, BLACK)
-        else:
+        elif self.bot_hp == 0:
             result_text = font.render("You Win! Bot Loses!", True, BLACK)
-
+        elif self.total_seconds == 0:
+            if self.player_hp < self.bot_hp:
+                result_text = font.render("You Lost! Bot Wins! By Anonymous Decision", True, BLACK)
+            elif self.player_hp > self.bot_hp:
+                result_text = font.render("You wIN! Bot Loses! By Anonymous Decision", True, BLACK)
+  
         window.blit(result_text, (width // 2 - result_text.get_width() // 2, height // 2))
 
         pygame.display.update()
@@ -579,19 +628,31 @@ class Environment:
 
 # Main script
 if __name__ == "__main__":
-    num_runs = int(input("Enter the number of training cycles to run: "))
-    for i in range(num_runs):
-        print(f"Training Cycle {i + 1}")
-        
-        # Re-initialize Pygame to ensure it's ready for each new training cycle
-        pygame.init()
+    runs = 1
+    for action in ACTIONS:
+        for i in range(runs + 1):
+            print(f"Training Cycle {i + 1}")
 
-        # Create a new instance of the Environment class
-        env = Environment()
-        env.run()
-        
-        # Quit Pygame after each training cycle to ensure it's properly reset
+            pygame.init()
+
+            env = Environment(action, i+1)
+            env.run()
+
     pygame.quit()
+
+    # num_runs = int(input("Enter the number of training cycles to run: "))
+    # for i in range(num_runs):
+    #     print(f"Training Cycle {i + 1}")
+        
+    #     # Re-initialize Pygame to ensure it's ready for each new training cycle
+    #     pygame.init()
+
+    #     # Create a new instance of the Environment class
+    #     env = Environment()
+    #     env.run()
+        
+    #     # Quit Pygame after each training cycle to ensure it's properly reset
+    # pygame.quit()
 
 
             

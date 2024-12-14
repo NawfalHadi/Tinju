@@ -9,7 +9,7 @@ from main.helper.ui_elements.button import Button
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Bot Information')  
 
-new_row = ["Jubaer", "main/bot/yours/Jubaer.pkl", "1/0/0", "1"]
+new_row = ["Jubaer", "main/bot/yours/q_table.pkl", "1/0/0", "1"]
 
 class BotInformation:
     def __init__(self):
@@ -66,7 +66,7 @@ class BotInformation:
 
     def draw_interface(self):
         self.bot_information, self.bot_training = self.create_card(self.bot_name, 20, 20)
-        self.bot_sparring_btn = Button("Simulate My Bot Versus Bot", self.bot_information.right + 10, 392, self.q_points_info.get_rect().width, 50, FOREGROUND, WHITE, None, 32)
+        self.bot_sparring_btn = Button("Simulate My Bot Versus Bot", self.bot_information.right + 10, 392, self.q_points_info.get_rect().width, 50, FOREGROUND, WHITE, self.start_fight, 32)
         self.bot_training_btn = Button("Train The Bot", self.bot_information.right + 10, self.bot_sparring_btn.rect.bottom + 20, self.q_points_info.get_rect().width, 50, FOREGROUND, WHITE, self.start_training, 32)
 
     def create_card(self, text, rightOf, bottomOf):
@@ -104,8 +104,11 @@ class BotInformation:
         BotTraining(model).run()
 
     def start_fight(self):
-        # Your bot vs default bot
-        pass
+        player_bot = self.bot_path
+        opponent_bot = "main/bot/opponents/bot_balanced.pkl"
+
+        from main.gameplay.BotVersusBot import BotVersusBot
+        BotVersusBot(player_bot, opponent_bot).run()
 
     def run(self):
         while self.isRunning:
@@ -116,6 +119,7 @@ class BotInformation:
                     self.isRunning = False
 
                 self.bot_training.is_clicked(event)
+                self.bot_sparring_btn.is_clicked(event)
                 self.bot_training_btn.is_clicked(event)
 
             self.draw_interface()
