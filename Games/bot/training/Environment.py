@@ -353,7 +353,7 @@ class Environment:
         self.player_successDefense = 0
         
         "=== TIMER ==="
-        self.total_seconds = 2 * 60
+        self.total_seconds = 1.5 * 60
         self.isTimerFinish = False
 
         "=== TRAINING VARIABLE ==="
@@ -468,11 +468,11 @@ class Environment:
         td_error = td_target - self.Q[state][action]
         self.Q[state][action] += alpha * td_error
 
-    def save_q_table(self, q_table, filename="../model/new_q.pkl"):
+    def save_q_table(self, q_table, filename="../model/100_q_learn.pkl"):
         with open(filename, "wb") as f:
             pickle.dump(dict(q_table), f)
 
-    def load_q_table(self, filename="../model/new_q.pkl"):
+    def load_q_table(self, filename="../model/100_q_learn.pkl"):
         try:
             with open(filename, "rb") as f:
                 return defaultdict(lambda: np.zeros(17), pickle.load(f))
@@ -512,11 +512,13 @@ class Environment:
         if self.bot_stm < ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]:
             point -= 10
 
-        if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
+        if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 5:
             point += 10
-        elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
-            # Success Guard
-            point += 20
+        # elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
+        #     # Success Guard
+        #     point += 20
+        elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 5:
+            point -= 10
 
         action_reward = point + ACTIONS_EFFECTS[self.bot_action]["point_training"][self.player_action]
 
@@ -582,6 +584,7 @@ class Environment:
                 self.save_q_table(self.Q)
                 print(f"Game Over : Bot Health: {self.bot_hp}, Player Health: {self.player_hp}")
                 self.isRunning = False
+                continue
 
 
             text1 = font.render(f"Bot Thread: {self.bot_action}", True, BLACK)
@@ -612,12 +615,14 @@ class Environment:
             result_text = font.render("You Lost! Bot Wins!", True, BLACK)
         elif self.bot_hp == 0:
             result_text = font.render("You Win! Bot Loses!", True, BLACK)
-        elif self.total_seconds == 0:
+        elif self.isTimerFinish:
             if self.player_hp < self.bot_hp:
                 result_text = font.render("You Lost! Bot Wins! By Anonymous Decision", True, BLACK)
             elif self.player_hp > self.bot_hp:
                 result_text = font.render("You wIN! Bot Loses! By Anonymous Decision", True, BLACK)
-  
+            else:
+                result_text = font.render("Error", True, BLACK)
+
         window.blit(result_text, (width // 2 - result_text.get_width() // 2, height // 2))
 
         pygame.display.update()
@@ -628,9 +633,9 @@ class Environment:
 
 # Main script
 if __name__ == "__main__":
-    runs = 1
+    runs = 50
     for action in ACTIONS:
-        for i in range(runs + 1):
+        for i in range(runs):
             print(f"Training Cycle {i + 1}")
 
             pygame.init()
