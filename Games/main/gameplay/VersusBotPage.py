@@ -38,17 +38,19 @@ class VersusBotPage:
         self.judges_off = [[10, 10], [10, 10], [10, 10]] 
 
         "=== KO SYSTEM ==="
-        self.ko_target_speed = 1
+        self.ko_target_speed = 10
+        self.ko_target_size = 600
+        self.ko_seconds = 0
         self.min_pos = 400
         self.max_pos = 0
         self.cur_pos = 400
         self.isGoLeft = False
-        
+
         "=== THREADING ==="
         self.controller_process = None
 
         "=== TIMER ==="
-        self.total_seconds = 3 * 60
+        self.total_seconds = 1 * 30
         
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
@@ -63,9 +65,11 @@ class VersusBotPage:
         self.bot_maxStm = 100
         self.bot_stamina = self.bot_maxStm
 
-        self.isBotKO = True
+        self.isBotKO = False
+        self.isBotTKO = False
         self.bot_round_ko = 0
         self.bot_total_ko = 0
+
         self.bot_offenseRate = 0
         self.bot_defenseRate = 0
         "=============================="
@@ -79,11 +83,12 @@ class VersusBotPage:
 
         self.player_maxStm = 100
         self.player_stamina = self.player_maxStm
-        # Stamina helps recovery
 
         self.isPlayerKO = False
+        self.isPlayerTKO = False
         self.player_round_ko = 0
         self.player_total_ko = 0
+
         self.player_offenseRate = 0
         self.player_defenseRate = 0
         "============================="
@@ -200,7 +205,7 @@ class VersusBotPage:
         Attributes(self.screen.get_width() - (bot_maxHp + SCREEN_MARGIN), SCREEN_MARGIN, bot_maxHp, 40, BLACK).draw(screen, corner_bottomLeft = 15)
         Attributes(self.screen.get_width() - (bot_hp + SCREEN_MARGIN), SCREEN_MARGIN, bot_hp, 40, RED).draw(screen, corner_bottomLeft = 15)
         Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_maxStm, 20, BLACK).draw(screen, corner_bottomLeft = 15)
-        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLACK).draw(screen, corner_bottomLeft = 15)
+        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLUE).draw(screen, corner_bottomLeft = 15)
 
         font = pygame.font.Font(None, 60)
         screen.blit(font.render(self.bot_action, True, BLACK), (self.player_stamina_bg.rect.left, self.player_stamina_bg.rect.bottom))
@@ -223,49 +228,110 @@ class VersusBotPage:
         self.timer = screen.blit(font.render(text, True, BLACK),
                     (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))         
  
-    def three_knockouts(self, player):
-        if player == "Bot":
-            pass
-        elif player == "Player":
-            pass
+    def knockout_check(self):
+        if self.player_hp <= 0:
+            self.player_round_ko += 1
+            self.player_total_ko += 1
+            if self.player_round_ko == 3:
+                self.isPlayerTKO = True
+                self.total_seconds = 0
+            else:
+                self.isPlayerKO = True
+                self.knockout_speed(self.player_total_ko)
+        elif self.bot_hp <= 0:
+            self.bot_round_ko += 1
+            self.bot_total_ko += 1
+            if self.bot_round_ko == 3:
+                self.isBotTKO = True
+                self.total_seconds = 0
+            else:
+                self.isBotKO = True
+                self.knockout_speed(self.bot_total_ko)
     
     def knockout_speed(self, total_ko):
         if total_ko == 1:
-            self.ko_target_speed = 1.2
+            self.ko_target_speed = 10
+            self.ko_target_size = 600
         elif total_ko == 2:
-            self.ko_target_speed = 0.8
-        elif total_ko == 3:
-            self.ko_target_speed = 0.4
+            self.ko_target_speed = 20
+            self.ko_target_size = 500
+        elif total_ko == 3 or total_ko == 4:
+            self.ko_target_speed = 40
+            self.ko_target_size = 350
         else:
-            self.ko_target_speed = 0.1
+            self.ko_target_size = 200
+            self.ko_target_speed = 50
 
     def knockout_interface(self):        
         self.knockout_frame = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) + 200, 800, 50, WHITE).draw(self.screen)
         
         if self.cur_pos == self.min_pos:
-            self.cur_pos -= 10
-            print("True", self.cur_pos)
+            self.cur_pos -= self.ko_target_speed
             self.isGoLeft = False
         elif self.cur_pos == self.max_pos:
-            self.cur_pos +=10
-            print("False", self.cur_pos)
-            self.isGoLeft = True
+            self.cur_pos += self.ko_target_speed
+            self.isGoLeft = self.ko_target_speed
         else:
             if self.isGoLeft:
-                self.cur_pos += 10
+                self.cur_pos += self.ko_target_speed
             elif not self.isGoLeft:
-                self.cur_pos -= 10
+                self.cur_pos -= self.ko_target_speed
 
-        self.knockout_target = Attributes((SCREEN_WIDTH // 2) - self.cur_pos, (SCREEN_HEIGHT // 2) + 202, 400, 46, FOREGROUND).draw(self.screen)
+        self.knockout_target = Attributes((SCREEN_WIDTH // 2) - self.cur_pos, (SCREEN_HEIGHT // 2) + 202, self.ko_target_size, 46, FOREGROUND)
+        self.knockout_target.draw(self.screen)
+
+        left_target, right_target = self.knockout_target.rect.left, self.knockout_target.rect.right
+        
+        self.knockout_square = Attributes((SCREEN_WIDTH // 2) - 0, (SCREEN_HEIGHT // 2) + 202, 10, 46, BLACK)
+        self.knockout_square.draw(self.screen)
+
+        if left_target < self.knockout_square.rect.centerx and self.knockout_square.rect.centerx < right_target:
+            if self.isPlayerKO:
+                self.player_hp += 0.2
+            elif self.isBotKO:
+                self.bot_hp += 0.2
+
+        if self.player_hp >= 100:
+            self.player_hp = self.player_maxHp * 0.75
+            self.isPlayerKO = False
+            self.ko_seconds = 0
+        elif self.bot_hp >= 100:
+            self.bot_hp = self.bot_maxhp * 0.75
+            self.isBotKO = False
+            self.ko_seconds = 0
+
+        self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
+        self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
+
+
+    def knockout_timer(self):
+        seconds = int(self.ko_seconds) % 60
+
+        if self.ko_seconds < 10:
+            self.ko_seconds += 1 / 60
+            font = pygame.font.Font(None, 36)
+            text = font.render(str(seconds), True, (WHITE))
+
+            screen.blit(text, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        else:
+            if self.isPlayerKO:
+                self.isPlayerTKO = True
+            elif self.isBotKO:
+                self.isBotTKO = True
+                
+            self.total_seconds = 0
 
     def scoring_system(self):
+        bot_ko = self.bot_round_ko
+        player_ko = self.player_round_ko
+
         if self.player_hp < self.bot_hp:
             self.judges_hp[self.current_rounds - 1][0] -= 1
         elif self.player_hp > self.bot_hp:
             self.judges_hp[self.current_rounds - 1][1] -= 1
 
         if self.player_offenseRate < self.bot_offenseRate:
-            self.judges_off[self.current_rounds - 1][0] -= 1
+            self.judges_off[self.current_rounds - 1][0] -= 1 
         elif self.player_offenseRate > self.bot_offenseRate:
             self.judges_off[self.current_rounds - 1][1] -= 1
 
@@ -274,6 +340,13 @@ class VersusBotPage:
         elif self.player_defenseRate > self.bot_defenseRate:
             self.judges_def[self.current_rounds - 1][1] -= 1
 
+        self.judges_hp[self.current_rounds - 1][0] -= player_ko
+        self.judges_hp[self.current_rounds - 1][1] -= bot_ko
+        self.judges_off[self.current_rounds - 1][0] -= player_ko
+        self.judges_off[self.current_rounds - 1][1] -= bot_ko
+        self.judges_def[self.current_rounds - 1][0] -= player_ko
+        self.judges_def[self.current_rounds - 1][1] -= bot_ko
+        
         self.scroing_round += 1
             
     def hitpoint_stamina_calculation(self):
@@ -361,7 +434,7 @@ class VersusBotPage:
 
     def continue_round(self):
         self.isTimerFinish = False
-        self.total_seconds = 1 * 3
+        self.total_seconds = 3 * 60
 
         hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
         hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
@@ -375,8 +448,27 @@ class VersusBotPage:
         playerScore = hpPlayer_scoring + offPlayer_scoring + defPlayer_scoring
         botScore = hpBot_scoring + offBot_scoring + defBot_scoring
             
-        if self.current_rounds < 3:
+        if self.isPlayerTKO:
+            print("Bot Win by Technical Knockout")
+            time.sleep(1)
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+        elif self.isBotTKO:
+            print("Player Win by Technical Knockout")
+            time.sleep(1)
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+        
+        elif self.current_rounds < 3:
             self.current_rounds += 1
+
+            self.bot_round_ko = 0
+            self.player_round_ko = 0
+
+            self.bot_offenseRate = 0
+            self.bot_defenseRate = 0
+            self.player_offenseRate = 0
+            self.player_defenseRate = 0
+            
         elif self.current_rounds == 3:
             if playerScore > botScore:
                 print("Player Win by Anonimous Decision")
@@ -384,6 +476,7 @@ class VersusBotPage:
                 print("Draw")
             elif playerScore < botScore:
                 print("Bot Win by Anonimous Decision")
+        
             
             time.sleep(1)
             pygame.event.post(pygame.event.Event(pygame.QUIT))
@@ -507,9 +600,10 @@ class VersusBotPage:
 
                 if self.isBotKO or self.isPlayerKO:
                     self.knockout_interface()
-                    
+                    self.knockout_timer()
                 else:    
                     self.bot_action_calculation()
+                    self.knockout_check()
                 
                 self.update_interface()
                 self.start_timer()
