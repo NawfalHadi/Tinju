@@ -309,8 +309,8 @@ class VersusBotPage:
 
         if self.ko_seconds < 10:
             self.ko_seconds += 1 / 60
-            font = pygame.font.Font(None, 36)
-            text = font.render(str(seconds), True, (WHITE))
+            font = pygame.font.Font(None, 150)
+            text = font.render(str(seconds), True, (FOREGROUND))
 
             screen.blit(text, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         else:
