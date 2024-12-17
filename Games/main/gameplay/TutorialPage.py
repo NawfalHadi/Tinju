@@ -4,11 +4,13 @@ import pygame
 import socket
 import threading
 import subprocess
+import time
 
 from main.assets.ImagePath import *
 from main.helper.constants import *
 from main.helper.ui_elements.TextBox import TextBox
 from main.helper.ui_elements.button import Button
+from main.helper.ui_elements.Attribute import Attributes
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Tutorial')
@@ -29,6 +31,7 @@ class TutorialPage:
         self.inTutorialOffensse = False
         self.inTutorialGuard = False
         self.inTutorialLowOffence = False
+        self.inTutorialKnockout = False
 
         "=== TUTORIAL OFFENSE ==="
         self.isTutorialOffenseFinish = False
@@ -68,6 +71,19 @@ class TutorialPage:
         self.lowStraigth_counter = 0
         self.lowLeftHook_counter = 0
         self.lowRigthHook_counter = 0
+
+        "=== TUTORIAL KNOCKOUT ==="
+        self.tutorial_knockout = "Pastikan garis hitam berada antara kotak pink"
+
+        "=== KO SYSTEM ==="
+        self.ko_target_speed = 10
+        self.ko_target_size = 600
+        self.ko_progress = 0
+        self.min_pos = 400
+        self.max_pos = 0
+        self.cur_pos = 400
+
+        self.isGoLeft = False
 
         "=== CHANGING VIEW ==="
         self.explanation = ""
@@ -130,6 +146,8 @@ class TutorialPage:
                                    300, 100, GRAY, FOREGROUND, self.next_tutorial)
         if self.image:
             screen.blit(self.image, (327, 71))
+        else:
+            pass
     
     def step_loading(self):
         if self.isLoading:
@@ -159,7 +177,8 @@ class TutorialPage:
         self.inTutorialMenu = False
         # self.inTutorialOffensse = True
         # self.inTutorialGuard = True
-        self.inTutorialLowOffence = True
+        # self.inTutorialLowOffence = True
+        self.inTutorialKnockout = True
 
     def step_offense(self):
         if self.inTutorialOffensse:
@@ -342,10 +361,7 @@ class TutorialPage:
             
             elif self.lowLeftHook_counter < 3 or self.lowRigthHook_counter < 3:
                 self.explanation = self.tutorial_bodyOffense[3]
-                self.draw_interface()
-            
-            elif self.isPaused:
-                pygame.quit()
+                self.draw_interface()    
             
     def counter_low_offence(self):
         if self.lowJab_counter < 5:
@@ -366,7 +382,60 @@ class TutorialPage:
             elif self.player_action == "Right_BodyHook" :
                 self.lowRigthHook_counter += 1
                 print("Right Body Hook:", self.lowRigthHook_counter)
+    
+    def step_knockout(self):
+        if self.inTutorialKnockout:
+            if self.ko_progress == 100:
+                self.image = pygame.image.load(TUTORIAL_DONE_IMG)
+                self.explanation = "Mantap, Sekarang coba lah permainan nya"
+                self.draw_interface()
+
+                try:
+                    pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
+                except Exception as e:
+                    print(e)
+            else:
+                self.explanation = self.tutorial_knockout
+                self.image = None
+                self.draw_interface()
+                
+                self.knockout_frame = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2), 800, 50, WHITE).draw(self.screen)
+                self.knockout_target = Attributes((SCREEN_WIDTH // 2) - self.cur_pos, (SCREEN_HEIGHT // 2) + 2, self.ko_target_size, 46, FOREGROUND)
+                self.knockout_target.draw(self.screen)
+
+                self.knockout_square = Attributes((SCREEN_WIDTH // 2) - 0, (SCREEN_HEIGHT // 2) + 2, 10, 46, BLACK)
+                self.knockout_square.draw(self.screen)
+
+                ko_progress = ((self.ko_progress) / 100 * 800)
+
+                self.knockout_bg_progress = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) - 100, 800, 50, WHITE).draw(self.screen)
+                self.knockout_value_progress = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) - 99, ko_progress, 49, GREEN).draw(self.screen)
+                self.update_knockout()
+
+
+
+    def update_knockout(self):
+        if self.cur_pos == self.min_pos:
+            self.cur_pos -= self.ko_target_speed
+            self.isGoLeft = False
+        elif self.cur_pos == self.max_pos:
+            self.cur_pos += self.ko_target_speed
+            self.isGoLeft = self.ko_target_speed
+        else:
+            if self.isGoLeft:
+                self.cur_pos += self.ko_target_speed
+            elif not self.isGoLeft:
+                self.cur_pos -= self.ko_target_speed
+
+        left_target, right_target = self.knockout_target.rect.left, self.knockout_target.rect.right
+        if left_target < self.knockout_square.rect.centerx and self.knockout_square.rect.centerx < right_target:
+            self.ko_progress += 0.5
+
+        self.ko_progress = max(0, min(100, self.ko_progress))
+
         
+
+
     def handle_key_press(self):
         # Temporary Function
         keys = pygame.key.get_pressed()  # Get a list of all pressed keys
@@ -394,7 +463,9 @@ class TutorialPage:
             self.screen.fill(BACKGROUND)
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
+                    print("Quit")
+                    time.sleep(2)
                     self.controller_process.terminate()
                     self.sock.close()
                     self.running = False
@@ -417,6 +488,9 @@ class TutorialPage:
             self.step_offense()
             self.step_guard()
             self.step_low_offence()
+            self.step_knockout()
+
+            
             
             pygame.display.update()
             pygame.time.Clock().tick(60)

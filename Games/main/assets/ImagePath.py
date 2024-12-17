@@ -24,6 +24,7 @@ TUTORIAL_LEFT_BODY_HOOK_IMG = f"{tutorial_path}LBH.png"
 TUTORIAL_RIGHT_BODY_HOOK_IMG = f"{tutorial_path}RBH.png"
 TUTORIAL_DUCK_1_IMG = f"{tutorial_path}D1.png"
 TUTORIAL_DUCK_2_IMG = f"{tutorial_path}D2.png"
+TUTORIAL_DONE_IMG = f"{tutorial_path}DONE.png"
 
 
 bot_path = "main/assets/bot/"
