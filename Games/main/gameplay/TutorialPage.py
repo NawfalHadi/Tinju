@@ -387,7 +387,7 @@ class TutorialPage:
         if self.inTutorialKnockout:
             if self.ko_progress == 100:
                 self.image = pygame.image.load(TUTORIAL_DONE_IMG)
-                self.explanation = "Mantap, Sekarang coba lah permainan nya"
+                self.explanation = "Mantap, Sekarang coba lah permainan nya, idle untuk mengarahkan \ngaris hitam ke kiri dan guard mengarahkan ke kanan"
                 self.draw_interface()
 
                 try:
