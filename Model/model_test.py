@@ -36,7 +36,7 @@ PURPLE = (105, 40, 32)
 # with open("boxing_detection.pkl", 'rb') as f:
 #     model = pickle.load(f)
 
-with open("v4_model.pkl", 'rb') as f:
+with open("v5_model.pkl", 'rb') as f:
     model = pickle.load(f)
 
 def draw_horizontal_panel(image, shoulderR, shoulderL, nose):
