@@ -1,2 +1,10 @@
-scenario 1,scenario_x.mp4,jab,guard,jab,straight,l_uppercut,guard
-scenario 1,scenario_1.mp4,jab,guard,jab,straight,l_uppercut,guard
+SCN_01, scenario_01.mp4, Guard, Jab, Straight, Jab, Straight, Guard
+SCN_02, scenario_02.mp4, Guard, Jab, Guard, Left_Hook, Guard, Left_Uppercut
+SCN_03, scenario_03.mp4, Guard, Straight, Right_Uppercut, Guard, Right_Hook, Guard
+SCN_04, scenario_04.mp4, Low_Jab, Idle, Low_Straight, Idle, Left_Hook, Jab, Right_BodyHook, Right_Uppercut, Guard
+SCN_05, scenario_05.mp4, Guard, Slip_Left, Slip_Right, Jab, Slip_Left, Slip_Right
+SCN_06, scenario_06.mp4, Slip_Left, Slip_Right, Guard, Guard_LeftBody, Guard_RightBody, Guard
+SCN_07, scenario_07.mp4, Jab, Guard, Low_Jab, Straight, Guard, Low_Straight, Idle, Left_Hook, Left_BodyHook, Guard, Right_Hook, Right_BodyHook, Idle
+SCN_08, scenario_08.mp4, Jab, Straight, Guard, Right_BodyHook, Right_Uppercut, Idle, Jab, Guard, Jab, Guard, Idle
+SCN_09, scenario_09.mp4, Jab, Straight, Jab, Straight, Jab, Straight, Guard, Idle
+SCN_10, scenario_10.mp4, Guard, Idle, Jab, Straight, Guard, Idle

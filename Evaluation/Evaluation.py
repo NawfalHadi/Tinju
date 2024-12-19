@@ -21,9 +21,6 @@ GRAY = (200, 200, 200)
 PINK = (98, 57, 237)
 PURPLE = (105, 40, 32)
 
-SERVER_ADDRESS = 'localhost'
-SERVER_PORT = 12345
-
 class PoseController:
     def __init__(self, model_path) -> None:
         
@@ -105,18 +102,18 @@ class PoseController:
                 if hip_elbowL > 0 and hip_elbowR > 0:
                     if hip_elbowL > hip_elbowR and self.isNotGuardLeftBody:
                         try:
-                            self.send_data("Guard_LeftBody")
+                            # self.send_data("Guard_LeftBody")
                             self.update_pose_detection(GuardLeftBody=False)
                         except Exception as e:
                             print(e)
                     elif hip_elbowR > hip_elbowL and self.isNotGuardRightBody:
-                        self.send_data("Guard_RightBody")
+                        # self.send_data("Guard_RightBody")
                         self.update_pose_detection(GuardRightBody=False)
                 elif hip_elbowL > 0 and self.isNotGuardLeftBody:
-                    self.send_data("Guard_LeftBody")
+                    # self.send_data("Guard_LeftBody")
                     self.update_pose_detection(GuardLeftBody=False)
                 elif hip_elbowR > 0 and self.isNotGuardRightBody:
-                    self.send_data("Guard_RightBody")
+                    # self.send_data("Guard_RightBody")
                     self.update_pose_detection(GuardRightBody=False)
             elif hip_elbowL < 0 and hip_elbowR < 0:
                 self.isNotGuardLeftBody = True
@@ -302,115 +299,118 @@ class PoseController:
                 image.flags.writeable = True   
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-                # Get specific landmarks
-                nose = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.NOSE]
-                wrist_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_WRIST]
-                elbow_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_ELBOW]
-                wrist_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_WRIST]
-                elbow_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_ELBOW]
+                try:
+                    # Get specific landmarks
+                    nose = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.NOSE]
+                    wrist_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_WRIST]
+                    elbow_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_ELBOW]
+                    wrist_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_WRIST]
+                    elbow_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_ELBOW]
 
-                # Use For Making Guideline Purpose
-                shoulder_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_SHOULDER]
-                shoulder_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_SHOULDER]
-                hip = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_HIP]
-
-
-                show_landmark_list = landmark_pb2.NormalizedLandmarkList()
-                show_landmark_list.landmark.extend([nose, wrist_l, wrist_r, elbow_l, elbow_r, hip])
-                
-                # Draw landmarks
-                for landmark in show_landmark_list.landmark:
-                    x, y = int(landmark.x * image.shape[1]), int(landmark.y * image.shape[0])
-                cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
-
-                """
-                IT GIVES THE LOCATION OF THE CENTER BASED OFF 
-                THE NOSE X,Y FROM THE FRAMES
-                """
-
-                # nose_x, nose_y = int(nose.x * image.shape[1]), int(nose.y * image.shape[0])
-                
-                wristL_x, wristL_y = int(wrist_l.x * image.shape[1]), int(wrist_l.y * image.shape[0])
-                wristR_x, wristR_y = int(wrist_r.x * image.shape[1]), int(wrist_r.y * image.shape[0])
-                
-                left_line, right_line = self.draw_horizontal_panel(image, shoulder_l, shoulder_r, nose)
-                top_line, bottom_line = self.draw_vertical_panel(image, nose, hip, elbow_l, elbow_r)
-                
-                # Below this is temporary for drawing the line, and we need the calculation of the gap
-                wristL_horGap = (wristL_x, wristL_y), (left_line[0][0], wristL_y)
-                wristR_horGap = (wristR_x, wristR_y), (right_line[0][0], wristR_y)
-                
-                wristL_verGap = (wristL_horGap[0]), (wristL_x, top_line[0][1])
-                wristR_verGap = (wristR_horGap[0]), (wristR_x, top_line[0][1])
-
-                left_line_x, left_line_y = wristL_horGap[1]
-                right_line_x, right_line_y = wristR_horGap[1]
-                
-
-                " Wrist Left "                
-                wristL_x, wristL_y = wristL_horGap[0]
-
-                # Horizontal Gap
-                # make it so it has a (+ and - value)
-                wristL_leftLine = wristL_x - left_line_x
-                wristL_rightLine = wristL_x -right_line_x
-                
-                cv2.line(image, wristL_horGap[0], wristL_horGap[1], PINK, 4)
-                cv2.line(image, wristL_horGap[0], (right_line[0][0], wristL_y + 20), PINK, 4)
-
-                # Vertical Gap
-                wristL_topLine = wristL_y - top_line[0][1]
-                wristL_bottomLine = bottom_line[0][1] - wristL_y
+                    # Use For Making Guideline Purpose
+                    shoulder_l = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_SHOULDER]
+                    shoulder_r = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_SHOULDER]
+                    hip = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.RIGHT_HIP]
 
 
-                cv2.line(image, wristL_verGap[0], wristL_verGap[1] , PURPLE, 4)
-                cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), PURPLE, 4)
-                
-                wristLeft_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
-                wristLeft_leftTopLine_landmark.x = wristL_leftLine
-                wristLeft_leftTopLine_landmark.y = wristL_topLine
+                    show_landmark_list = landmark_pb2.NormalizedLandmarkList()
+                    show_landmark_list.landmark.extend([nose, wrist_l, wrist_r, elbow_l, elbow_r, hip])
+                    
+                    # Draw landmarks
+                    for landmark in show_landmark_list.landmark:
+                        x, y = int(landmark.x * image.shape[1]), int(landmark.y * image.shape[0])
+                    cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
 
-                wristLeft_rightBottomLine_landmark = landmark_pb2.NormalizedLandmark()
-                wristLeft_rightBottomLine_landmark.x = wristL_rightLine
-                wristLeft_rightBottomLine_landmark.y = wristL_bottomLine
+                    """
+                    IT GIVES THE LOCATION OF THE CENTER BASED OFF 
+                    THE NOSE X,Y FROM THE FRAMES
+                    """
 
-                " Wrist Right "
-                wristR_x, wristR_y = wristR_horGap[0]
+                    # nose_x, nose_y = int(nose.x * image.shape[1]), int(nose.y * image.shape[0])
+                    
+                    wristL_x, wristL_y = int(wrist_l.x * image.shape[1]), int(wrist_l.y * image.shape[0])
+                    wristR_x, wristR_y = int(wrist_r.x * image.shape[1]), int(wrist_r.y * image.shape[0])
+                    
+                    left_line, right_line = self.draw_horizontal_panel(image, shoulder_l, shoulder_r, nose)
+                    top_line, bottom_line = self.draw_vertical_panel(image, nose, hip, elbow_l, elbow_r)
+                    
+                    # Below this is temporary for drawing the line, and we need the calculation of the gap
+                    wristL_horGap = (wristL_x, wristL_y), (left_line[0][0], wristL_y)
+                    wristR_horGap = (wristR_x, wristR_y), (right_line[0][0], wristR_y)
+                    
+                    wristL_verGap = (wristL_horGap[0]), (wristL_x, top_line[0][1])
+                    wristR_verGap = (wristR_horGap[0]), (wristR_x, top_line[0][1])
 
-                # Horizontal Gap
-                wristR_leftLine = wristR_x - left_line_x
-                wristR_rightLine = wristR_x - right_line_x
+                    left_line_x, left_line_y = wristL_horGap[1]
+                    right_line_x, right_line_y = wristR_horGap[1]
+                    
 
-                cv2.line(image, wristR_horGap[0], wristR_horGap[1] , PINK, 4)
-                cv2.line(image, wristR_horGap[0], (left_line[0][0], wristR_y + 20) , PINK, 4)
+                    " Wrist Left "                
+                    wristL_x, wristL_y = wristL_horGap[0]
 
-                #Vertical Gap
-                wristR_topLine = wristR_y - top_line[0][1]
-                wristR_bottomLine = bottom_line[0][1] - wristR_y
+                    # Horizontal Gap
+                    # make it so it has a (+ and - value)
+                    wristL_leftLine = wristL_x - left_line_x
+                    wristL_rightLine = wristL_x -right_line_x
+                    
+                    cv2.line(image, wristL_horGap[0], wristL_horGap[1], PINK, 4)
+                    cv2.line(image, wristL_horGap[0], (right_line[0][0], wristL_y + 20), PINK, 4)
 
-                cv2.line(image, wristR_verGap[0], wristR_verGap[1], PURPLE, 4)
-                cv2.line(image, wristR_verGap[0], (wristR_x, bottom_line[0][1]), PURPLE, 4)
+                    # Vertical Gap
+                    wristL_topLine = wristL_y - top_line[0][1]
+                    wristL_bottomLine = bottom_line[0][1] - wristL_y
 
-                wristRight_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
-                wristRight_leftTopLine_landmark.x = wristR_leftLine
-                wristRight_leftTopLine_landmark.y = wristR_topLine
 
-                wristRight_rightBottomLine_landmark = landmark_pb2.NormalizedLandmark()
-                wristRight_rightBottomLine_landmark.x = wristR_rightLine    
-                wristRight_rightBottomLine_landmark.y = wristR_bottomLine
+                    cv2.line(image, wristL_verGap[0], wristL_verGap[1] , PURPLE, 4)
+                    cv2.line(image, wristL_verGap[0], (wristL_x, bottom_line[0][1]), PURPLE, 4)
+                    
+                    wristLeft_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
+                    wristLeft_leftTopLine_landmark.x = wristL_leftLine
+                    wristLeft_leftTopLine_landmark.y = wristL_topLine
 
-                # Drawing line and calculating gap for left wrist
-                gap_nose_left = self.draw_line_and_calculate_gap(image, nose, wrist_l)
+                    wristLeft_rightBottomLine_landmark = landmark_pb2.NormalizedLandmark()
+                    wristLeft_rightBottomLine_landmark.x = wristL_rightLine
+                    wristLeft_rightBottomLine_landmark.y = wristL_bottomLine
 
-                # Drawing line and calculating gap for right wrist
-                gap_nose_right = self.draw_line_and_calculate_gap(image, nose, wrist_r)
+                    " Wrist Right "
+                    wristR_x, wristR_y = wristR_horGap[0]
 
-                new_lm = landmark_pb2.NormalizedLandmarkList()
-                new_lm.landmark.extend([wrist_l, wrist_r, elbow_l, elbow_r,
-                                        gap_nose_right, gap_nose_left, 
-                                        wristLeft_leftTopLine_landmark, wristLeft_rightBottomLine_landmark, 
-                                        wristRight_leftTopLine_landmark, wristRight_rightBottomLine_landmark
-                                        ])
+                    # Horizontal Gap
+                    wristR_leftLine = wristR_x - left_line_x
+                    wristR_rightLine = wristR_x - right_line_x
+
+                    cv2.line(image, wristR_horGap[0], wristR_horGap[1] , PINK, 4)
+                    cv2.line(image, wristR_horGap[0], (left_line[0][0], wristR_y + 20) , PINK, 4)
+
+                    #Vertical Gap
+                    wristR_topLine = wristR_y - top_line[0][1]
+                    wristR_bottomLine = bottom_line[0][1] - wristR_y
+
+                    cv2.line(image, wristR_verGap[0], wristR_verGap[1], PURPLE, 4)
+                    cv2.line(image, wristR_verGap[0], (wristR_x, bottom_line[0][1]), PURPLE, 4)
+
+                    wristRight_leftTopLine_landmark = landmark_pb2.NormalizedLandmark()
+                    wristRight_leftTopLine_landmark.x = wristR_leftLine
+                    wristRight_leftTopLine_landmark.y = wristR_topLine
+
+                    wristRight_rightBottomLine_landmark = landmark_pb2.NormalizedLandmark()
+                    wristRight_rightBottomLine_landmark.x = wristR_rightLine    
+                    wristRight_rightBottomLine_landmark.y = wristR_bottomLine
+
+                    # Drawing line and calculating gap for left wrist
+                    gap_nose_left = self.draw_line_and_calculate_gap(image, nose, wrist_l)
+
+                    # Drawing line and calculating gap for right wrist
+                    gap_nose_right = self.draw_line_and_calculate_gap(image, nose, wrist_r)
+
+                    new_lm = landmark_pb2.NormalizedLandmarkList()
+                    new_lm.landmark.extend([wrist_l, wrist_r, elbow_l, elbow_r,
+                                            gap_nose_right, gap_nose_left, 
+                                            wristLeft_leftTopLine_landmark, wristLeft_rightBottomLine_landmark, 
+                                            wristRight_leftTopLine_landmark, wristRight_rightBottomLine_landmark
+                                            ])
+                except Exception as e:
+                    print(e)
 
                 try:
                     pose = new_lm.landmark
@@ -425,7 +425,7 @@ class PoseController:
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
                     if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
-                        if prob > 0.75:
+                        if prob > 0.80:
                             self.send_prediction(body_language_class)
                     
                     if self.pose_counter == pose_limit:
@@ -447,4 +447,4 @@ class PoseController:
 
 
 if __name__ == "__main__":
-    PoseController("boxing_detection_v2.pkl").evaluating()
+    PoseController("boxing_detection_v5.pkl").evaluating()
