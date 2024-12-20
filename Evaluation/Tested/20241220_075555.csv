@@ -1,0 +1,2 @@
+SCN_01,scenario_01.mp4,Guard,Jab,Straight,Jab,Straight,Guard,detected,Idle,Jab,Guard,Jab,Straight,condition,False,True,False,True,True
+SCN_02,scenario_02.mp4,Guard,Jab,Guard,Left_Hook,Guard,Left_Uppercut,detected,Guard,Left_Hook,Guard,Jab,Idle,condition,True,False,True,False,False

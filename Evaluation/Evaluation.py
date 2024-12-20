@@ -195,51 +195,84 @@ class PoseController:
         self.isSlipLeft = SlipL
         self.isSlipRight = SlipR
     
-    def send_prediction(self, body_language_class):
+    def send_prediction(self, body_language_class, prob):
+
+        prediction = f"{body_language_class} : {prob}"
         if body_language_class == "Jab" and self.isNotJab:
-            self.update_pose_detection(Jab=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Low_Jab")
-            else:
+                self.update_pose_detection(Jab=False)
+            elif not self.isDucking and prob > 0.8:
                 self.send_data("Jab")
-            print(self.isNotJab)
+                self.update_pose_detection(Jab=False)
+                print(prediction)
+                
+    
                         
         elif body_language_class == "Straight" and self.isNotStraight:
-            self.update_pose_detection(Straight=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.78:
                 self.send_data("Low_Straight")
-            else:
+                self.update_pose_detection(Straight=False)
+                
+            elif not self.isDucking and prob > 0.78:
                 self.send_data("Straight")        
+                self.update_pose_detection(Straight=False)
+                
+            # print(prediction)
                         
         elif body_language_class == "Left_Hook" and self.isNotLeftHook:
-            self.update_pose_detection(LeftHook=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Left_BodyHook")
-            else:
+                self.update_pose_detection(LeftHook=False)
+                
+            elif not self.isDucking and prob > 0.78:
                 self.send_data("Left_Hook")
+                self.update_pose_detection(LeftHook=False)
+                
+            # print(prediction)
+            
 
         elif body_language_class == "Right_Hook" and self.isNotRightHook:
-            self.update_pose_detection(RightHook=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Right_BodyHook")
-            else:
+                self.update_pose_detection(RightHook=False)
+                
+                
+            elif not self.isDucking and prob > 0.78:
                 self.send_data("Right_Hook")
+                self.update_pose_detection(RightHook=False)
+                
+            # print(prediction)
+            
 
-        elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut:
+        elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut and prob > 0.78:
             self.update_pose_detection(LeftUppercut=False)
             self.send_data("Left Uppercut")
+            # print(prediction)
 
-        elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut:
+            
+
+        elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut and prob > 0.78:
             self.update_pose_detection(RightUppercut=False)
             self.send_data("Right_Uppercut")
+            # print(prediction)
 
-        elif body_language_class == "Guard" and self.isNotGuard:
+            
+
+        elif body_language_class == "Guard" and self.isNotGuard and prob > 0.78:
             self.update_pose_detection(Guard=False)
             self.send_data("Guard")
+            # print(prediction)
 
-        elif body_language_class == "Idle" and self.isNotIdle:
+            
+
+        elif body_language_class == "Idle" and self.isNotIdle and prob > 0.78:
             self.update_pose_detection(Idle=False)
             self.send_data("Idle")
+            # print(prediction)
+
+        else:
+            pass
 
     def send_data(self, value):
         if value != self.recent_pose:
@@ -265,7 +298,7 @@ class PoseController:
                 file = row[1]
                 pose = row[2:]
 
-                evaluated = self.run(file, len(pose)-1, pose)
+                evaluated = self.run(file, len(pose), pose)
                 print(evaluated)
             
                 modified_row = row + ['detected'] + evaluated[0] + ['condition'] + evaluated[1]
@@ -289,15 +322,18 @@ class PoseController:
                 ret, frame = cap.read()
 
                 # Recolor Feed
-                image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                image.flags.writeable = False        
-                
-                # Make Detections
-                results = holistic.process(image)
+                try:
+                    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    image.flags.writeable = False        
+                    
+                    # Make Detections
+                    results = holistic.process(image)
 
-                # Recolor image back to BGR for rendering
-                image.flags.writeable = True   
-                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                    # Recolor image back to BGR for rendering
+                    image.flags.writeable = True   
+                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                except Exception as e:
+                    print(e)
 
                 try:
                     # Get specific landmarks
@@ -425,8 +461,7 @@ class PoseController:
                     prob = round(body_language_prob[np.argmax(body_language_prob)],2)
 
                     if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
-                        if prob > 0.80:
-                            self.send_prediction(body_language_class)
+                        self.send_prediction(body_language_class, prob)
                     
                     if self.pose_counter == pose_limit:
                         cap.release()

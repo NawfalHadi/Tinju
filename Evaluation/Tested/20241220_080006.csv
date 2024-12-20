@@ -1,0 +1,10 @@
+SCN_01,scenario_01.mp4,Guard,Jab,Straight,Jab,Straight,Guard,detected,Idle,Jab,Guard,Jab,Straight,condition,False,True,False,True,True
+SCN_02,scenario_02.mp4,Guard,Jab,Guard,Left_Hook,Guard,Left_Uppercut,detected,Guard,Jab,Guard,Left_Hook,Guard,condition,True,True,True,True,True
+SCN_03,scenario_03.mp4,Guard,Straight,Right_Uppercut,Guard,Right_Hook,Guard,detected,Guard,Right_Hook,Guard,Jab,Idle,condition,True,False,False,False,False
+SCN_04,scenario_04.mp4,Low_Jab,Idle,Low_Straight,Idle,Left_Hook,Jab,Right_BodyHook,Right_Uppercut,Guard,detected,Idle,Low_Straight,Idle,Jab,Left_Hook,Jab,Right_BodyHook,Jab,condition,False,False,False,False,True,True,True,False
+SCN_05,scenario_05.mp4,Guard,Slip_Left,Slip_Right,Jab,Slip_Left,Slip_Right,detected,Guard,Slip_Left,Slip_Right,Jab,Guard,condition,True,True,True,True,False
+SCN_06,scenario_06.mp4,Slip_Left,Slip_Right,Guard,Guard_LeftBody,Guard_RightBody,Guard,detected,Slip_Left,Slip_Right,Straight,Guard,Jab,condition,True,True,False,False,False
+SCN_07,scenario_07.mp4,Jab,Guard,Low_Jab,Straight,Guard,Low_Straight,Idle,Left_Hook,Left_BodyHook,Guard,Right_Hook,Right_BodyHook,Idle,detected,Guard,Low_Jab,Straight,Guard,Low_Straight,Slip_Left,Low_Straight,Idle,Jab,Left_Hook,Guard,Low_Jab,condition,False,False,False,False,False,False,False,False,False,False,False,False
+SCN_08,scenario_08.mp4,Jab,Straight,Guard,Right_BodyHook,Right_Uppercut,Idle,Jab,Guard,Jab,Guard,Idle,detected,Straight,Guard,Jab,Low_Straight,Right_BodyHook,Right_Uppercut,Idle,Jab,Guard,Jab,condition,False,False,False,False,False,False,False,False,False,False
+SCN_09,scenario_09.mp4,Jab,Straight,Jab,Straight,Jab,Straight,Guard,Idle,detected,Straight,Jab,Slip_Right,Straight,Jab,Left Uppercut,Slip_Right,condition,False,False,False,True,True,False,False
+SCN_10,scenario_10.mp4,Guard,Idle,Jab,Straight,Guard,Idle,detected,Guard,Jab,Idle,Jab,Slip_Right,condition,True,False,False,False,False

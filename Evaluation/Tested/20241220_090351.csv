@@ -1,0 +1,10 @@
+SCN_01,scenario_01.mp4,Guard,Jab,Straight,Jab,Straight,Guard,detected,Idle,Jab,Guard,Jab,Straight,condition,False,True,False,True,True
+SCN_02,scenario_02.mp4,Guard,Jab,Guard,Left_Hook,Guard,Left_Uppercut,detected,Guard,Left_Hook,Guard,Jab,Idle,condition,True,False,True,False,False
+SCN_03,scenario_03.mp4,Guard,Straight,Guard,Right_Uppercut,Guard,Right_Hook,Guard,detected,Guard,Straight,Guard,Right_Uppercut,Guard,Right_Hook,condition,True,True,True,True,True,True
+SCN_04,scenario_04.mp4,Idle,Low_Jab,Idle,Low_Straight,Idle,Left_Hook,Idle,Jab,Idle,Right_BodyHook,Right_Uppercut,Guard,detected,Idle,Jab,Idle,Low_Straight,Idle,Jab,Left_Hook,Jab,Idle,Jab,Idle,condition,True,False,True,True,True,False,False,True,True,False,False
+SCN_05,scenario_05.mp4,Guard,Slip_Left,Slip_Right,Jab,Slip_Left,Slip_Right,Guard,detected,Guard,Slip_Left,Slip_Right,Straight,Jab,Slip_Left,condition,True,True,True,False,False,False
+SCN_06,scenario_06.mp4,Slip_Left,Slip_Right,Guard,Left_Body_Guard,Guard,Right_Body_Guard,Guard,detected,Guard,Slip_Left,Slip_Right,Straight,Guard,Idle,condition,False,False,False,False,True,False
+SCN_07,scenario_07.mp4,Idle,Jab,Guard,Low_Jab,Straight,Guard,Low_Straight,Idle,Left_Hook,Guard,Left_BodyHook,Guard,Right_Hook,Guard,Right_BodyHook,Idle,detected,Idle,Jab,Guard,Low_Jab,Straight,Guard,Jab,Idle,Jab,Left_Hook,Guard,Jab,Guard,Right_Hook,Guard,condition,True,True,True,True,True,True,False,True,False,False,False,False,False,False,False
+SCN_08,scenario_08.mp4,Jab,Straight,Guard,Right_BodyHook,Guard,Right_Uppercut,Guard,Idle,Jab,Guard,Jab,Guard,Idle,detected,Idle,Jab,Straight,Guard,Right_BodyHook,Guard,Right_Uppercut,Guard,Jab,Idle,Jab,Guard,condition,False,False,False,False,False,False,False,False,True,False,True,True
+SCN_09,scenario_09.mp4,Jab,Straight,Jab,Straight,Jab,Straight,Guard,Idle,detected,Idle,Guard,Jab,Straight,Jab,Straight,Jab,condition,False,False,True,True,True,True,False
+SCN_10,scenario_10.mp4,Guard,Idle,Jab,Straight,Guard,Idle,detected,Guard,Idle,Jab,Straight,Guard,condition,True,True,True,True,True
