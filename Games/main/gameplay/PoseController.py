@@ -446,4 +446,4 @@ class PoseController:
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    PoseController("main/gameplay/model/boxing_detection_v2.pkl").run()
+    PoseController("main/gameplay/model/boxing_detection_v3.pkl").run()

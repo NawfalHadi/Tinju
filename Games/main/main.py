@@ -49,8 +49,8 @@ class MainMenu:
         TutorialPage().run()
 
     def start_shadow_boxing(self):
-        from main.gameplay.ShadowBoxing import ShadowBoxing
-        ShadowBoxing().run()
+        from main.gameplay.ShadowBoxingPage import ShadowBoxingPage
+        ShadowBoxingPage().run()
 
     def exit_game(self):
         pygame.event.post(pygame.event.Event(pygame.QUIT))
