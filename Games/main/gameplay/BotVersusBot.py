@@ -42,6 +42,7 @@ class BotVersusBot:
         self.ko_target_speed = 10
         self.ko_target_size = 600
         self.ko_seconds = 0
+        self.ko_progress = 0
         self.min_pos = 400
         self.max_pos = 0
         self.cur_pos = 400
@@ -87,7 +88,7 @@ class BotVersusBot:
         self.player_action = ACTIONS[0]
         self.player_img = None
 
-        self.player_maxHp = 0
+        self.player_maxHp = 100
         self.player_hp = self.player_maxHp
 
         self.player_maxStm = 100
@@ -485,31 +486,37 @@ class BotVersusBot:
             self.bot_recover_square = max(-400, min(400, self.player_recover_square))
             recovery_square = self.bot_recover_square
 
-            bot_action = random.choice("Guard", "Idle")
+            bot_action = random.choice(["Guard", "Idle"])
 
             if bot_action == "Guard":
                 self.bot_recover_square += 5
             elif bot_action == "Idle":
                 self.bot_recover_square -= 5
 
+        ko_progress = ((self.ko_progress) / 100 * 800)
 
+        self.knockout_bg_progress = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) - 100, 800, 50, WHITE).draw(self.screen)
+        self.knockout_value_progress = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) - 99, ko_progress, 49, GREEN).draw(self.screen)
+        
         self.knockout_square = Attributes((SCREEN_WIDTH // 2) - recovery_square, (SCREEN_HEIGHT // 2) + 202, 10, 46, BLACK)
-        self.knockout_square.draw(self.screen)
+        self.knockout_square.draw(self.screen)        
 
         if left_target < self.knockout_square.rect.centerx and self.knockout_square.rect.centerx < right_target:
+            self.ko_progress += 2
+        self.ko_progress = max(0, min(100, self.ko_progress))
+        
+        if self.ko_progress == 100:
             if self.isPlayerKO:
-                self.player_hp += 0.2
-            elif self.isBotKO:
-                self.bot_hp += 0.2
+                self.player_hp = self.player_maxHp * 0.75
+                self.isPlayerKO = False
+                self.ko_seconds = 0
+            
 
-        if self.player_hp >= 100:
-            self.player_hp = self.player_maxHp * 0.75
-            self.isPlayerKO = False
-            self.ko_seconds = 0
-        elif self.bot_hp >= 100:
-            self.bot_hp = self.bot_maxhp * 0.75
-            self.isBotKO = False
-            self.ko_seconds = 0
+            elif self.isBotKO:
+                self.bot_hp = self.bot_maxhp * 0.75
+                self.isBotKO = False
+                self.ko_seconds = 0
+            self.ko_progress = 0
 
         self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
         self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
