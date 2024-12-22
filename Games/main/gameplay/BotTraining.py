@@ -189,7 +189,7 @@ class BotTraining:
     "== PLAYER FUNCTION =="
 
 
-    "== GAME SYSTEM - TIMER & RECOVERY =="
+    "== GAME SYSTEM - TIMER=="
     def start_timer(self):
         if self.total_seconds > 0:
             self.total_seconds -= 1 / 60

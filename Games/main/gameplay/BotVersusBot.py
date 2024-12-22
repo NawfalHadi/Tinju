@@ -11,7 +11,8 @@ import threading
 from main.helper.constants import *
 from main.helper.Actions import *
 from main.assets.ImagePath import *
-from main.helper.ui_elements.Attribute import * 
+from main.helper.ui_elements.Attribute import *
+from main.helper.ui_elements.button import * 
 
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -28,16 +29,26 @@ class BotVersusBot:
         self.initialize_attribute_opponents_bot(opponent_bot_path)
         self.initialize_attribute_players_bot(player_bot_path)
 
-        "=== JUDGES SYSTEM ==="
+        "=== JUDGES & GAME SYSTEM ==="
         self.judges_hp = [[10, 10], [10, 10], [10, 10]]
         self.judges_def = [[10, 10], [10, 10], [10, 10]]
         self.judges_off = [[10, 10], [10, 10], [10, 10]]
 
-        "=== GAME SYSTEM ==="
         self.isTimerFinish = False
         self.scoring_round = 1
         self.current_rounds = 1
-        self.total_second = 3 * 60
+
+        "=== KO SYSTEM ==="
+        self.ko_target_speed = 10
+        self.ko_target_size = 600
+        self.ko_seconds = 0
+        self.min_pos = 400
+        self.max_pos = 0
+        self.cur_pos = 400
+        self.isGoLeft = False
+
+        "=== TIMER ==="
+        self.total_seconds = 1 * 60
 
         "=== SOCKET ==="
         self.isLoading = False
@@ -64,13 +75,19 @@ class BotVersusBot:
         self.bot_offenseRate = 0
         self.bot_defenseRate = 0
 
+        self.isBotKO = False
+        self.isBotTKO = False
+        self.bot_round_ko = 0
+        self.bot_total_ko = 0
+        self.bot_recover_square = 0
+
     def initialize_attribute_players_bot(self, model_path):
         self.player_Q, self.isPlayerQLoaded= self.load_bots(model_path)
         
         self.player_action = ACTIONS[0]
         self.player_img = None
 
-        self.player_maxHp = 100
+        self.player_maxHp = 0
         self.player_hp = self.player_maxHp
 
         self.player_maxStm = 100
@@ -78,6 +95,12 @@ class BotVersusBot:
 
         self.player_offenseRate = 0
         self.player_defenseRate = 0
+        
+        self.isPlayerKO = False
+        self.isPlayerTKO = False
+        self.player_round_ko = 0
+        self.player_total_ko = 0
+        self.player_recover_square = 0
     
     def draw_interface(self):
         self.player_hp_bg = Attributes(SCREEN_MARGIN, SCREEN_MARGIN, 400, 40, GRAY)
@@ -91,28 +114,22 @@ class BotVersusBot:
     def update_interface(self):
         bot_hp = ((self.bot_hp) / 100 * 400)
         bot_stm = ((self.bot_stamina) / 100 * 350)
+        bot_maxHp = ((self.bot_maxhp) / 100 * 400)
         
 
         player_hp = ((self.player_hp) / 100 * 400)
         player_stm = ((self.player_stamina) / 100 * 350)
-
+        player_maxHp = ((self.player_maxHp) / 100 * 400)
+        
+        Attributes(self.screen.get_width() - (bot_maxHp + SCREEN_MARGIN), SCREEN_MARGIN, bot_maxHp, 40, BLACK).draw(screen, corner_bottomLeft = 15)
         Attributes(self.screen.get_width() - (bot_hp + SCREEN_MARGIN), SCREEN_MARGIN, bot_hp, 40, RED).draw(screen, corner_bottomLeft = 15)
         Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLUE).draw(screen, corner_bottomLeft = 15)
 
+        Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_maxHp, 40, BLACK).draw(screen, corner_bottomRight=15)
         Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_hp, 40, RED).draw(screen, corner_bottomRight = 15)
         Attributes(SCREEN_MARGIN, self.player_hp_bg.rect.bottom, player_stm, 20, BLUE).draw(screen, corner_bottomRight = 15)
 
-    def load_bots(self, filename):
-        with open(filename, "rb") as f:
-            return defaultdict(lambda: np.zeros(17), pickle.load(f)), True
-
-    def choose_action(self, state, q):
-        if random.uniform(0, 1) < EPSILON:
-            print("Random")
-            return random.choice(range(17))  # Explore
-        else:
-            print("Q_Check")
-            return np.argmax(q[state])
+    "== OPPONENTS FUNCTION =="
         
     def genereate_opp_bot_actions(self):
         while self.isRunning and self.isBotQLoaded:
@@ -126,6 +143,29 @@ class BotVersusBot:
                 self.bot_action = ACTIONS[0]
                 
             time.sleep(0.2)
+
+    def calculation_opp_bot_actions(self):
+        if self.bot_stamina >= ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]:
+            self.bot_stamina -= ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]
+            self.bot_hp += ACTIONS_EFFECTS[self.bot_action]["health_recovery"]
+            self.bot_stamina += ACTIONS_EFFECTS[self.bot_action]["stamina_recovery"]
+
+            if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
+                self.bot_offenseRate += 1
+            elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 0 and ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] > 0:
+                self.bot_defenseRate += 1 
+            
+            # Player
+            self.player_hp -= ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action]
+
+        # self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
+
+        self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
+        self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
+        self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
+        self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
+
+    "== PLAYER FUNCTION =="
 
     def generate_player_bot_actions(self):
         while self.isRunning and self.isPlayerQLoaded:
@@ -141,27 +181,6 @@ class BotVersusBot:
 
             time.sleep(0.2)
     
-    def calculation_opp_bot_actions(self):
-        if self.bot_stamina >= ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]:
-            self.bot_stamina -= ACTIONS_EFFECTS[self.bot_action]["stamina_cost"]
-            self.bot_hp += ACTIONS_EFFECTS[self.bot_action]["health_recovery"]
-            self.bot_stamina += ACTIONS_EFFECTS[self.bot_action]["stamina_recovery"]
-
-            if ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 10:
-                self.bot_offenseRate += 1
-            elif ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] < 10 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
-                self.bot_defenseRate += 1 
-            
-            # Player
-            self.player_hp -= ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action]
-
-        # self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
-
-        self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
-        self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
-        self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
-        self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
-
     def calculation_player_bot_actions(self):
         if self.player_stamina >= ACTIONS_EFFECTS[self.player_action]["stamina_cost"]:
             # Player
@@ -169,9 +188,9 @@ class BotVersusBot:
             self.player_hp += ACTIONS_EFFECTS[self.player_action]["health_recovery"]
             self.player_stamina += ACTIONS_EFFECTS[self.player_action]["stamina_recovery"]
 
-            if ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] > 10:
+            if ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] > 0:
                 self.player_offenseRate += 1
-            elif ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] < 10:
+            elif ACTIONS_EFFECTS[self.player_action]["hit_damage"][self.bot_action] < 0 and ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action] > 0:
                 self.player_defenseRate += 1
 
             # Bot
@@ -185,6 +204,367 @@ class BotVersusBot:
         # Open 2 Threads Your Bot & Opponents Bot
         pass
 
+    "== LOAD MODEL =="
+
+    def load_bots(self, filename):
+        with open(filename, "rb") as f:
+            return defaultdict(lambda: np.zeros(17), pickle.load(f)), True
+        
+    def choose_action(self, state, q):
+        if random.uniform(0, 1) < EPSILON:
+            return random.choice(range(17))  # Explore
+        else:
+            return np.argmax(q[state])
+
+    "== GAME SYSTEM - TIMER & RECOVERY =="
+
+    def start_timer(self):
+        if self.total_seconds > 0:
+            self.total_seconds -= 1 / 60
+        else:
+            self.isTimerFinish = True
+            if self.current_rounds == self.scoring_round:
+                self.scoring_system()
+                self.hitpoint_stamina_calculation()
+
+        minutes = int(self.total_seconds) // 60
+        seconds = int(self.total_seconds) % 60
+
+        text = f"{minutes}:{seconds:02d}"
+        font = pygame.font.Font(None, 60)
+        self.timer = screen.blit(font.render(text, True, WHITE),
+                    (self.player_hp_bg.rect.right + 55, SCREEN_MARGIN + 15))
+    
+    def hitpoint_stamina_calculation(self):
+        if self.current_rounds >= 1:    
+            self.player_maxHp = min(self.player_hp * 0.30 + self.player_hp, 100)
+            self.player_maxStm = min(self.player_stamina * 0.90 + self.player_stamina, 100)
+
+            self.bot_maxhp = min(self.bot_hp * 0.30 + self.bot_hp, 100)
+            self.bot_maxStm = min(self.bot_stamina * 0.90 + self.bot_stamina, 100)
+        elif self.current_rounds >= 2:
+            self.player_maxHp = min(self.player_hp * 0.20 + self.player_hp, 100)
+            self.player_maxStm = min(self.player_stamina * 0.80 + self.player_stamina, 100)
+
+            self.bot_maxhp = min(self.bot_hp * 0.20 + self.bot_hp, 100)
+            self.bot_maxStm = min(self.bot_stamina * 0.80 + self.bot_stamina, 100)
+        elif self.current_rounds >= 3:
+            self.player_maxHp = min(self.player_hp * 0.15 + self.player_hp, 100)
+            self.player_maxStm = min(self.player_stamina * 0.75 + self.player_stamina, 100)
+
+            self.bot_maxhp = min(self.bot_hp * 0.15 + self.bot_hp, 100)
+            self.bot_maxStm = min(self.bot_stamina * 0.75 + self.bot_stamina, 100)
+
+    "== INTERFACE - SCOREBOARD =="
+    def show_roundboard(self):
+        self.roundboard = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476)) 
+        
+
+        self.rect_roundNumber = pygame.draw.rect(self.screen, WHITE, pygame.Rect(
+            self.roundboard.left + 20, self.roundboard.top + 20, 884, 50
+        ))
+
+        self.empty_space = self.draw_rounds("PLAYER", self.rect_roundNumber.left + 20, self.rect_roundNumber.top, WHITE)
+        self.first_round = self.draw_rounds("R1", self.empty_space.right + 20, self.rect_roundNumber.top)
+        self.second_round = self.draw_rounds("R2", self.first_round.right + 20, self.rect_roundNumber.top)
+        self.third_round = self.draw_rounds("R3", self.second_round.right + 20, self.rect_roundNumber.top)
+        self.total_round = self.draw_rounds("TOTAL", self.third_round.right + 20, self.rect_roundNumber.top)
+
+        self.rect_playerName = pygame.draw.rect(self.screen, WHITE, pygame.Rect(
+            self.rect_roundNumber.left, self.rect_roundNumber.bottom + 20, 150, 366
+        ))
+
+        "=== First Judges Scoring ==="
+        self.first_judges = self.draw_player_name(self.empty_space.bottom + 20, BACKGROUND)
+        if self.current_rounds >= 1:
+            self.first_r1 = self.draw_round_score(self.judges_hp[0][0], self.judges_hp[0][1], self.first_round.left, self.first_judges.top, BACKGROUND)
+        if self.current_rounds >= 2:
+            self.first_r2 = self.draw_round_score(self.judges_hp[1][0], self.judges_hp[1][1], self.second_round.left, self.first_judges.top, BACKGROUND)
+        if self.current_rounds >= 3:
+            self.first_r3 = self.draw_round_score(self.judges_hp[2][0], self.judges_hp[2][1], self.third_round.left, self.first_judges.top, BACKGROUND)
+        
+            hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
+            hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
+            
+            self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
+
+        "=== Second Judges Scoring ==="
+        self.second_judges = self.draw_player_name(self.first_judges.bottom + 20, BACKGROUND)
+        if self.current_rounds >= 1:
+            self.second_r1 = self.draw_round_score(self.judges_off[0][0], self.judges_off[0][1], self.first_round.left, self.second_judges.top, BACKGROUND) 
+        if self.current_rounds >= 2:
+            self.second_r2 = self.draw_round_score(self.judges_off[1][0], self.judges_off[1][1], self.second_round.left, self.second_judges.top, BACKGROUND) 
+        if self.current_rounds >= 3:
+            self.second_r3 = self.draw_round_score(self.judges_off[2][0], self.judges_off[2][1], self.third_round.left, self.second_judges.top, BACKGROUND) 
+        
+            offPlayer_scoring = sum(sublist[0] for sublist in self.judges_off)
+            offBot_scoring = sum(sublist[1] for sublist in self.judges_off)
+            
+            self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND)
+    
+        "=== Third Judges Scoring ==="
+        self.third_judges = self.draw_player_name(self.second_judges.bottom + 20, BACKGROUND)
+        if self.current_rounds >= 1:
+            self.third_r1 = self.draw_round_score(self.judges_def[0][0], self.judges_def[0][1], self.first_round.left, self.third_judges.top, BACKGROUND)
+        if self.current_rounds >= 2:
+            self.third_r2 = self.draw_round_score(self.judges_def[1][0], self.judges_def[1][1], self.second_round.left, self.third_judges.top, BACKGROUND)
+        if self.current_rounds >= 3:
+            self.third_r3 = self.draw_round_score(self.judges_def[2][0], self.judges_def[2][1], self.third_round.left, self.third_judges.top, BACKGROUND)
+        
+            defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
+            defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
+
+            self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
+
+        self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round)
+
+    def draw_rounds(self, text, rightOf, bottomOf, color = BACKGROUND):
+        # Draw the rectangle
+        rect = pygame.Rect(rightOf, bottomOf, 152, 50)
+        pygame.draw.rect(self.screen, color, rect)
+
+        font = pygame.font.Font(None, 36) 
+        text_surface = font.render(text, True, (0, 0, 0))  
+        text_rect = text_surface.get_rect(center=rect.center) 
+
+        self.screen.blit(text_surface, text_rect)
+
+        return rect
+
+    def draw_player_name(self, bottomOf, color = BACKGROUND):
+        rect = pygame.Rect(self.rect_playerName.left, bottomOf, 150, 76)
+        pygame.draw.rect(self.screen, color, rect)
+
+        # Initialize the font
+        font = pygame.font.Font(None, 36)  # Adjust font size as needed
+
+        # Render the "Player" text
+        player_text_surface = font.render("Player", True, (WHITE))  # Black color for text
+        player_text_rect = player_text_surface.get_rect(center=(rect.centerx, rect.top + 15))  # Position near the top
+
+        # Render the "Bot" text
+        bot_text_surface = font.render("Bot", True, (WHITE))  # Black color for text
+        bot_text_rect = bot_text_surface.get_rect(center=(rect.centerx, rect.bottom - 15))  # Position near the bottom
+
+        # Blit the text onto the screen
+        self.screen.blit(player_text_surface, player_text_rect)
+        self.screen.blit(bot_text_surface, bot_text_rect)
+
+        return rect
+    
+    def draw_round_score(self, point_player, point_bot, rightOf, bottomOf, color= BACKGROUND):
+        rect = pygame.Rect(rightOf, bottomOf, 150, 76)
+        pygame.draw.rect(self.screen, color, rect)
+
+        font = pygame.font.Font(None, 36)
+
+        player_point_surface = font.render(str(point_player), True, (WHITE))  # Black color for text
+        player_point_rect = player_point_surface.get_rect(center=(rect.centerx, rect.top + 15))  # Position near the top
+
+        bot_point_surface = font.render(str(point_bot), True, (WHITE))  # Black color for text
+        bot_point_rect = bot_point_surface.get_rect(center=(rect.centerx, rect.bottom - 15))  # Position near the bottom
+
+        self.screen.blit(player_point_surface, player_point_rect)
+        self.screen.blit(bot_point_surface, bot_point_rect)
+
+        return rect
+
+    "== GAME SYSTEM - SCORING =="
+
+    def continue_round(self):
+        print("Test")
+        self.isTimerFinish = False
+        self.total_seconds = 1 * 60
+
+        hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
+        hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
+
+        offPlayer_scoring = sum(sublist[0] for sublist in self.judges_off)
+        offBot_scoring = sum(sublist[1] for sublist in self.judges_off)
+
+        defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
+        defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
+
+        playerScore = hpPlayer_scoring + offPlayer_scoring + defPlayer_scoring
+        botScore = hpBot_scoring + offBot_scoring + defBot_scoring
+
+        if self.isPlayerTKO:
+            print("Bot Win by Technical Knockout")
+            time.sleep(1)
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+        elif self.isBotTKO:
+            print("Player Win by Technical Knockout")
+            time.sleep(1)
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+        
+        elif self.current_rounds < 3:
+            self.current_rounds += 1
+
+            self.bot_round_ko = 0
+            self.player_round_ko = 0
+
+            self.bot_offenseRate = 0
+            self.bot_defenseRate = 0
+            self.player_offenseRate = 0
+            self.player_defenseRate = 0
+            
+        elif self.current_rounds == 3:
+            if playerScore > botScore:
+                print("Player Win by Anonimous Decision")
+            elif playerScore == botScore:
+                print("Draw")
+            elif playerScore < botScore:
+                print("Bot Win by Anonimous Decision")
+
+            time.sleep(1)
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+    def scoring_system(self):
+        bot_ko = self.bot_round_ko
+        player_ko = self.player_round_ko
+
+        if self.player_hp < self.bot_hp:
+            self.judges_hp[self.current_rounds - 1][0] -= 1
+        elif self.player_hp > self.bot_hp:
+            self.judges_hp[self.current_rounds - 1][1] -= 1
+
+        if self.player_offenseRate < self.bot_offenseRate:
+            self.judges_off[self.current_rounds - 1][0] -= 1 
+        elif self.player_offenseRate > self.bot_offenseRate:
+            self.judges_off[self.current_rounds - 1][1] -= 1
+
+        if self.player_defenseRate < self.bot_defenseRate:
+            self.judges_def[self.current_rounds - 1][0] -= 1
+        elif self.player_defenseRate > self.bot_defenseRate:
+            self.judges_def[self.current_rounds - 1][1] -= 1
+
+        self.judges_hp[self.current_rounds - 1][0] -= player_ko
+        self.judges_hp[self.current_rounds - 1][1] -= bot_ko
+        self.judges_off[self.current_rounds - 1][0] -= player_ko
+        self.judges_off[self.current_rounds - 1][1] -= bot_ko
+        self.judges_def[self.current_rounds - 1][0] -= player_ko
+        self.judges_def[self.current_rounds - 1][1] -= bot_ko
+        
+        self.scoring_round += 1
+
+    "== GAME SYSTEM - KNOCKOUT =="
+
+    def knockout_interface(self):        
+        self.knockout_frame = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) + 200, 800, 50, WHITE).draw(self.screen)
+        
+        if self.cur_pos == self.min_pos:
+            self.cur_pos -= self.ko_target_speed
+            self.isGoLeft = False
+        elif self.cur_pos == self.max_pos:
+            self.cur_pos += self.ko_target_speed
+            self.isGoLeft = self.ko_target_speed
+        else:
+            if self.isGoLeft:
+                self.cur_pos += self.ko_target_speed
+            elif not self.isGoLeft:
+                self.cur_pos -= self.ko_target_speed
+
+        self.knockout_target = Attributes((SCREEN_WIDTH // 2) - self.cur_pos, (SCREEN_HEIGHT // 2) + 202, self.ko_target_size, 46, FOREGROUND)
+        self.knockout_target.draw(self.screen)
+
+        left_target, right_target = self.knockout_target.rect.left, self.knockout_target.rect.right
+        
+        if self.isPlayerKO:
+            self.player_recover_square = max(-400, min(400, self.player_recover_square))
+            recovery_square = self.player_recover_square
+
+            player_action = random.choice(["Guard", "Idle"])
+
+            if player_action == "Guard":
+                self.player_recover_square += 5
+            elif player_action == "Idle":
+                self.player_recover_square -= 5
+
+        elif self.isBotKO:
+            self.bot_recover_square = max(-400, min(400, self.player_recover_square))
+            recovery_square = self.bot_recover_square
+
+            bot_action = random.choice("Guard", "Idle")
+
+            if bot_action == "Guard":
+                self.bot_recover_square += 5
+            elif bot_action == "Idle":
+                self.bot_recover_square -= 5
+
+
+        self.knockout_square = Attributes((SCREEN_WIDTH // 2) - recovery_square, (SCREEN_HEIGHT // 2) + 202, 10, 46, BLACK)
+        self.knockout_square.draw(self.screen)
+
+        if left_target < self.knockout_square.rect.centerx and self.knockout_square.rect.centerx < right_target:
+            if self.isPlayerKO:
+                self.player_hp += 0.2
+            elif self.isBotKO:
+                self.bot_hp += 0.2
+
+        if self.player_hp >= 100:
+            self.player_hp = self.player_maxHp * 0.75
+            self.isPlayerKO = False
+            self.ko_seconds = 0
+        elif self.bot_hp >= 100:
+            self.bot_hp = self.bot_maxhp * 0.75
+            self.isBotKO = False
+            self.ko_seconds = 0
+
+        self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
+        self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
+
+    def knockout_timer(self):
+        seconds = int(self.ko_seconds) % 60
+
+        if self.ko_seconds < 10:
+            self.ko_seconds += 1 / 60
+            font = pygame.font.Font(None, 150)
+            text = font.render(str(seconds), True, (FOREGROUND))
+
+            screen.blit(text, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        else:
+            if self.isPlayerKO:
+                self.isPlayerTKO = True
+            elif self.isBotKO:
+                self.isBotTKO = True
+                
+            self.total_seconds = 0
+
+    def knockout_speed(self, total_ko):
+        if total_ko == 1:
+            self.ko_target_speed = 10
+            self.ko_target_size = 600
+        elif total_ko == 2:
+            self.ko_target_speed = 20
+            self.ko_target_size = 500
+        elif total_ko == 3 or total_ko == 4:
+            self.ko_target_speed = 40
+            self.ko_target_size = 350
+        else:
+            self.ko_target_size = 200
+            self.ko_target_speed = 50
+
+    def knockout_check(self):
+        if self.player_hp <= 0:
+            self.player_round_ko += 1
+            self.player_total_ko += 1
+            if self.player_round_ko == 3:
+                self.isPlayerTKO = True
+                self.total_seconds = 0
+            else:
+                self.isPlayerKO = True
+                self.knockout_speed(self.player_total_ko)
+        elif self.bot_hp <= 0:
+            self.bot_round_ko += 1
+            self.bot_total_ko += 1
+            if self.bot_round_ko == 3:
+                self.isBotTKO = True
+                self.total_seconds = 0
+            else:
+                self.isBotKO = True
+                self.knockout_speed(self.bot_total_ko)
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
@@ -194,20 +574,30 @@ class BotVersusBot:
                 if event.type == pygame.QUIT:
                     self.isRunning = False
 
+                if self.isTimerFinish:
+                    self.next_button.is_clicked(event)
+
             if not self.isLoading and not self.isTimerFinish and (self.isPlayerQLoaded and self.isBotQLoaded):
                 self.player_hp_bg.draw(screen, corner_bottomRight=15)
                 self.player_stamina_bg.draw(screen, corner_bottomRight=15)
-                
                 self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
                 self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+
+                if self.isPlayerKO or self.isBotKO:
+                    self.knockout_interface()
+                    self.knockout_timer()
+                else:
+                    self.knockout_check()
+                    self.calculation_opp_bot_actions()
+                    self.calculation_player_bot_actions()
                 
                 self.update_interface()
-                self.calculation_opp_bot_actions()
-                self.calculation_player_bot_actions()
+                self.start_timer()
 
             if self.isTimerFinish:
-                pass
+                self.show_roundboard()
+                self.next_button.draw(self.screen)
             
-            pygame.display.update()
             pygame.time.Clock().tick(60)
+            pygame.display.update()
             

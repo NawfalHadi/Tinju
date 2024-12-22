@@ -30,7 +30,7 @@ class VersusBotPage:
 
         "=== JUDGES & GAME SYSTEM==="
         self.isTimerFinish = False
-        self.scroing_round = 1
+        self.scoring_round = 1
         self.current_rounds = 1
 
         self.judges_hp = [[10, 10], [10, 10], [10, 10]]
@@ -214,7 +214,7 @@ class VersusBotPage:
             self.total_seconds -= 1 / 60
         else:
             self.isTimerFinish = True
-            if self.current_rounds == self.scroing_round:
+            if self.current_rounds == self.scoring_round:
                 self.scoring_system()
                 self.hitpoint_stamina_calculation() 
             
@@ -366,7 +366,7 @@ class VersusBotPage:
         self.judges_def[self.current_rounds - 1][0] -= player_ko
         self.judges_def[self.current_rounds - 1][1] -= bot_ko
         
-        self.scroing_round += 1
+        self.scoring_round += 1
             
     def hitpoint_stamina_calculation(self):
         if self.current_rounds >= 1:    
@@ -495,7 +495,6 @@ class VersusBotPage:
                 print("Draw")
             elif playerScore < botScore:
                 print("Bot Win by Anonimous Decision")
-        
             
             time.sleep(1)
             pygame.event.post(pygame.event.Event(pygame.QUIT))

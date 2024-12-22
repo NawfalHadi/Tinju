@@ -31,7 +31,7 @@ ACTIONS_EFFECTS = {
         "hit_damage": {
             "Idle": 5, "Jab": 8, "Low_Jab": 3, "Straight": 0, "Low_Straight": 3, 
             "Left_Hook": 3, "Left_BodyHook": 0, "Right_Hook": 5, "Right_BodyHook": 0, 
-            "Left_Uppercut": 7, "Right_Uppercut": 8, "Guard": 1, "Slip_Left": 3, 
+            "Left_Uppercut": 7, "Right_Uppercut": 8, "Guard": 0, "Slip_Left": 3, 
             "Slip_Right": 0, "Duck":0, "Guard_LeftBody": 5, "Guard_RightBody": 1
         },
         "point_training": {
