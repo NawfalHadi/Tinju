@@ -209,5 +209,5 @@ class BotVersusBot:
                 pass
             
             pygame.display.update()
-
+            pygame.time.Clock().tick(60)
             

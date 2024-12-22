@@ -2,7 +2,7 @@ ACTIONS = [
     "Idle", "Jab", "Low_Jab", "Straight", "Low_Straight",
     "Left_Hook", "Left_BodyHook", "Right_Hook", "Right_BodyHook",
     "Left_Uppercut", "Right_Uppercut", "Guard", "Slip_Left", "Slip_Right", 
-     "Duck", "Guard_LeftBody", "Guard_RightBody", 
+    "Duck", "Guard_LeftBody", "Guard_RightBody", 
 ]
 
 ACTIONS_EFFECTS = {
