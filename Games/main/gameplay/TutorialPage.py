@@ -83,6 +83,7 @@ class TutorialPage:
         self.max_pos = 0
         self.cur_pos = 400
 
+        self.recover_square = 0
         self.isGoLeft = False
 
         "=== CHANGING VIEW ==="
@@ -403,9 +404,16 @@ class TutorialPage:
                 self.knockout_target = Attributes((SCREEN_WIDTH // 2) - self.cur_pos, (SCREEN_HEIGHT // 2) + 2, self.ko_target_size, 46, FOREGROUND)
                 self.knockout_target.draw(self.screen)
 
-                self.knockout_square = Attributes((SCREEN_WIDTH // 2) - 0, (SCREEN_HEIGHT // 2) + 2, 10, 46, BLACK)
+                if self.player_action == "Guard":
+                    self.recover_square += 5
+                elif self.player_action == "Idle":
+                    self.recover_square -= 5
+
+                self.recover_square = max(-400, min(400, self.recover_square))
+                self.knockout_square = Attributes((SCREEN_WIDTH // 2) - (self.recover_square), (SCREEN_HEIGHT // 2) + 2, 10, 46, BLACK)
                 self.knockout_square.draw(self.screen)
 
+                
                 ko_progress = ((self.ko_progress) / 100 * 800)
 
                 self.knockout_bg_progress = Attributes((SCREEN_WIDTH // 2) - 400, (SCREEN_HEIGHT // 2) - 100, 800, 50, WHITE).draw(self.screen)
@@ -429,7 +437,7 @@ class TutorialPage:
 
         left_target, right_target = self.knockout_target.rect.left, self.knockout_target.rect.right
         if left_target < self.knockout_square.rect.centerx and self.knockout_square.rect.centerx < right_target:
-            self.ko_progress += 0.5
+            self.ko_progress += 0.2
 
         self.ko_progress = max(0, min(100, self.ko_progress))
 

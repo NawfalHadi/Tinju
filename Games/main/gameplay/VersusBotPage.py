@@ -67,6 +67,7 @@ class VersusBotPage:
 
         self.isBotKO = False
         self.isBotTKO = False
+        self.bot_recover_square = 0
         self.bot_round_ko = 0
         self.bot_total_ko = 0
 
@@ -86,6 +87,7 @@ class VersusBotPage:
 
         self.isPlayerKO = False
         self.isPlayerTKO = False
+        self.player_recover_square = 0
         self.player_round_ko = 0
         self.player_total_ko = 0
 
@@ -282,7 +284,28 @@ class VersusBotPage:
 
         left_target, right_target = self.knockout_target.rect.left, self.knockout_target.rect.right
         
-        self.knockout_square = Attributes((SCREEN_WIDTH // 2) - 0, (SCREEN_HEIGHT // 2) + 202, 10, 46, BLACK)
+        if self.isPlayerKO:
+            self.player_recover_square = max(-400, min(400, self.player_recover_square))
+            recovery_square = self.player_recover_square
+
+            if self.player_action == "Guard":
+                self.player_recover_square += 5
+            elif self.player_action == "Idle":
+                self.player_recover_square -= 5
+
+        elif self.isBotKO:
+            
+            bot_action = random.choice("Guard", "Idle")
+
+            if bot_action == "Guard":
+                self.bot_recover_square += 5
+            elif bot_action == "Idle":
+                self.bot_recover_square -= 5
+
+            self.bot_recover_square = max(-400, min(400, self.bot_recover_square))
+            recovery_square = self.bot_recover_square
+                
+        self.knockout_square = Attributes((SCREEN_WIDTH // 2) - recovery_square, (SCREEN_HEIGHT // 2) + 202, 10, 46, BLACK)
         self.knockout_square.draw(self.screen)
 
         if left_target < self.knockout_square.rect.centerx and self.knockout_square.rect.centerx < right_target:
@@ -302,7 +325,6 @@ class VersusBotPage:
 
         self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
         self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
-
 
     def knockout_timer(self):
         seconds = int(self.ko_seconds) % 60
