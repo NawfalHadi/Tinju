@@ -214,7 +214,7 @@ class VersusBotPage:
         Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLUE).draw(screen, corner_bottomLeft = 15)
 
         font = pygame.font.Font(None, 60)
-        screen.blit(font.render(self.bot_action, True, BLACK), (self.player_stamina_bg.rect.left, self.player_stamina_bg.rect.bottom))
+        screen.blit(font.render(self.bot_action, True, BLACK), (self.bot_stamina_bg.rect.left, self.bot_stamina_bg.rect.bottom))
 
     def start_timer(self):
         if self.total_seconds > 0:

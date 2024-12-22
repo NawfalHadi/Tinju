@@ -277,7 +277,7 @@ class PadworkPage:
                         self.isPadworkFinish = True
                         pass
                     
-                    if self.player_action == self.current_pose.capitalize():
+                    if self.player_action == self.current_pose:
                         self.list_pose -= 1
                         if self.isPadworkFinish:
                             self.current_pose = "Done"

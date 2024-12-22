@@ -170,11 +170,11 @@ class Environment:
         td_error = td_target - self.Q[state][action]
         self.Q[state][action] += alpha * td_error
 
-    def save_q_table(self, q_table, filename="../model/opponent/defensive_bot.pkl"):
+    def save_q_table(self, q_table, filename="../model/opponent/defensive_bot_2.pkl"):
         with open(filename, "wb") as f:
             pickle.dump(dict(q_table), f)
 
-    def load_q_table(self, filename="../model/opponent/defensive_bot.pkl"):
+    def load_q_table(self, filename="../model/opponent/defensive_bot_2.pkl"):
         try:
             with open(filename, "rb") as f:
                 return defaultdict(lambda: np.zeros(17), pickle.load(f))
@@ -335,7 +335,7 @@ class Environment:
 
 # Main script
 if __name__ == "__main__":
-    runs = 50
+    runs = 5
     for action in ACTIONS:
         for i in range(runs):
             print(f"Training Cycle {i + 1}")

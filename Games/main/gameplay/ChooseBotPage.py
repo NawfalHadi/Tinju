@@ -50,7 +50,7 @@ class ChooseBotPage:
         VersusBotPage(model).run()
         
     def choose_defensive_diff(self):
-        model = "main/bot/opponents/bot_defensive.pkl"
+        model = "main/bot/opponents/bot_defensive_2.pkl"
 
         from main.gameplay.VersusBotPage import VersusBotPage
         VersusBotPage(model).run()

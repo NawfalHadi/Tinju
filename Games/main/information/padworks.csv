@@ -2,12 +2,12 @@ name,sequences,record
 Jab Straight Combination,"Jab, Straight, Guard, Jab, Guard, Jab",00:06:483
 Simple Padworks,"Jab, Straight, Guard, Jab, Guard, Jab",00:16:366
 Long Jab Straight Combo,"Jab, Straight, Jab, Straight, Jab, Straight, Jab, Straight, Jab, Straight, Jab, Straight, Jab, Straight",00:20:700
-scn_01,"Guard, Jab, Straight, Jab, Straight, Guard",00:00:000
+scn_01,"Guard, Jab, Straight, Jab, Straight, Guard",00:10:600
 scn_02,"Guard, Jab, Guard, Left_Hook, Guard, Left_Uppercut",00:00:000
-scn_03,"Guard, Straight, Guard, Right_Uppercut, Guard, Right_Hook, Guard",00:00:000
+scn_03,"Guard, Straight, Guard, Right_Uppercut, Guard, Right_Hook, Guard",00:05:699
 scn_04,"Idle, Low_Jab, Idle, Low_Straight, Idle, Left_Hook, Idle, Jab, Idle, Right_BodyHook, Right_Uppercut, Guard",00:00:000
 scn_05,"Guard, Slip_Left, Slip_Right, Jab, Slip_Left, Slip_Right, Guard",00:00:000
-scn_06,"Slip_Left, Slip_Right, Guard, Left_Body_Guard, Guard, Right_Body_Guard, Guard",00:00:000
+scn_06,"Slip_Left, Slip_Right, Guard, Guard_LeftBody, Guard, Guard_RightBody, Guard",00:03:600
 scn_07,"Idle, Jab, Guard, Low_Jab, Straight, Guard, Low_Straight, Idle, Left_Hook, Guard, Left_BodyHook, Guard, Right_Hook, Guard, Right_BodyHook, Idle",00:00:000
 scn_08,"Jab, Straight, Guard, Right_BodyHook, Guard, Right_Uppercut, Guard, Idle, Jab, Guard, Jab, Guard, Idle",00:00:000
 scn_09,"Jab, Straight, Jab, Straight, Jab, Straight, Guard, Idle",00:00:000
