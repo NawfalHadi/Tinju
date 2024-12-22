@@ -213,7 +213,7 @@ class Environment:
             point += 10
 
         if self.bot_stm < ACTION_EFFECT[self.bot_action]["stamina_cost"]:
-            point -= 10
+            point -= 100
 
         if ACTION_EFFECT[self.bot_action]["hit_damage"][self.player_action] > 5:
             point += 10
