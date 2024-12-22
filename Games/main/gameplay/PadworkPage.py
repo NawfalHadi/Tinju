@@ -133,14 +133,14 @@ class PadworkList:
         pass
 
     def exit_page(self):
-        pygame.event.post(pygame.event.Event(pygame.QUIT))
+        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
 
     def run(self):
         while self.running:
             self.screen.fill(BACKGROUND)
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
                     self.running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 4:
@@ -165,6 +165,7 @@ class PadworkPage:
         self.screen = screen
         self.running = True
         self.img = self.image = pygame.image.load(PLACE_RING)
+        self.isPaused = False
 
         "=== CONTROLLER ==="
         self.controller_process = None
@@ -226,10 +227,14 @@ class PadworkPage:
                 while self.running:
                     try:
                         data = conn.recv(1024).decode()
-
                         if data:
                             self.player_action = data
                             print(self.player_action)
+
+                            if data == "Pause":
+                                self.isPaused = True
+                            else:
+                                self.isPaused = False
 
                     except ConnectionResetError:
                         print("Connection Reset")
@@ -284,9 +289,10 @@ class PadworkPage:
                 
                 if old_time < current_time or old_time == (0, 0, 0):
                     self.save_record(current_time)
-                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                    self.quit()
                 else:
                     print("Faster BRUV")
+                    self.quit()
                         
         except Exception as e:
             print("List Pose", e)
@@ -307,13 +313,21 @@ class PadworkPage:
             writer = csv.writer(file)
             writer.writerows(rows)
 
-    
-    def no_function(self):
-        print("test")
-        pass
+    def show_pause_screen(self):
+        self.pause_screen = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476))
 
-    def pause(self):
-        pass
+        font = pygame.font.Font(None, 48) 
+        text = "Mundur Untuk Melanjutkan" 
+        text_surface = font.render(text, True, WHITE)
+
+        text_rect = text_surface.get_rect(center=(512, 288))
+        self.screen.blit(text_surface, text_rect)
+
+        self.quit_button = Button("Quit", 462, 350, 150, 50, BACKGROUND, FOREGROUND, self.quit)
+        self.quit_button.draw(self.screen)
+
+    def quit(self):
+        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
 
     def start_countdown(self):
         if not self.isCountdownFinish:
@@ -345,12 +359,15 @@ class PadworkPage:
             screen.blit(self.current_image, (119, 139))
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
                     self.controller_process.terminate()
                     self.running = False
                     self.sock.close()
 
-            if not self.show_loading:
+                if self.isPaused:
+                    self.quit_button.is_clicked(event)
+
+            if not self.show_loading and not self.isPaused:
                 self.pose_requirement_shadow.draw(screen)
                 self.pose_requirement.draw(screen)
                 self.update_interface()
@@ -359,6 +376,8 @@ class PadworkPage:
                 else:
                     self.stopwatch()
                     self.update_padwork()
+            elif self.isPaused:
+                self.show_pause_screen()
 
 
             pygame.display.update()

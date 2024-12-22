@@ -27,6 +27,7 @@ class VersusBotPage:
     def __init__(self, bot_model):
         self.screen = screen
         self.image = pygame.image.load(PLACE_RING)
+        self.isPaused = False
 
         "=== JUDGES & GAME SYSTEM==="
         self.isTimerFinish = False
@@ -139,17 +140,18 @@ class VersusBotPage:
 
     def generate_bot_actions(self):
         while self.running:
-            state = (self.bot_hp, self.player_hp, 
-                    self.bot_stamina, self.player_stamina,
-                    ACTIONS.index(self.player_action))
-            try:
-                action_state = self.choose_action(state)
-                self.bot_action = ACTIONS[action_state]
-            except Exception as e:
-                self.bot_action = ACTIONS[0]
+            if self.player_action != "Pause":
+                state = (self.bot_hp, self.player_hp, 
+                        self.bot_stamina, self.player_stamina,
+                        ACTIONS.index(self.player_action))
+                try:
+                    action_state = self.choose_action(state)
+                    self.bot_action = ACTIONS[action_state]
+                except Exception as e:
+                    self.bot_action = ACTIONS[0]
 
 
-            time.sleep(0.2)
+                time.sleep(0.2)
                      
     def receive_data(self):
         try : 
@@ -168,8 +170,13 @@ class VersusBotPage:
                         if data:
                             if (not self.isLoading and not self.isTimerFinish) :
                                 self.player_action = data
-                                print(self.player_action)
-                                self.player_action_calculation()
+
+                                if data == "Pause":
+                                    self.isPaused = True
+                                else:
+                                    self.isPaused = False
+                                    print(self.player_action)
+                                    self.player_action_calculation()
 
                     except ConnectionResetError:
                         print("Connection Reset")
@@ -586,13 +593,30 @@ class VersusBotPage:
             # Player
             self.player_hp -= ACTIONS_EFFECTS[self.bot_action]["hit_damage"][self.player_action]
 
-        self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
+        # self.bot_img = pygame.image.load(random.choice(ACTIONS_IMAGE[self.bot_action]))
 
         self.bot_hp = max(0, min(self.bot_maxhp, self.bot_hp))
         self.bot_stamina = max(0, min(MAX_STM, self.bot_stamina))
         self.player_hp = max(0, min(self.player_maxHp, self.player_hp))
         self.player_stamina = max(0, min(MAX_STM, self.player_stamina))
          
+    def show_pause_screen(self):
+        self.pause_screen = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476))
+
+        font = pygame.font.Font(None, 48) 
+        text = "Mundur Untuk Melanjutkan" 
+        text_surface = font.render(text, True, WHITE)
+
+        text_rect = text_surface.get_rect(center=(512, 288))
+        self.screen.blit(text_surface, text_rect)
+
+        self.quit_button = Button("Quit", 462, 350, 150, 50, WHITE, FOREGROUND, self.quit)
+        self.quit_button.draw(self.screen)
+
+    def quit(self):
+        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
+
+    
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
@@ -600,32 +624,39 @@ class VersusBotPage:
             screen.blit(self.bot_img, (119, 139))
             
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
                     self.controller_process.terminate()
                     self.running = False
                     self.sock.close()
 
                 if self.isTimerFinish:
                     self.next_button.is_clicked(event)
+
+                if self.isPaused:
+                    self.quit_button.is_clicked(event)
             
             if (not self.isLoading and not self.isTimerFinish):
                 
-                self.player_hp_bg.draw(screen, corner_bottomRight=15)
-                self.player_stamina_bg.draw(screen, corner_bottomRight=15)
-                
-                self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
-                self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+                if not self.isPaused:
 
-                if self.isBotKO or self.isPlayerKO:
-                    self.knockout_interface()
-                    self.knockout_timer()
-                else:    
-                    self.bot_action_calculation()
-                    self.knockout_check()
-                
-                self.update_interface()
-                self.start_timer()
-                
+                    self.player_hp_bg.draw(screen, corner_bottomRight=15)
+                    self.player_stamina_bg.draw(screen, corner_bottomRight=15)
+                    
+                    self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
+                    self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+
+                    if self.isBotKO or self.isPlayerKO:
+                        self.knockout_interface()
+                        self.knockout_timer()
+                    else:    
+                        self.bot_action_calculation()
+                        self.knockout_check()
+                    
+                    self.update_interface()
+                    self.start_timer()
+
+                elif self.isPaused:
+                    self.show_pause_screen()  
 
             if self.isTimerFinish:
                 self.show_roundboard()

@@ -70,6 +70,7 @@ class ShadowBoxingPage:
                             print(self.player_action)
                             if data != "Pause":
                                 self.player_image = pygame.image.load(ACTIONS_IMAGE[data][0])
+                                self.isPaused = False
                             elif data == "Pause":
                                 self.isPaused = True
 
@@ -78,25 +79,41 @@ class ShadowBoxingPage:
         except :
             pass
 
-    def pause(self):
-        pass
+    def show_pause_screen(self):
+        self.pause_screen = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476))
+
+        font = pygame.font.Font(None, 48) 
+        text = "Mundur Untuk Melanjutkan" 
+        text_surface = font.render(text, True, WHITE)
+
+        text_rect = text_surface.get_rect(center=(512, 288))
+        self.screen.blit(text_surface, text_rect)
+
+        self.quit_button = Button("Quit", 462, 350, 150, 50, BACKGROUND, FOREGROUND, self.quit)
+        self.quit_button.draw(self.screen)
+
+    def quit(self):
+        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
             
     
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
             screen.blit(self.image, (0, 0))
-            screen.blit(self.player_image, (-80, 180))
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
                     self.controller_process.terminate()
                     self.running = False
                     self.sock.close()
+                
+                if self.isPaused:
+                    self.quit_button.is_clicked(event)
 
-            if not self.show_loading or not self.isPaused:
-                # self.update_interface()
-                pass
+            if not self.show_loading and not self.isPaused:
+                screen.blit(self.player_image, (-80, 180))
+            elif self.isPaused:
+                self.show_pause_screen()
     
             pygame.display.update()
             pygame.time.Clock().tick(60)
