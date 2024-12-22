@@ -1,5 +1,9 @@
 # constants.py
 
+ALPHA = 0.1  # Learning rate
+GAMMA = 0.9  # Discount factor
+EPSILON = 0.1  # Exploration 
+
 # ====== SCREEN DIMENSION 1=======
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 576
@@ -41,12 +45,7 @@ MAX_HP = 100
 MAX_STM = 100
 
 # ====== ACTIONS =====
-ACTIONS = [
-    "Idle", "Guard", "Jab", "Low_Jab", "Straight", "Low_Straight",
-    "Left_Hook", "Right_Hook", "Left_BodyHook", "Right_BodyHook",
-    "Left_Uppercut", "Right_Uppercut", "Slip_Left", "Slip_Right", 
-    "Guard_LeftBody", "Guard_RightBody", "Duck"
-]
+
 
 # ======= COACHES =====
 C_ASKPOSE = ["Give me a ", "Throw the ", "Show me your ", "I want see your "]

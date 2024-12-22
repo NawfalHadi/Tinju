@@ -128,12 +128,12 @@ class VersusBotPage:
 
     def load_bots(self, filename):
         with open(filename, "rb") as f:
-            self.Q = defaultdict(lambda: np.zeros(3), pickle.load(f))
+            self.Q = defaultdict(lambda: np.zeros(17), pickle.load(f))
 
     def choose_action(self, state):
         """Chooses an action based on epsilon-greedy policy."""
         if random.uniform(0, 1) < EPSILON:
-            return random.choice(range(3))  # Explore
+            return random.choice(range(17))  # Explore
         else:
             return np.argmax(self.Q[state])  # Exploit
 
@@ -192,21 +192,18 @@ class VersusBotPage:
         player_hp = ((self.player_hp) / 100 * 400)
         player_stm = ((self.player_stamina) / 100 * 350)
         player_maxHp = ((self.player_maxHp) / 100 * 400)
-        player_maxStm = ((self.player_maxStm) / 100 * 350)
+        
 
         bot_hp = ((self.bot_hp) / 100 * 400)
         bot_stm = ((self.bot_stamina) / 100 * 350)
         bot_maxHp = ((self.bot_maxhp) / 100 * 400)
-        bot_maxStm = ((self.bot_maxStm) / 100 * 350)
 
         Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_maxHp, 40, BLACK).draw(screen, corner_bottomRight=15)
         Attributes(SCREEN_MARGIN, SCREEN_MARGIN, player_hp, 40, RED).draw(screen, corner_bottomRight = 15)
-        Attributes(SCREEN_MARGIN, self.player_hp_bg.rect.bottom, player_maxStm, 20, BLACK).draw(screen, corner_bottomRight = 15)
         Attributes(SCREEN_MARGIN, self.player_hp_bg.rect.bottom, player_stm, 20, BLUE).draw(screen, corner_bottomRight = 15)
 
         Attributes(self.screen.get_width() - (bot_maxHp + SCREEN_MARGIN), SCREEN_MARGIN, bot_maxHp, 40, BLACK).draw(screen, corner_bottomLeft = 15)
         Attributes(self.screen.get_width() - (bot_hp + SCREEN_MARGIN), SCREEN_MARGIN, bot_hp, 40, RED).draw(screen, corner_bottomLeft = 15)
-        Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_maxStm, 20, BLACK).draw(screen, corner_bottomLeft = 15)
         Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom, bot_stm, 20, BLUE).draw(screen, corner_bottomLeft = 15)
 
         font = pygame.font.Font(None, 60)

@@ -9,7 +9,7 @@ from main.helper.ui_elements.button import Button
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Bot Information')  
 
-new_row = ["Jubaer", "main/bot/yours/q_table.pkl", "1/0/0", "1"]
+new_row = ["Jubaer", "main/bot/yours/q_table.pkl", "0/0/0", "0"]
 
 class BotInformation:
     def __init__(self):
@@ -19,6 +19,7 @@ class BotInformation:
         self.q_points_info = pygame.image.load(INFO_Q_POINTS_MIN)
 
         "=== BOT INFORMATION ==="
+        self.data = None
         self.bot_name = ""
         self.bot_path = ""
         self.bot_record = ""
@@ -59,6 +60,7 @@ class BotInformation:
 
         if first_row:
             print(first_row)
+            self.data = first_row
             self.bot_name = first_row["name"]          # Access by column name
             self.bot_path = first_row["model_path"]    # Access by column name
             self.bot_record = first_row["record"]      # Access by column name
@@ -98,7 +100,7 @@ class BotInformation:
         return rect, button
 
     def start_training(self):
-        model = self.bot_path
+        model = self.data
         
         from main.gameplay.BotTraining import BotTraining
         BotTraining(model).run()
