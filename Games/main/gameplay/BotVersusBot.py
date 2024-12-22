@@ -66,7 +66,7 @@ class BotVersusBot:
         self.bot_Q, self.isBotQLoaded= self.load_bots(model_path)
 
         self.bot_action = ACTIONS[0]
-        self.bot_img = pygame.image.load(ACTIONS_IMAGE["Idle"][0])
+        self.bot_img = pygame.image.load(ACTIONS_IMAGE[self.bot_action][0])
 
         self.bot_maxhp = 100
         self.bot_hp = self.bot_maxhp
@@ -87,7 +87,7 @@ class BotVersusBot:
         self.player_Q, self.isPlayerQLoaded= self.load_bots(model_path)
         
         self.player_action = ACTIONS[0]
-        self.player_img = None
+        self.player_img = pygame.image.load(PLAYER_ACTIONS_IMAGE[self.player_action][0])
 
         self.player_maxHp = 100
         self.player_hp = self.player_maxHp
@@ -142,6 +142,7 @@ class BotVersusBot:
             try:
                 action_state = self.choose_action(state, self.bot_Q)
                 self.bot_action = ACTIONS[action_state]
+                self.bot_img = pygame.image.load(ACTIONS_IMAGE[self.bot_action][0])
 
                 print("Bot :", self.bot_action)
             except Exception as e:
@@ -179,6 +180,7 @@ class BotVersusBot:
             try:
                 action_state = self.choose_action(state, self.player_Q)
                 self.player_action = ACTIONS[action_state]
+                self.player_img = pygame.image.load(PLAYER_ACTIONS_IMAGE[self.player_action][0])
                 print("Player :", self.player_action)
             except Exception as e:
                 # print("Except P:", e)
@@ -377,7 +379,6 @@ class BotVersusBot:
     "== GAME SYSTEM - SCORING =="
 
     def continue_round(self):
-        print("Test")
         self.isTimerFinish = False
         self.total_seconds = 1 * 60
 
@@ -619,13 +620,15 @@ class BotVersusBot:
                 self.pause_button.is_clicked(event)
 
 
-
             if not self.isPaused:
                 if not self.isLoading and not self.isTimerFinish and (self.isPlayerQLoaded and self.isBotQLoaded):
                     self.player_hp_bg.draw(screen, corner_bottomRight=15)
                     self.player_stamina_bg.draw(screen, corner_bottomRight=15)
                     self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
                     self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+
+                    self.screen.blit(self.bot_img, (119, 139))
+                    self.screen.blit(self.player_img, (176, 169))
 
                     if self.isPlayerKO or self.isBotKO:
                         self.knockout_interface()
