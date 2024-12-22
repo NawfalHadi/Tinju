@@ -23,6 +23,7 @@ class BotVersusBot:
         self.screen = screen
         self.image_bg = pygame.image.load(PLACE_RING)
         self.isRunning = True
+        self.isPaused = False
 
         self.draw_interface()
 
@@ -111,6 +112,9 @@ class BotVersusBot:
         self.bot_hp_bg = Attributes(self.screen.get_width() - (400 + SCREEN_MARGIN), SCREEN_MARGIN, 400, 40, GRAY) 
         self.bot_stamina_bg = Attributes(self.bot_hp_bg.rect.left + 50, self.bot_hp_bg.rect.bottom,
                                       350, 20, GRAY)
+        
+        # Button For Pause
+        self.pause_button = Button("Pause", self.screen.get_rect().left + 20, self.screen.get_rect().bottom - 80, 150, 50, FOREGROUND, BACKGROUND, self.pause)
 
     def update_interface(self):
         bot_hp = ((self.bot_hp) / 100 * 400)
@@ -572,38 +576,76 @@ class BotVersusBot:
                 self.isBotKO = True
                 self.knockout_speed(self.bot_total_ko)
 
+    "== Pause =="
+    def pause(self):
+        if self.isPaused:
+            self.isPaused = False
+        elif not self.isPaused:
+            self.isPaused = True
+
+    def show_pause_screen(self):
+        self.pause_screen = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476))
+
+        font = pygame.font.Font(None, 48) 
+        text = "Mundur Untuk Melanjutkan" 
+        text_surface = font.render(text, True, WHITE)
+
+        text_rect = text_surface.get_rect(center=(512, 288))
+        self.screen.blit(text_surface, text_rect)
+
+        self.quit_button = Button("Quit", 462, 350, 150, 50, WHITE, FOREGROUND, self.quit)
+        self.quit_button.draw(self.screen)
+
+    def quit(self):
+        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
+
+    "========================="
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
             self.screen.blit(self.image_bg, (0, 0))
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
                     self.isRunning = False
 
                 if self.isTimerFinish:
                     self.next_button.is_clicked(event)
 
-            if not self.isLoading and not self.isTimerFinish and (self.isPlayerQLoaded and self.isBotQLoaded):
-                self.player_hp_bg.draw(screen, corner_bottomRight=15)
-                self.player_stamina_bg.draw(screen, corner_bottomRight=15)
-                self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
-                self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+                if self.isPaused:
+                    self.quit_button.is_clicked(event)
 
-                if self.isPlayerKO or self.isBotKO:
-                    self.knockout_interface()
-                    self.knockout_timer()
-                else:
-                    self.knockout_check()
-                    self.calculation_opp_bot_actions()
-                    self.calculation_player_bot_actions()
-                
-                self.update_interface()
-                self.start_timer()
+                self.pause_button.is_clicked(event)
 
-            if self.isTimerFinish:
-                self.show_roundboard()
-                self.next_button.draw(self.screen)
+
+
+            if not self.isPaused:
+                if not self.isLoading and not self.isTimerFinish and (self.isPlayerQLoaded and self.isBotQLoaded):
+                    self.player_hp_bg.draw(screen, corner_bottomRight=15)
+                    self.player_stamina_bg.draw(screen, corner_bottomRight=15)
+                    self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
+                    self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+
+                    if self.isPlayerKO or self.isBotKO:
+                        self.knockout_interface()
+                        self.knockout_timer()
+                    else:
+                        self.knockout_check()
+                        self.calculation_opp_bot_actions()
+                        self.calculation_player_bot_actions()
+                    
+                    self.update_interface()
+                    self.start_timer()
+
+                if self.isTimerFinish:
+                    self.show_roundboard()
+                    self.next_button.draw(self.screen)
+            else:
+                self.show_pause_screen()
+
+            self.pause_button.draw(self.screen)
+            
             
             pygame.time.Clock().tick(60)
             pygame.display.update()

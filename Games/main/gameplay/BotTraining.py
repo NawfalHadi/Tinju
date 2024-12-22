@@ -15,6 +15,7 @@ from main.helper.Actions import *
 from main.assets.ImagePath import *
 from main.helper.constants import *
 from main.helper.ui_elements.Attribute import Attributes
+from main.helper.ui_elements.button import Button
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 ACTION_EFFECT = ACTIONS_EFFECTS_OFFENSIVE
@@ -27,6 +28,7 @@ class BotTraining:
         self.model_path = bot_info["model_path"]
         self.screen = screen
         self.isRunning = True
+        self.isPaused = False
 
         self.Q = self.load_bots(self.model_path)
         self.setup_bot()
@@ -111,7 +113,14 @@ class BotTraining:
                         if data:
                             self.player_action = data
                             print(self.player_action)
-                            self.player_action_calculation()
+
+                            if data == "Pause":
+                                self.isPaused = True
+                            else:
+                                self.isPaused = False
+                                self.player_action_calculation()
+                                print(self.player_action)
+
 
                     except ConnectionResetError:
                         print("Connection Reset")
@@ -311,6 +320,25 @@ class BotTraining:
             print(f"Game Over : Bot Health: {self.bot_hp}, Player Health: {self.player_hp}")
             pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
 
+    "== Pause =="
+
+    def show_pause_screen(self):
+        self.pause_screen = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476))
+
+        font = pygame.font.Font(None, 48) 
+        text = "Mundur Untuk Melanjutkan" 
+        text_surface = font.render(text, True, WHITE)
+
+        text_rect = text_surface.get_rect(center=(512, 288))
+        self.screen.blit(text_surface, text_rect)
+
+        self.quit_button = Button("Quit", 462, 350, 150, 50, WHITE, FOREGROUND, self.quit)
+        self.quit_button.draw(self.screen)
+
+    def quit(self):
+        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
+
+
     "========================="
     def run(self):
         while self.isRunning:
@@ -323,7 +351,10 @@ class BotTraining:
                     self.isRunning = False
                     self.sock.close()
 
-            if not self.isLoading:
+                if self.isPaused:
+                    self.quit_button.is_clicked(event)
+
+            if not self.isLoading and not self.isPaused:
                 # Only the hp and stamina bar background
                 self.player_hp_bg.draw(screen, corner_bottomRight=15)
                 self.player_stamina_bg.draw(screen, corner_bottomRight=15)
@@ -336,6 +367,8 @@ class BotTraining:
                 self.update_interface()
                 self.start_timer()
                 self.check_game_over()
+            elif self.isPaused:
+                self.show_pause_screen()
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
