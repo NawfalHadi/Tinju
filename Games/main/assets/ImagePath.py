@@ -7,24 +7,24 @@ PLACE_RING_SIDE = f"{place_path}ring_side.png"
 
 # IMAGE FOR THE PURPOSE OF TUTORIAL
 tutorial_path = "main/assets/tutorial/"
-TUTORIAL_WAIT_IMG = f"{tutorial_path}wait.png"
-TUTORIAL_PAUSE_IMG = f"{tutorial_path}pause.png"
-TUTORIAL_JAB_IMG = f"{tutorial_path}jab.png"
-TUTORIAL_STRAIGHT_IMG = f"{tutorial_path}S.png"
-TUTORIAL_LEFT_HOOK_IMG = f"{tutorial_path}LH.png"
-TURORIAL_RIGHT_HOOK_IMG = f"{tutorial_path}RH.png"
-TUTORIAL_LEFT_UPP_IMG = f"{tutorial_path}LUPP.png"
-TUTORIAL_RIGHT_UPP_IMG = f"{tutorial_path}RUPP.png"
-TUTORIAL_GUARD_IMG = f"{tutorial_path}G1.png"
-TUTORIAL_GUARD_BODY_LEFT_IMG =f"{tutorial_path}GBL.png"
-TUTORIAL_GUARD_BODY_RIGHT_IMG =f"{tutorial_path}GBR.png"
-TUTORIAL_SLIP_LEFT_IMG = f"{tutorial_path}SL.png"
-TUTORIAL_SLIP_RIGHT_IMG = f"{tutorial_path}SR.png"
-TUTORIAL_LEFT_BODY_HOOK_IMG = f"{tutorial_path}LBH.png"
-TUTORIAL_RIGHT_BODY_HOOK_IMG = f"{tutorial_path}RBH.png"
-TUTORIAL_DUCK_1_IMG = f"{tutorial_path}D1.png"
-TUTORIAL_DUCK_2_IMG = f"{tutorial_path}D2.png"
-TUTORIAL_DONE_IMG = f"{tutorial_path}DONE.png"
+TUTORIAL_WAIT_IMG = f"{tutorial_path}wait.png" #
+TUTORIAL_PAUSE_IMG = f"{tutorial_path}pause.png" 
+TUTORIAL_JAB_IMG = f"{tutorial_path}jab.png" #
+TUTORIAL_STRAIGHT_IMG = f"{tutorial_path}S.png" #
+TUTORIAL_LEFT_HOOK_IMG = f"{tutorial_path}LH.png" #
+TURORIAL_RIGHT_HOOK_IMG = f"{tutorial_path}RH.png" #
+TUTORIAL_LEFT_UPP_IMG = f"{tutorial_path}LUPP.png"#
+TUTORIAL_RIGHT_UPP_IMG = f"{tutorial_path}RUPP.png" #
+TUTORIAL_GUARD_IMG = f"{tutorial_path}G1.png" #
+TUTORIAL_GUARD_BODY_LEFT_IMG =f"{tutorial_path}GBL.png" #
+TUTORIAL_GUARD_BODY_RIGHT_IMG =f"{tutorial_path}GBR.png" #
+TUTORIAL_SLIP_LEFT_IMG = f"{tutorial_path}SL.png" #
+TUTORIAL_SLIP_RIGHT_IMG = f"{tutorial_path}SR.png" #
+TUTORIAL_LEFT_BODY_HOOK_IMG = f"{tutorial_path}LBH.png"#
+TUTORIAL_RIGHT_BODY_HOOK_IMG = f"{tutorial_path}RBH.png" #
+TUTORIAL_DUCK_1_IMG = f"{tutorial_path}D1.png" #
+TUTORIAL_DUCK_2_IMG = f"{tutorial_path}D2.png" #
+TUTORIAL_DONE_IMG = f"{tutorial_path}DONE.png" #
 
 
 bot_path = "main/assets/bot/"
@@ -63,12 +63,13 @@ ACTIONS_IMAGE = {
     "Guard": BOT_GUARD_IMG,
     "Guard_LeftBody": BOT_GUARD_BODY_L_IMG,
     "Guard_RightBody": BOT_GUARD_BODY_R_IMG,
-    "Duck": BOT_DUCK_IMG,
+    "Duck": BOT_DUCK_IMG, #
     "Idle": BOT_IDLE_IMG,
 }
 
 padwork_path = "main/assets/padwork/"
-"!! === BELUM BIKIN === !!"
+# No Idle
+PW_IDLE_IMG = [f"{padwork_path}PW_I.png"]
 PW_JAB_IMG = [f"{padwork_path}PW_J_1.png", f"{padwork_path}PW_J_2.png"]
 PW_STRAIGHT_IMG = [f"{padwork_path}PW_S_1.png", f"{padwork_path}PW_S_2.png"]
 PW_LH_IMG = [f"{padwork_path}PW_LH_1.png", f"{padwork_path}PW_LH_2.png"]
@@ -87,6 +88,7 @@ PW_GUARD_BODY_R_IMG = [f"{padwork_path}PW_guard_body_r_1.png", f"{padwork_path}P
 PW_DUCK_IMG = [f"{padwork_path}PW_duck_1.png", f"{padwork_path}PW_duck_2.png"]
 
 PADWROKS_ACTIONS_IMAGE = {
+    "Idle": PW_IDLE_IMG,
     "Jab": PW_JAB_IMG,
     "Straight": PW_STRAIGHT_IMG,
     "Left_Hook": PW_LH_IMG,

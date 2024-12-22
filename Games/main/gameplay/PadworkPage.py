@@ -291,7 +291,7 @@ class PadworkPage:
                     self.save_record(current_time)
                     self.quit()
                 else:
-                    print("Faster BRUV")
+                    print("Do It Faster")
                     self.quit()
                         
         except Exception as e:
