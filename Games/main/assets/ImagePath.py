@@ -43,7 +43,7 @@ BOT_RIGHT_SLIP_IMG = [f"{bot_path}bot_right_slip_1.png", f"{bot_path}bot_right_s
 BOT_GUARD_IMG = [f"{bot_path}bot_guard_1.png", f"{bot_path}bot_guard_2.png", f"{bot_path}bot_guard_3.png"]
 BOT_GUARD_BODY_L_IMG = [f"{bot_path}bot_guard_body_l_1.png", f"{bot_path}bot_guard_body_l_2.png", f"{bot_path}bot_guard_body_l_3.png"]
 BOT_GUARD_BODY_R_IMG = [f"{bot_path}bot_guard_body_r_1.png", f"{bot_path}bot_guard_body_r_2.png", f"{bot_path}bot_guard_body_r_3.png"]
-BOT_DUCK_IMG = [f"{bot_path}bot_duck_1.png", f"{bot_path}bot_duck_2.png", f"{bot_path}bot_duck_3.png"]
+BOT_DUCK_IMG = [f"{bot_path}bot_duck_1.png"]
 BOT_IDLE_IMG = [f"{bot_path}bot_idle_1.png", f"{bot_path}bot_idle_2.png", f"{bot_path}bot_idle_3.png"]
 
 
@@ -58,7 +58,7 @@ ACTIONS_IMAGE = {
     "Right_BodyHook": BOT_RBH_IMG,
     "Left_Uppercut": BOT_LEFT_UPP_IMG,
     "Right_Uppercut": BOT_RIGHT_UPP_IMG,
-    "Slip_Left": BOT_LEFT_SLIP_IMG,
+    "Slip_Left": BOT_LEFT_SLIP_IMG, #
     "Slip_Right": BOT_RIGHT_SLIP_IMG,
     "Guard": BOT_GUARD_IMG,
     "Guard_LeftBody": BOT_GUARD_BODY_L_IMG,
@@ -68,7 +68,6 @@ ACTIONS_IMAGE = {
 }
 
 padwork_path = "main/assets/padwork/"
-# No Idle
 PW_IDLE_IMG = [f"{padwork_path}PW_I.png"]
 PW_JAB_IMG = [f"{padwork_path}PW_J_1.png", f"{padwork_path}PW_J_2.png"]
 PW_STRAIGHT_IMG = [f"{padwork_path}PW_S_1.png", f"{padwork_path}PW_S_2.png"]
@@ -105,5 +104,43 @@ PADWROKS_ACTIONS_IMAGE = {
     "Guard_LeftBody": PW_GUARD_BODY_L_IMG,
     "Guard_RightBody": PW_GUARD_BODY_R_IMG,
     "Duck": PW_DUCK_IMG,
+}
 
+player_path = "main/assets/player/"
+P_IDLE_IMG = [f"{player_path}P_I.png"]
+P_J_IMG = [f"{player_path}P_J.png"]
+P_LJ_IMG = [f"{player_path}P_LJ.png"]
+P_S_IMG = [f"{player_path}P_S.png"]
+P_LS_IMG = [f"{player_path}P_LS.png"]
+P_LH_IMG = [f"{player_path}P_LH.png"]
+P_LBH_IMG = [f"{player_path}P_LBH.png"]
+P_RH_IMG = [f"{player_path}P_RH.png"]
+P_RBH_IMG = [f"{player_path}P_RBH.png"]
+P_LUPP_IMG = [f"{player_path}P_LUPP.png"]
+P_RUPP_IMG = [f"{player_path}P_RUPP.png"]
+P_G_IMG = [f"{player_path}P_G.png"]
+P_SL_IMG = [f"{player_path}P_SL.png"]
+P_SR_IMG = [f"{player_path}P_SR.png"]
+P_D_IMG = [f"{player_path}P_D.png"]
+P_GLB_IMG = [f"{player_path}P_GLB.png"]
+P_GRB_IMG = [f"{player_path}P_GRB.png"]
+
+PLAYER_ACTIONS_IMAGE = {
+    "Idle": P_IDLE_IMG,
+    "Jab": P_J_IMG,
+    "Straight": P_S_IMG,
+    "Left_Hook": P_LH_IMG,
+    "Right_Hook": P_RH_IMG,
+    "Low_Jab": P_LJ_IMG,
+    "Low_Straight": P_LS_IMG,
+    "Left_BodyHook": P_LBH_IMG,
+    "Right_BodyHook": P_RBH_IMG,
+    "Left_Uppercut": P_LUPP_IMG,
+    "Right_Uppercut": P_RUPP_IMG,
+    "Slip_Left": P_SL_IMG,
+    "Slip_Right": P_SR_IMG,
+    "Guard": P_G_IMG,
+    "Guard_LeftBody": P_GLB_IMG,
+    "Guard_RightBody": P_GRB_IMG,
+    "Duck": P_D_IMG,
 }

@@ -218,56 +218,62 @@ class PoseController:
         self.isSlipLeft = SlipL
         self.isSlipRight = SlipR
     
-    def send_prediction(self, body_language_class):
+    def send_prediction(self, body_language_class, prob):
         if body_language_class == "Jab" and self.isNotJab:
-            self.update_pose_detection(Jab=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Low_Jab")
-            else:
+                self.update_pose_detection(Jab=False)
+            elif not self.isDucking and prob > 0.8:
                 self.send_data("Jab")
+                self.update_pose_detection(Jab=False)
                         
         elif body_language_class == "Straight" and self.isNotStraight:
-            self.update_pose_detection(Straight=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Low_Straight")
-            else:
+                self.update_pose_detection(Straight=False)
+            elif not self.isDucking and prob > 0.8:
                 self.send_data("Straight")        
+                self.update_pose_detection(Straight=False)
                         
         elif body_language_class == "Left_Hook" and self.isNotLeftHook:
-            self.update_pose_detection(LeftHook=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Left_BodyHook")
-            else:
+                self.update_pose_detection(LeftHook=False)
+            elif not self.isDucking and prob > 0.8:
                 self.send_data("Left_Hook")
+                self.update_pose_detection(LeftHook=False)
 
         elif body_language_class == "Right_Hook" and self.isNotRightHook:
-            self.update_pose_detection(RightHook=False)
-            if self.isDucking:
+            if self.isDucking and prob > 0.70:
                 self.send_data("Right_BodyHook")
-            else:
+                self.update_pose_detection(RightHook=False)
+            elif not self.isDucking and prob > 0.8:
                 self.send_data("Right_Hook")
+                self.update_pose_detection(RightHook=False)
 
-        elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut:
-            self.update_pose_detection(LeftUppercut=False)
+        elif body_language_class == "Left_Uppercut" and self.isNotLeftUppercut and prob > 0.70:
             self.send_data("Left_Uppercut")
+            self.update_pose_detection(LeftUppercut=False)
 
-        elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut:
-            self.update_pose_detection(RightUppercut=False)
+        elif body_language_class == "Right_Uppercut" and self.isNotRightUppercut and prob > 0.70:
             self.send_data("Right_Uppercut")
+            self.update_pose_detection(RightUppercut=False)
 
-        elif body_language_class == "Guard" and self.isNotGuard:
-            self.update_pose_detection(Guard=False)
+        elif body_language_class == "Guard" and self.isNotGuard and prob > 0.78:
             if self.isDucking:
                 self.send_data("Duck")
+                self.update_pose_detection(Guard=False)
             else:
                 self.send_data("Guard")
+                self.update_pose_detection(Guard=False)
 
-        elif body_language_class == "Idle" and self.isNotIdle:
-            self.update_pose_detection(Idle=False)
+        elif body_language_class == "Idle" and self.isNotIdle and prob > 0.78:
             if self.isDucking:
                 self.send_data("Duck")
+                self.update_pose_detection(Idle=False)
             else:
                 self.send_data("Idle")
+                self.update_pose_detection(Idle=False)
 
     def send_data(self, value):
         self.sock.sendall(value.encode())
@@ -423,8 +429,7 @@ class PoseController:
 
                     if not self.isPause:
                         if not self.isSlipLeft and not self.isSlipRight and self.isNotGuardLeftBody and self.isNotGuardRightBody:
-                            if prob > 0.75:
-                                self.send_prediction(body_language_class)
+                            self.send_prediction(body_language_class, prob)
                                        
                     else:
                         self.send_data("Pause")
