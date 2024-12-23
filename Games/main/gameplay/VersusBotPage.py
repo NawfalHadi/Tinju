@@ -216,6 +216,9 @@ class VersusBotPage:
         font = pygame.font.Font(None, 60)
         screen.blit(font.render(self.bot_action, True, BLACK), (self.bot_stamina_bg.rect.left, self.bot_stamina_bg.rect.bottom))
 
+        self.bot_img = pygame.image.load(ACTIONS_IMAGE[self.bot_action][0])
+
+
     def start_timer(self):
         if self.total_seconds > 0:
             self.total_seconds -= 1 / 60
@@ -460,7 +463,7 @@ class VersusBotPage:
 
     def continue_round(self):
         self.isTimerFinish = False
-        self.total_seconds = 3 * 60
+        self.total_seconds = 3 * 10
 
         hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
         hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)

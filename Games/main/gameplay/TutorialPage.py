@@ -177,10 +177,10 @@ class TutorialPage:
     def next_tutorial(self):
         self.isPaused = False
         self.inTutorialMenu = False
-        # self.inTutorialOffensse = True
+        self.inTutorialOffensse = True
         # self.inTutorialGuard = True
         # self.inTutorialLowOffence = True
-        self.inTutorialKnockout = True
+        # self.inTutorialKnockout = True
 
     def step_offense(self):
         if self.inTutorialOffensse:
@@ -384,6 +384,9 @@ class TutorialPage:
             elif self.player_action == "Right_BodyHook" :
                 self.lowRigthHook_counter += 1
                 print("Right Body Hook:", self.lowRigthHook_counter)
+        else:
+            self.inTutorialLowOffence = False
+            self.inTutorialKnockout = True
     
     def step_knockout(self):
         if self.inTutorialKnockout:
