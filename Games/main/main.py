@@ -67,7 +67,7 @@ class MainMenu:
                 self.padwork_button.is_clicked(event)
                 self.tutorial_button.is_clicked(event)
                 self.shadow_button.is_clicked(event)
-                self.coach_button.is_clicked(event  )
+                self.coach_button.is_clicked(event)
 
                 self.exit_button.is_clicked(event)
                 
@@ -76,7 +76,7 @@ class MainMenu:
             self.start_button.draw(screen)
             self.tutorial_button.draw(screen)
             self.coach_button.draw(screen)
-            self.record_button.draw(screen)
+            # self.record_button.draw(screen)
             self.padwork_button.draw(screen)
             self.shadow_button.draw(screen)
 

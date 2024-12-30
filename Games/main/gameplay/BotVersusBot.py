@@ -50,7 +50,7 @@ class BotVersusBot:
         self.isGoLeft = False
 
         "=== TIMER ==="
-        self.total_seconds = 1 * 60
+        self.total_seconds = 1 * 5
 
         "=== SOCKET ==="
         self.isLoading = False
@@ -89,7 +89,7 @@ class BotVersusBot:
         self.player_action = ACTIONS[0]
         self.player_img = pygame.image.load(PLAYER_ACTIONS_IMAGE[self.player_action][0])
 
-        self.player_maxHp = 100
+        self.player_maxHp = 0
         self.player_hp = self.player_maxHp
 
         self.player_maxStm = 100

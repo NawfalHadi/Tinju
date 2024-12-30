@@ -8,8 +8,8 @@ ACTIONS = [
 ACTIONS_EFFECTS = {
     "Idle": {
         "stamina_cost": 0,
-        "health_recovery": 0.5,
-        "stamina_recovery": 10,
+        "health_recovery": 0.2,
+        "stamina_recovery": 5,
         "hit_damage": {
             "Idle": 0, "Jab": 0, "Low_Jab": 0, "Straight": 0, "Low_Straight": 0, 
             "Left_Hook": 0, "Left_BodyHook": 0, "Right_Hook": 0, "Right_BodyHook": 0, 

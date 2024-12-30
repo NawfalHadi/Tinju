@@ -51,7 +51,7 @@ class VersusBotPage:
         self.controller_process = None
 
         "=== TIMER ==="
-        self.total_seconds = 1 * 30
+        self.total_seconds = 1 * 1
         
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
@@ -80,7 +80,7 @@ class VersusBotPage:
         self.player_action = ACTIONS[0]
         self.player_action_hit = True
 
-        self.player_maxHp = 100
+        self.player_maxHp = 1
         self.player_hp = self.player_maxHp
 
         self.player_maxStm = 100
@@ -429,7 +429,7 @@ class VersusBotPage:
             hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
             hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
             
-            self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
+        self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
 
         "=== Second Judges Scoring ==="
         self.second_judges = self.draw_player_name(self.first_judges.bottom + 20, BACKGROUND)
@@ -443,7 +443,7 @@ class VersusBotPage:
             offPlayer_scoring = sum(sublist[0] for sublist in self.judges_off)
             offBot_scoring = sum(sublist[1] for sublist in self.judges_off)
             
-            self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
+        self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
 
         "=== Third Judges Scoring ==="
         self.third_judges = self.draw_player_name(self.second_judges.bottom + 20, BACKGROUND)
@@ -457,7 +457,7 @@ class VersusBotPage:
             defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
             defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
 
-            self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
+        self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
 
         self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round)
 
@@ -479,11 +479,13 @@ class VersusBotPage:
             
         if self.isPlayerTKO:
             print("Bot Win by Technical Knockout")
+            self.save_record("Bot")
             time.sleep(1)
             pygame.event.post(pygame.event.Event(pygame.QUIT))
 
         elif self.isBotTKO:
             print("Player Win by Technical Knockout")
+            self.save_record("Player")
             time.sleep(1)
             pygame.event.post(pygame.event.Event(pygame.QUIT))
         
@@ -501,13 +503,40 @@ class VersusBotPage:
         elif self.current_rounds == 3:
             if playerScore > botScore:
                 print("Player Win by Anonimous Decision")
+                self.save_record("Player")
             elif playerScore == botScore:
                 print("Draw")
+                self.save_record("Draw")
             elif playerScore < botScore:
                 print("Bot Win by Anonimous Decision")
+                self.save_record("Bot")
             
             time.sleep(1)
             pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+    def save_record(self, winner):
+        data_file = "main/information/your_info.csv"  # Update with your actual data file path
+        temp_lines = []
+
+        with open(data_file, "r") as file:
+            for line in file:
+                if line.startswith("nawfal"):  # Find the line for this bot
+                    parts = line.strip().split(",")
+                    
+                    print(type(parts[2]))
+                    # if winner == "Bot":
+                    #     parts[2] = str(int([parts[2]]) + 1)
+                    # elif winner == "Player":
+                    #     parts[1] = str(int([parts[1]]) + 1)
+                    # elif winner == "Draw":
+                    #     parts[3] = str(int(parts[3]) + 1) 
+
+                    # temp_lines.append(",".join(parts) + "\n")
+                else:
+                    temp_lines.append(line)
+
+        with open(data_file, "w") as file:
+            file.writelines(temp_lines)
 
     def draw_rounds(self, text, rightOf, bottomOf, color = BACKGROUND):
         # Draw the rectangle
@@ -653,6 +682,10 @@ class VersusBotPage:
                         self.knockout_timer()
                     else:    
                         self.bot_action_calculation()
+
+                        if self.player_action == "Idle":
+                            self.player_action_calculation()
+
                         self.knockout_check()
                     
                     self.update_interface()
