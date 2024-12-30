@@ -144,3 +144,24 @@ PLAYER_ACTIONS_IMAGE = {
     "Guard_RightBody": P_GRB_IMG,
     "Duck": P_D_IMG,
 }
+
+bot_seq_path = "main/assets/bot/Seq/"
+BOT_IMAGE_SEQ = {
+    "Idle": [f"{bot_seq_path}/I/I_{i}.jpg" for i in range(1, 6)],
+    "Jab": [f"{bot_seq_path}/J/J_{i}.jpg" for i in range(1, 6)],
+    "Straight": [f"{bot_seq_path}/S/S_{i}.jpg" for i in range(1, 6)],
+    "Left_Hook": [f"{bot_seq_path}/LH/LH_{i}.jpg" for i in range(1, 6)],
+    "Right_Hook": [f"{bot_seq_path}/RH/RH_{i}.jpg" for i in range(1, 6)],
+    "Low_Jab": [f"{bot_seq_path}/LJ/LJ_{i}.jpg" for i in range(1, 6)],
+    "Low_Straight": [f"{bot_seq_path}/LS/LS_{i}.jpg" for i in range(1, 6)],
+    "Left_BodyHook": [f"{bot_seq_path}/LBH/LBH_{i}.jpg" for i in range(1, 6)],
+    "Right_BodyHook": [f"{bot_seq_path}/RBH/RBH_{i}.jpg" for i in range(1, 6)],
+    "Left_Uppercut": [f"{bot_seq_path}/LUPP/LUPP_{i}.jpg" for i in range(1, 6)],
+    "Right_Uppercut": [f"{bot_seq_path}/RUPP/RUPP_{i}.jpg" for i in range(1, 6)],
+    "Slip_Left": [f"{bot_seq_path}/SL/SL_{i}.jpg" for i in range(1, 6)],
+    "Slip_Right": [f"{bot_seq_path}/SR/SR_{i}.jpg" for i in range(1, 6)],
+    "Guard": [f"{bot_seq_path}/G/G_{i}.jpg" for i in range(1, 6)],
+    "Guard_LeftBody": [f"{bot_seq_path}/GLB/GLB_{i}.jpg" for i in range(1, 6)],
+    "Guard_RightBody": [f"{bot_seq_path}/GRB/GRB_{i}.jpg" for i in range(1, 6)],
+    "Duck": [f"{bot_seq_path}/D/D_{i}.jpg" for i in range(1, 6)],
+}
