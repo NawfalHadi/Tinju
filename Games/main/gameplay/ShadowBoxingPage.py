@@ -24,7 +24,12 @@ class ShadowBoxingPage:
         self.running = True
         self.isPaused = False
         self.img = self.image = pygame.image.load(PLACE_RING_SIDE)
-        self.player_image = pygame.image.load(BOT_IDLE_IMG[0])
+        
+        "=== IMG SEQ ==="
+        self.player_images = [pygame.image.load(BOT_IDLE_IMG[0])]
+        self.current_image_index = 0
+        self.last_update_time = pygame.time.get_ticks()
+        self.image_update_interval = 30  # milliseconds
 
         "=== CONTROLLER ==="
         self.controller_process = None
@@ -69,8 +74,9 @@ class ShadowBoxingPage:
                             self.player_action = data
                             print(self.player_action)
                             if data != "Pause":
-                                self.player_image = pygame.image.load(ACTIONS_IMAGE[data][0])
+                                self.player_images = [pygame.image.load(img) for img in BOT_IMAGE_SEQ[data]]
                                 self.isPaused = False
+                                self.current_image_index = 0
                             elif data == "Pause":
                                 self.isPaused = True
 
@@ -94,8 +100,15 @@ class ShadowBoxingPage:
 
     def quit(self):
         pygame.event.post(pygame.event.Event(pygame.USEREVENT + 1))
-            
-    
+
+    def update_image(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_update_time > self.image_update_interval:
+            self.current_image_index += 1
+            if self.current_image_index >= len(self.player_images):
+                self.current_image_index = len(self.player_images) - 1  # Stop at the last image
+            self.last_update_time = current_time
+
     def run(self):
         while self.running:
             self.screen.fill(WHITE)
@@ -111,7 +124,8 @@ class ShadowBoxingPage:
                     self.quit_button.is_clicked(event)
 
             if not self.show_loading and not self.isPaused:
-                screen.blit(self.player_image, (-80, 180))
+                self.update_image()
+                screen.blit(self.player_images[self.current_image_index], (-80, 180))
             elif self.isPaused:
                 self.show_pause_screen()
     
