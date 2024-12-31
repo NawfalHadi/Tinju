@@ -17,11 +17,14 @@ from main.helper.constants import *
 from main.helper.Actions import *
 from main.helper.ui_elements.Attribute import *
 from main.helper.ui_elements.button import *
+from main.assets.AudioPath import *
 
 controller = "main/gameplay/PoseController.py"
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Main Menu Example')
+
+pygame.mixer.init()
 
 class VersusBotPage:
     def __init__(self, bot_model):
@@ -51,7 +54,7 @@ class VersusBotPage:
         self.controller_process = None
 
         "=== TIMER ==="
-        self.total_seconds = 1 * 1
+        self.total_seconds = 1 * 30
         
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
@@ -338,6 +341,12 @@ class VersusBotPage:
 
         if self.ko_seconds < 10:
             self.ko_seconds += 1 / 60
+
+            if int(self.ko_seconds) != seconds:
+                try:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(AUDIO_COUNTER[round(self.ko_seconds)]))
+                except KeyError:
+                    pass
             font = pygame.font.Font(None, 150)
             text = font.render(str(seconds), True, (FOREGROUND))
 
@@ -429,7 +438,7 @@ class VersusBotPage:
             hpPlayer_scoring = sum(sublist[0] for sublist in self.judges_hp)
             hpBot_scoring = sum(sublist[1] for sublist in self.judges_hp)
             
-        self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
+            self.first_total = self.draw_round_score(hpPlayer_scoring, hpBot_scoring, self.total_round.left, self.first_judges.top, BACKGROUND)
 
         "=== Second Judges Scoring ==="
         self.second_judges = self.draw_player_name(self.first_judges.bottom + 20, BACKGROUND)
@@ -443,7 +452,7 @@ class VersusBotPage:
             offPlayer_scoring = sum(sublist[0] for sublist in self.judges_off)
             offBot_scoring = sum(sublist[1] for sublist in self.judges_off)
             
-        self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
+            self.second_total = self.draw_round_score(offPlayer_scoring, offBot_scoring, self.total_round.left, self.second_judges.top, BACKGROUND) 
 
         "=== Third Judges Scoring ==="
         self.third_judges = self.draw_player_name(self.second_judges.bottom + 20, BACKGROUND)
@@ -457,7 +466,7 @@ class VersusBotPage:
             defPlayer_scoring = sum(sublist[0] for sublist in self.judges_def)
             defBot_scoring = sum(sublist[1] for sublist in self.judges_def)
 
-        self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
+            self.third_total = self.draw_round_score(defPlayer_scoring, defBot_scoring, self.total_round.left, self.third_judges.top, BACKGROUND)
 
         self.next_button = Button("Continue >>", self.total_round.left, self.third_judges.bottom + 20, 150, 100, GRAY, FOREGROUND, self.continue_round)
 
@@ -683,8 +692,8 @@ class VersusBotPage:
                     else:    
                         self.bot_action_calculation()
 
-                        if self.player_action == "Idle":
-                            self.player_action_calculation()
+                        # if self.player_action == "Idle":
+                        #     self.player_action_calculation()
 
                         self.knockout_check()
                     

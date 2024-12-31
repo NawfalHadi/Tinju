@@ -2,6 +2,7 @@ import pygame
 
 from main.helper.constants import *
 from main.helper.ui_elements.button import Button
+from main.assets.AudioPath import *
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Choose Bot Difficulty")
@@ -10,6 +11,10 @@ class ChooseBotPage:
     def __init__(self):
         self.screen = screen
         self.isRunning = True
+
+        self.draw_interface()
+
+        
     
     def draw_interface(self):
         self.offensiveBot_card, self.offensive_button = self.create_card("Frequently\nOffensive", 20, 20, self.choose_offensive_diff)
