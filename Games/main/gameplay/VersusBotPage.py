@@ -55,7 +55,11 @@ class VersusBotPage:
 
         "=== TIMER ==="
         self.total_seconds = 1 * 30
-        
+
+
+        self.start_round_seconds = 0
+        self.isRoundStart = False
+
         "=== BOT ATTRIBUTES ==="
         self.load_bots(bot_model)
 
@@ -358,6 +362,25 @@ class VersusBotPage:
                 self.isBotTKO = True
                 
             self.total_seconds = 0
+
+    def start_round_timer(self):
+        seconds = int(self.start_round_seconds) % 60
+
+        if self.start_round_seconds < 3:
+            self.start_round_seconds += 1 / 60
+
+            if int(self.start_round_seconds) != seconds:
+                try:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(AUDIO_COUNTER[round(self.start_round_seconds)]))
+                except KeyError:
+                    pass
+            font = pygame.font.Font(None, 150)
+            text = font.render(str(seconds), True, (FOREGROUND))
+
+            screen.blit(text, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        else:
+            self.isRoundStart = True
+
 
     def scoring_system(self):
         bot_ko = self.bot_round_ko
@@ -662,7 +685,6 @@ class VersusBotPage:
         while self.running:
             self.screen.fill(WHITE)
             screen.blit(self.image, (0, 0))
-            screen.blit(self.bot_img, (119, 139))
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or event.type == pygame.USEREVENT + 1:
@@ -678,8 +700,9 @@ class VersusBotPage:
             
             if (not self.isLoading and not self.isTimerFinish):
                 
-                if not self.isPaused:
-
+                if not self.isRoundStart:
+                    self.start_round_timer()
+                elif not self.isPaused:
                     self.player_hp_bg.draw(screen, corner_bottomRight=15)
                     self.player_stamina_bg.draw(screen, corner_bottomRight=15)
                     
@@ -691,21 +714,21 @@ class VersusBotPage:
                         self.knockout_timer()
                     else:    
                         self.bot_action_calculation()
+                        screen.blit(self.bot_img, (119, 139))
 
                         # if self.player_action == "Idle":
                         #     self.player_action_calculation()
 
                         self.knockout_check()
-                    
-                    self.update_interface()
+                        self.update_interface()
                     self.start_timer()
-
                 elif self.isPaused:
                     self.show_pause_screen()  
-
+                
             if self.isTimerFinish:
                 self.show_roundboard()
                 self.next_button.draw(screen)
+
             
             pygame.display.update()
             pygame.time.Clock().tick(60)
