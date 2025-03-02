@@ -13,10 +13,12 @@ from main.helper.Actions import *
 from main.assets.ImagePath import *
 from main.helper.ui_elements.Attribute import *
 from main.helper.ui_elements.button import * 
-
+from main.assets.AudioPath import *
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Bot Versus Bot')
+
+pygame.mixer.init()
 
 class BotVersusBot:
     def __init__(self, player_bot_path, opponent_bot_path):
@@ -50,7 +52,10 @@ class BotVersusBot:
         self.isGoLeft = False
 
         "=== TIMER ==="
-        self.total_seconds = 1 * 5
+        self.total_seconds = 1 * 30
+
+        self.start_round_seconds = 0
+        self.isRoundStart = False
 
         "=== SOCKET ==="
         self.isLoading = False
@@ -89,7 +94,7 @@ class BotVersusBot:
         self.player_action = ACTIONS[0]
         self.player_img = pygame.image.load(PLAYER_ACTIONS_IMAGE[self.player_action][0])
 
-        self.player_maxHp = 0
+        self.player_maxHp = 100
         self.player_hp = self.player_maxHp
 
         self.player_maxStm = 100
@@ -262,7 +267,26 @@ class BotVersusBot:
             self.bot_maxhp = min(self.bot_hp * 0.15 + self.bot_hp, 100)
             self.bot_maxStm = min(self.bot_stamina * 0.75 + self.bot_stamina, 100)
 
+    def start_round_timer(self):
+        seconds = int(self.start_round_seconds) % 60
+
+        if self.start_round_seconds < 3:
+            self.start_round_seconds += 1 / 60
+
+            if int(self.start_round_seconds) != seconds:
+                try:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(AUDIO_COUNTER[round(self.start_round_seconds)]))
+                except Exception as e:
+                    print(e)
+            
+            font = pygame.font.Font(None, 150)
+            text = font.render(str(seconds), True, (FOREGROUND))
+
+            screen.blit(text, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        else:
+            self.isRoundStart = True
     "== INTERFACE - SCOREBOARD =="
+
     def show_roundboard(self):
         self.roundboard = pygame.draw.rect(self.screen, FOREGROUND, pygame.Rect(50, 50, 924, 476)) 
         
@@ -622,24 +646,28 @@ class BotVersusBot:
 
             if not self.isPaused:
                 if not self.isLoading and not self.isTimerFinish and (self.isPlayerQLoaded and self.isBotQLoaded):
-                    self.player_hp_bg.draw(screen, corner_bottomRight=15)
-                    self.player_stamina_bg.draw(screen, corner_bottomRight=15)
-                    self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
-                    self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+                    
+                    if not self.isRoundStart:
+                        self.start_round_timer()
 
-                    self.screen.blit(self.bot_img, (119, 139))
-                    self.screen.blit(self.player_img, (176, 169))
-
-                    if self.isPlayerKO or self.isBotKO:
+                    elif self.isPlayerKO or self.isBotKO:
                         self.knockout_interface()
                         self.knockout_timer()
                     else:
+                        self.player_hp_bg.draw(screen, corner_bottomRight=15)
+                        self.player_stamina_bg.draw(screen, corner_bottomRight=15)
+                        self.bot_hp_bg.draw(screen, corner_bottomLeft=15)
+                        self.bot_stamina_bg.draw(screen, corner_bottomLeft=15)
+
+                        self.screen.blit(self.bot_img, (119, 139))
+                        self.screen.blit(self.player_img, (176, 169))
+
                         self.knockout_check()
                         self.calculation_opp_bot_actions()
                         self.calculation_player_bot_actions()
-                    
-                    self.update_interface()
-                    self.start_timer()
+
+                        self.update_interface()
+                        self.start_timer()
 
                 if self.isTimerFinish:
                     self.show_roundboard()

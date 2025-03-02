@@ -288,7 +288,7 @@ class PoseController:
     def evaluating(self):
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') 
 
-        with open('Scenario/scenario.csv', 'r') as csvfile, open(f'Tested/{timestamp}.csv', 'w', newline='') as outfile:
+        with open('Scenario/scenario_2.csv', 'r') as csvfile, open(f'Tested/{timestamp}.csv', 'w', newline='') as outfile:
             reader = csv.reader(csvfile)
             data = list(reader)
             writer = csv.writer(outfile)
@@ -482,4 +482,4 @@ class PoseController:
 
 
 if __name__ == "__main__":
-    PoseController("boxing_detection_v5.pkl").evaluating()
+    PoseController("v1_rf_model.pkl").evaluating()

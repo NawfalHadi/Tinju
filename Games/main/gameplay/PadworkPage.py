@@ -54,7 +54,6 @@ class PadworkList:
 
                 self.padworks.append([name, seq, rec])
 
-
     def draw_interface(self):
         self.padwork_preview = self.create_card(f"{self.title}", 20, 20)
         
